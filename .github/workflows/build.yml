@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: artifacts
-          path: build
+          path: release
           
   deploy:
     concurrency: ci-${{ github.ref }}
