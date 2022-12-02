@@ -47,6 +47,6 @@ jobs:
           folder: 'artifacts'
       - uses: ncipollo/release-action@v1
         with:
-         artifacts: "release/*.*"
+         artifacts: "artifacts/*.*"
          commit: ${{ github.ref }}
          tag: ${{ github.ref }}
