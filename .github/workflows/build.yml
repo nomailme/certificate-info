@@ -23,7 +23,7 @@ jobs:
       - name: Publish
         run: dotnet publish CertificateViewerPlayground.csproj -c Release -o release --nologo
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v1
         with:
           name: artifacts
           path: build
@@ -44,4 +44,4 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: 'site' 
+          folder: 'artifacts' 
