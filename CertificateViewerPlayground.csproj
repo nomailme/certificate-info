@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MugenMvvmToolkit.WPF" Version="6.5.0" />
+      <PackageReference Include="Serilog" Version="2.12.1-dev-01587" />
+      <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Icons\delete.png" />
+      <Resource Include="Icons\plus.png" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,189 @@
+﻿<Window x:Class="CertificateViewerPlayground.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CertificateViewerPlayground"
+        xmlns:converters="clr-namespace:CertificateViewerPlayground.Converters"
+        xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography.X509Certificates"
+        DataContext=""
+        mc:Ignorable="d"
+        Title="Certificate Viewer" Height="450" Width="800">
+    <Window.Style>
+        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
+    </Window.Style>
+    <Window.Resources>
+        <converters:CertificateToBase64Converter x:Key="Base64Converter" />
+        <converters:CertificateInfoConverter x:Key="CertificateInfoConverter" />
+        <converters:BooleanToBackgroundStyle x:Key="BooleanToBackgroundStyle" />
+        <converters:CertificateValidityConverter x:Key="CertificateValidityConverter" />
+        <converters:CertificateTypeConverter x:Key="CertificateTypeConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <Image Height="16" x:Key="PlusIcon" Source="/Icons/plus.png" />
+        <Image Height="16" x:Key="PlusIconDisabled">
+            <Image.Source>
+                <FormatConvertedBitmap Source="/Icons/plus.png" DestinationFormat="Gray32Float"></FormatConvertedBitmap>
+            </Image.Source>
+            <Image.Effect>
+                <BlurEffect Radius="4"></BlurEffect>
+            </Image.Effect>
+            <Image.OpacityMask>
+                <ImageBrush ImageSource="/Icons/plus.png"/>
+            </Image.OpacityMask>
+        </Image>
+        <Image Height="16" x:Key="DeleteIcon" Source="/Icons/delete.png" />
+        <Image Height="16" x:Key="DeleteIconDisabled">
+            <Image.Source>
+                <FormatConvertedBitmap Source="/Icons/delete.png" DestinationFormat="Gray32Float"></FormatConvertedBitmap>
+            </Image.Source>
+            <Image.Effect>
+                <BlurEffect Radius="4"></BlurEffect>
+            </Image.Effect>
+            <Image.OpacityMask>
+                <ImageBrush ImageSource="/Icons/delete.png"/>
+            </Image.OpacityMask>
+        </Image>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="250" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.DataContext>
+            <local:MainWindowVm />
+        </Grid.DataContext>
+        <Grid Grid.Row="0" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Button Margin="5" Padding="5" Command="{Binding OpenCommand}">Open certificate file</Button>
+                <CheckBox IsChecked="{Binding UseSystemStore}">Use system certificate store</CheckBox>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Margin="5" Padding="5" Foreground="White" Background="#2775c3" Text="{Binding CertificateType, Converter={StaticResource CertificateTypeConverter}}">
+                    <TextBlock.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5" />
+                        </Style>
+                    </TextBlock.Resources>
+
+                </TextBlock>
+                <TextBlock Margin="5" Padding="5">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Background"
+                                    Value="{Binding Path=IsValid, Converter={StaticResource BooleanToBackgroundStyle}}" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsValid, UpdateSourceTrigger=PropertyChanged}"
+                                             Value="False">
+                                    <Setter Property="Text" Value="Invalid" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsValid, UpdateSourceTrigger=PropertyChanged}"
+                                             Value="True">
+                                    <Setter Property="Text" Value="Valid" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsValid, UpdateSourceTrigger=PropertyChanged}"
+                                             Value="{x:Null}">
+                                    <Setter Property="Text" Value="Empty" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <ListView Grid.Row="0"
+                      MinHeight="200"
+                      SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Certificates, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:CertificateVm}">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Subject, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="{Binding Issuer, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="{Binding Validity, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <WrapPanel Margin="5,0,5,5" Grid.Row="1">
+                <TextBlock>Custom root certificates</TextBlock>
+                <Button Command="{Binding AddRootCommand}"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Margin="4,0"
+                        IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="{StaticResource PlusIcon}"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
+                                    <Setter Property="Content" Value="{StaticResource PlusIconDisabled}"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Command="{Binding RemoveRootCommand}"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Margin="4,0"
+                        IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="{StaticResource DeleteIcon}"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
+                                    <Setter Property="Content" Value="{StaticResource DeleteIconDisabled}"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+            </WrapPanel>
+            <ListView Grid.Row="2" IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}"
+                      HorizontalAlignment="Stretch"
+
+                      SelectedItem="{Binding SelectedRootCertificate, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding RootCertificates, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type x509Certificates:X509Certificate2}">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Subject, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="{Binding Path=., Converter={StaticResource CertificateValidityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"></GridSplitter>
+        <TabControl Grid.Column="2" Grid.Row="1">
+            <TabItem Header="Info">
+                <TextBox Height="Auto" FontFamily="Consolas"
+                         Text="{Binding SelectedItem, Mode=OneWay, Converter={StaticResource CertificateInfoConverter}}"
+                         IsReadOnly="True" />
+            </TabItem>
+            <TabItem Header="Base64">
+                <TextBox Height="Auto" FontFamily="Consolas"
+                         Text="{Binding SelectedItem, Mode=OneWay, Converter={StaticResource Base64Converter}}"
+                         IsReadOnly="True" />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
