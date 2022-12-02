@@ -41,10 +41,10 @@ jobs:
         with:
           name: artifacts
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: 'artifacts'
+#      - name: Deploy 🚀
+#        uses: JamesIves/github-pages-deploy-action@v4
+#        with:
+#         folder: 'artifacts'
       - uses: ncipollo/release-action@v1
         with:
          artifacts: "artifacts/*.*"
