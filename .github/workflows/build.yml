@@ -49,3 +49,4 @@ jobs:
         with:
          artifacts: "release/*.*"
          commit: ${{ github.ref }}
+         tag: ${{ github.ref }}
