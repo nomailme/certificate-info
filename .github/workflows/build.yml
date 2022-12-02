@@ -26,5 +26,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Application_Artifact
-          path: /home/runner/work/certificate-info/release
+          path: D:\a\certificate-info\certificate-info\release\
         
