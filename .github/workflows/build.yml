@@ -45,7 +45,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: 'artifacts'
-#      - uses: ncipollo/release-action@v1
-#        with:
-#         artifacts: "release/*.*"
-#         tag: {{ github.ref }}
+      - uses: ncipollo/release-action@v1
+        with:
+         artifacts: "release/*.*"
+         commit: ${{ github.ref }}
