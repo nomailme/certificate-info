@@ -27,4 +27,10 @@ jobs:
         with:
           name: Application_Artifact
           path: D:\a\certificate-info\certificate-info\release\
+      - name: Commit release to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: release
+          FOLDER: release
         
