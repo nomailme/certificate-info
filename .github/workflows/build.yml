@@ -54,4 +54,4 @@ jobs:
         with:
          artifacts: "artifacts/*.*"
          commit: ${{ github.ref }}
-         tag: $NOW
+         tag: ${{ env.NOW }}
