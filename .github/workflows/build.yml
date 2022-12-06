@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: artifacts
-          path: release.zip
+          path: release/release.zip
           
   deploy:
     concurrency: ci-${{ github.ref }}
