@@ -21,7 +21,9 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Publish
-        run: dotnet publish CertificateViewerPlayground.csproj -r win-x64 -c Release -o release --nologo -p:PublishSingleFile=true --self-contained true
+        run: dotnet publish CertificateViewerPlayground.csproj -r win-x86 -c Release -o release --nologo -p:PublishSingleFile=true --self-contained true
+      - name: Check files
+        run: dir release
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
