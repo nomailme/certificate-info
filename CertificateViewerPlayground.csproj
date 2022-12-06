@@ -16,6 +16,8 @@
     <ItemGroup>
       <Resource Include="Icons\delete.png" />
       <Resource Include="Icons\plus.png" />
+      <None Remove="Icons\certificate.png" />
+      <Resource Include="Icons\certificate.png" />
     </ItemGroup>
 
 </Project>

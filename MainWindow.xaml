@@ -19,6 +19,7 @@
         <converters:CertificateValidityConverter x:Key="CertificateValidityConverter" />
         <converters:CertificateTypeConverter x:Key="CertificateTypeConverter" />
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+
         <Image Height="16" x:Key="PlusIcon" Source="/Icons/plus.png" />
         <Image Height="16" x:Key="PlusIconDisabled">
             <Image.Source>
@@ -74,7 +75,6 @@
                             <Setter Property="CornerRadius" Value="5" />
                         </Style>
                     </TextBlock.Resources>
-
                 </TextBlock>
                 <TextBlock Margin="5" Padding="5">
                     <TextBlock.Style>
@@ -107,20 +107,11 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <ListView Grid.Row="0"
-                      MinHeight="200"
+            <ListView Grid.Row="0" MinHeight="200"
                       SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
-                      ItemsSource="{Binding Certificates, UpdateSourceTrigger=PropertyChanged}">
-                <ListView.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:CertificateVm}">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Subject, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Text="{Binding Issuer, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Text="{Binding Validity, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                      ItemsSource="{Binding Certificates, UpdateSourceTrigger=PropertyChanged}"
+                      ItemTemplate="{StaticResource CertificateListboxItemTemplate}"
+                      HorizontalContentAlignment="Stretch" />
             <WrapPanel Margin="5,0,5,5" Grid.Row="1">
                 <TextBlock>Custom root certificates</TextBlock>
                 <Button Command="{Binding AddRootCommand}"
@@ -174,13 +165,13 @@
         </Grid>
         <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"></GridSplitter>
         <TabControl Grid.Column="2" Grid.Row="1">
-            <TabItem Header="Info">
-                <TextBox Height="Auto" FontFamily="Consolas"
+            <TabItem Header="Info" VerticalContentAlignment="Stretch">
+                <TextBox Height="Auto" FontFamily="Consolas" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
                          Text="{Binding SelectedItem, Mode=OneWay, Converter={StaticResource CertificateInfoConverter}}"
                          IsReadOnly="True" />
             </TabItem>
-            <TabItem Header="Base64">
-                <TextBox Height="Auto" FontFamily="Consolas"
+            <TabItem Header="Base64" VerticalContentAlignment="Stretch">
+                <TextBox Height="Auto" FontFamily="Consolas" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
                          Text="{Binding SelectedItem, Mode=OneWay, Converter={StaticResource Base64Converter}}"
                          IsReadOnly="True" />
             </TabItem>
