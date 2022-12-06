@@ -22,13 +22,13 @@ jobs:
         run: dotnet build --no-restore
       - name: Publish
         run: dotnet publish CertificateViewerPlayground.csproj -r win-x86 -c Release -o release --nologo -p:PublishSingleFile=true --self-contained true
-      - name: Check files
-        run: dir release
+      - name: Create archive
+        run: zip -r -q binary.zip release
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
           name: artifacts
-          path: release
+          path: binary.zip
           
   deploy:
     concurrency: ci-${{ github.ref }}
