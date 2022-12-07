@@ -66,6 +66,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <Button Margin="5" Padding="5" Command="{Binding OpenCommand}">Open certificate file</Button>
+                <Button Margin="5" Padding="5" Command="{Binding OpenUrlCommand}">Open URL</Button>
                 <CheckBox IsChecked="{Binding UseSystemStore}">Use system certificate store</CheckBox>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -150,7 +151,6 @@
             </WrapPanel>
             <ListView Grid.Row="2" IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}"
                       HorizontalAlignment="Stretch"
-
                       SelectedItem="{Binding SelectedRootCertificate, UpdateSourceTrigger=PropertyChanged}"
                       ItemsSource="{Binding RootCertificates, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>

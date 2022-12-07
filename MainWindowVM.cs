@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -27,6 +28,7 @@ public class MainWindowVm : INotifyPropertyChanged
         OpenCommand = new RelayCommand(OpenFile);
         AddRootCommand = new RelayCommand(AddRootCertificate);
         RemoveRootCommand = new RelayCommand(RemoveRootCertificate);
+        OpenUrlCommand = new RelayCommand(async x => await OpenUrl(x));
     }
 
     public ICommand OpenCommand { get; }
@@ -61,11 +63,11 @@ public class MainWindowVm : INotifyPropertyChanged
     {
         get
         {
-            if (this.certificateVms.IsNullOrEmpty())
+            if (certificateVms.IsNullOrEmpty())
             {
                 return null;
             }
-            X509Certificate2[] certificates = this.certificateVms.Select(x => x.Certificate).Where(x => x != null).ToArray()!;
+            X509Certificate2[] certificates = certificateVms.Select(x => x.Certificate).Where(x => x != null).ToArray()!;
             var info = new CertificateFileInfo(new X509Certificate2Collection(certificates), rootCertificateStore);
             return info.Validate().IsEmpty();
         }
@@ -74,8 +76,31 @@ public class MainWindowVm : INotifyPropertyChanged
     public CertificateType CertificateType { get; set; }
 
     public ObservableCollection<X509Certificate2> RootCertificates => new(rootCertificateStore.RootCertificates.ToList());
+    public ICommand OpenUrlCommand { get; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    private async Task OpenUrl(object obj)
+    {
+        try
+        {
+            var openUrlWindow = new OpenUrlWindow();
+            openUrlWindow.ShowDialog();
+            if (openUrlWindow.DialogResult != true)
+            {
+                return;
+            }
+            var retriever = new ServerCertificateRetriever();
+            var certificates = await retriever.GetAsync(openUrlWindow.Text);
+            var certificatesVm = certificates.Select(x => new CertificateVm(x)).ToList();
+            Certificates = new ObservableCollection<CertificateVm>(certificatesVm);
+            OnPropertyChanged(nameof(IsValid));
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message, "Error opening URL");
+        }
+    }
 
     private void OpenFile(object value)
     {

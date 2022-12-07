@@ -4,7 +4,7 @@ namespace CertificateViewerPlayground;
 
 public class RootCertificateStore
 {
-    public bool UseSystemRootStore { get; set; }
+    public bool UseSystemRootStore { get; set; } = true;
 
     public X509Certificate2Collection RootCertificates { get; set; } = new();
 
