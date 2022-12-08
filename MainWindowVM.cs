@@ -84,14 +84,14 @@ public class MainWindowVm : INotifyPropertyChanged
     {
         try
         {
-            var openUrlWindow = new OpenUrlWindow();
+            var openUrlWindow = new OpenUrlWindow { DataContext = new Uri("https://google.com") };
             openUrlWindow.ShowDialog();
             if (openUrlWindow.DialogResult != true)
             {
                 return;
             }
             var retriever = new ServerCertificateRetriever();
-            var certificates = await retriever.GetAsync(openUrlWindow.Text);
+            var certificates = await ServerCertificateRetriever.GetAsync(openUrlWindow.Url);
             var certificatesVm = certificates.Select(x => new CertificateVm(x)).ToList();
             Certificates = new ObservableCollection<CertificateVm>(certificatesVm);
             OnPropertyChanged(nameof(IsValid));
