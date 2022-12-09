@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using CertificateViewerPlayground.Themes.Extensions;
+using CertificateViewer.Themes.Extensions;
 
-namespace CertificateViewerPlayground
+namespace CertificateViewer
 {
     /// <summary>
     ///     Interaction logic for MainWindow.xaml

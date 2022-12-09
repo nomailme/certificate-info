@@ -8,11 +8,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CertificateViewer.Dialogs;
+using CertificateViewerPlayground;
 using Microsoft.Win32;
 using MugenMvvmToolkit;
 using MugenMvvmToolkit.Models;
 
-namespace CertificateViewerPlayground;
+namespace CertificateViewer;
 
 public class MainWindowVm : INotifyPropertyChanged
 {
@@ -28,7 +30,7 @@ public class MainWindowVm : INotifyPropertyChanged
         OpenCommand = new RelayCommand(OpenFile);
         AddRootCommand = new RelayCommand(AddRootCertificate);
         RemoveRootCommand = new RelayCommand(RemoveRootCertificate);
-        OpenUrlCommand = new RelayCommand(async x => await OpenUrl(x));
+        OpenUrlCommand = new RelayCommand(async _ => await OpenUrl());
     }
 
     public ICommand OpenCommand { get; }
@@ -80,7 +82,7 @@ public class MainWindowVm : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private async Task OpenUrl(object obj)
+    private async Task OpenUrl()
     {
         try
         {
@@ -90,7 +92,6 @@ public class MainWindowVm : INotifyPropertyChanged
             {
                 return;
             }
-            var retriever = new ServerCertificateRetriever();
             var certificates = await ServerCertificateRetriever.GetAsync(openUrlWindow.Url);
             var certificatesVm = certificates.Select(x => new CertificateVm(x)).ToList();
             Certificates = new ObservableCollection<CertificateVm>(certificatesVm);
@@ -157,14 +158,13 @@ public class MainWindowVm : INotifyPropertyChanged
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value))
         {
-            return false;
+            return;
         }
         field = value;
         OnPropertyChanged(propertyName);
-        return true;
     }
 }

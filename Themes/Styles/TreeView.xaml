@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:CertificateViewerPlayground.Themes.Converters">
+                    xmlns:converters="clr-namespace:CertificateViewer.Themes.Converters">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/Styles/Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>

@@ -1,4 +1,4 @@
-namespace CertificateViewerPlayground;
+namespace CertificateViewer;
 
 public enum CertificateType
 {

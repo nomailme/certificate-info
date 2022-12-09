@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using CertificateViewerPlayground.Themes.Extensions;
+using CertificateViewer.Themes.Extensions;
 
-namespace CertificateViewerPlayground.Themes.Converters
+namespace CertificateViewer.Themes.Converters
 {
     public class LeftMarginMultiplierConverter: IValueConverter
     {

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Data;
 
-namespace CertificateViewerPlayground.Converters;
+namespace CertificateViewer.Converters;
 
 [ValueConversion(typeof(X509Certificate2),typeof(string))]
 public class CertificateValidityConverter: IValueConverter

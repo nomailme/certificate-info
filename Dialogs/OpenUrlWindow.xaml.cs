@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -7,14 +6,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace CertificateViewerPlayground;
+namespace CertificateViewer.Dialogs;
 
 public partial class OpenUrlWindow : Window, INotifyPropertyChanged
 {
-    private string? url;
-    public OpenUrlWindow()
+    private string? url = "https://";
+    public OpenUrlWindow() => InitializeComponent();
+
+
+    protected override void OnContentRendered(EventArgs e)
     {
-        InitializeComponent();
+        base.OnContentRendered(e);
+        UrlAddressTextBox.CaretIndex = UrlAddressTextBox.Text.Length;
     }
 
     public string? Url
@@ -67,15 +70,5 @@ public partial class OpenUrlWindow : Window, INotifyPropertyChanged
         // All dependency objects are valid
     }
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
-namespace CertificateViewerPlayground;
+namespace CertificateViewer;
 
 public sealed class CertificateVm : INotifyPropertyChanged
 {

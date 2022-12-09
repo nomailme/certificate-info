@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using MugenMvvmToolkit;
 
-namespace CertificateViewerPlayground.Converters;
+namespace CertificateViewer.Converters;
 
 [ValueConversion(typeof(CertificateVm),typeof(string))]
 public class CertificateToBase64Converter: IValueConverter

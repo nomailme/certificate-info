@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace CertificateViewerPlayground.Converters;
+namespace CertificateViewer.Converters;
 
 [ValueConversion(typeof(bool),typeof(Brush))]
 public class BooleanToBackgroundStyle: IValueConverter

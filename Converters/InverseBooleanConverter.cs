@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace CertificateViewerPlayground.Converters;
+namespace CertificateViewer.Converters;
 
 [ValueConversion(typeof(bool),typeof(bool))]
 public class InverseBooleanConverter: IValueConverter

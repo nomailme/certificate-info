@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Serilog;
 
-namespace CertificateViewerPlayground;
+namespace CertificateViewer;
 
 public class CertificateHelper
 {

@@ -1,6 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 
-namespace CertificateViewerPlayground;
+namespace CertificateViewer;
 
 public class RootCertificateStore
 {

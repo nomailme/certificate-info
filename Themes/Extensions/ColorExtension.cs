@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace CertificateViewerPlayground.Themes.Extensions;
+namespace CertificateViewer.Themes.Extensions;
 
 public static class ColorExtension
 {

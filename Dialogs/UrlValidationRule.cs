@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Controls;
 
-namespace CertificateViewerPlayground;
+namespace CertificateViewer.Dialogs;
 
 public class UrlValidationRule : ValidationRule
 {
