@@ -1,7 +1,7 @@
 
 #Certificate viewer
 
-![screenshot](/.github/screenshot.jpg?raw=true)
+![screenshot](/.github/screenshot.png?raw=true)
 
 
 Theme for WPF used
