@@ -4,8 +4,8 @@ using System.Windows.Data;
 
 namespace CertificateViewer.Converters;
 
-[ValueConversion(typeof(CertificateVm),typeof(string))]
-public class CertificateInfoConverter: IValueConverter
+[ValueConversion(typeof(CertificateVm), typeof(string))]
+public class CertificateInfoConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -27,8 +27,5 @@ public class CertificateInfoConverter: IValueConverter
         return result;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
-    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
 }

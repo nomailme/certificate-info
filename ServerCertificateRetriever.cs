@@ -21,7 +21,7 @@ public class ServerCertificateRetriever
 
         var proxyUri = HttpClient.DefaultProxy.GetProxy(uri);
 
-        using var client = proxyUri == null ? new TcpClient(): CreateProxied(proxyUri, uri);
+        using var client = proxyUri == null ? new TcpClient() : CreateProxied(proxyUri, uri);
 
 
         var sslStream = new SslStream(client.GetStream(), false);
@@ -62,3 +62,4 @@ public class ServerCertificateRetriever
         return new TcpClient { Client = socket };
     }
 }
+

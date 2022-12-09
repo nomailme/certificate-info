@@ -14,3 +14,4 @@ public class RootCertificateStore
 
     public void Clear() => RootCertificates.Clear();
 }
+

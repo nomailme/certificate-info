@@ -23,25 +23,25 @@
         <Image Height="16" x:Key="PlusIcon" Source="/Icons/plus.png" />
         <Image Height="16" x:Key="PlusIconDisabled">
             <Image.Source>
-                <FormatConvertedBitmap Source="/Icons/plus.png" DestinationFormat="Gray32Float"></FormatConvertedBitmap>
+                <FormatConvertedBitmap Source="/Icons/plus.png" DestinationFormat="Gray32Float" />
             </Image.Source>
             <Image.Effect>
-                <BlurEffect Radius="4"></BlurEffect>
+                <BlurEffect Radius="4" />
             </Image.Effect>
             <Image.OpacityMask>
-                <ImageBrush ImageSource="/Icons/plus.png"/>
+                <ImageBrush ImageSource="/Icons/plus.png" />
             </Image.OpacityMask>
         </Image>
         <Image Height="16" x:Key="DeleteIcon" Source="/Icons/delete.png" />
         <Image Height="16" x:Key="DeleteIconDisabled">
             <Image.Source>
-                <FormatConvertedBitmap Source="/Icons/delete.png" DestinationFormat="Gray32Float"></FormatConvertedBitmap>
+                <FormatConvertedBitmap Source="/Icons/delete.png" DestinationFormat="Gray32Float" />
             </Image.Source>
             <Image.Effect>
-                <BlurEffect Radius="4"></BlurEffect>
+                <BlurEffect Radius="4" />
             </Image.Effect>
             <Image.OpacityMask>
-                <ImageBrush ImageSource="/Icons/delete.png"/>
+                <ImageBrush ImageSource="/Icons/delete.png" />
             </Image.OpacityMask>
         </Image>
     </Window.Resources>
@@ -72,7 +72,8 @@
                 <CheckBox IsChecked="{Binding UseSystemStore}">Use system certificate store</CheckBox>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <TextBlock Margin="5" Padding="5" Foreground="White" Background="#2775c3" Text="{Binding CertificateType, Converter={StaticResource CertificateTypeConverter}}">
+                <TextBlock Margin="5" Padding="5" Foreground="White" Background="#2775c3"
+                           Text="{Binding CertificateType, Converter={StaticResource CertificateTypeConverter}}">
                     <TextBlock.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="5" />
@@ -124,10 +125,11 @@
                         IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}">
                     <Button.Style>
                         <Style TargetType="Button">
-                            <Setter Property="Content" Value="{StaticResource PlusIcon}"></Setter>
+                            <Setter Property="Content" Value="{StaticResource PlusIcon}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
-                                    <Setter Property="Content" Value="{StaticResource PlusIconDisabled}"></Setter>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}"
+                                             Value="False">
+                                    <Setter Property="Content" Value="{StaticResource PlusIconDisabled}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -140,10 +142,11 @@
                         IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}">
                     <Button.Style>
                         <Style TargetType="Button">
-                            <Setter Property="Content" Value="{StaticResource DeleteIcon}"></Setter>
+                            <Setter Property="Content" Value="{StaticResource DeleteIcon}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
-                                    <Setter Property="Content" Value="{StaticResource DeleteIconDisabled}"></Setter>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}"
+                                             Value="False">
+                                    <Setter Property="Content" Value="{StaticResource DeleteIconDisabled}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -151,7 +154,8 @@
                 </Button>
 
             </WrapPanel>
-            <ListView Grid.Row="2" IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}"
+            <ListView Grid.Row="2"
+                      IsEnabled="{Binding UseSystemStore, Converter={StaticResource InverseBooleanConverter}}"
                       HorizontalAlignment="Stretch"
                       SelectedItem="{Binding SelectedRootCertificate, UpdateSourceTrigger=PropertyChanged}"
                       ItemsSource="{Binding RootCertificates, UpdateSourceTrigger=PropertyChanged}">
@@ -159,13 +163,14 @@
                     <DataTemplate DataType="{x:Type x509Certificates:X509Certificate2}">
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="{Binding Subject, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Text="{Binding Path=., Converter={StaticResource CertificateValidityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock
+                                Text="{Binding Path=., Converter={StaticResource CertificateValidityConverter}, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"></GridSplitter>
+        <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center" />
         <TabControl Grid.Column="2" Grid.Row="1">
             <TabItem Header="Info" VerticalContentAlignment="Stretch">
                 <TextBox Height="Auto" FontFamily="Consolas" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
@@ -178,7 +183,8 @@
                          IsReadOnly="True" />
             </TabItem>
         </TabControl>
-        <GridSplitter Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="3" Height="5" VerticalAlignment="Center" HorizontalAlignment="Stretch"></GridSplitter>
+        <GridSplitter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Height="5" VerticalAlignment="Center"
+                      HorizontalAlignment="Stretch" />
         <ListView Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" ItemsSource="{Binding Errors}" />
     </Grid>
 </Window>

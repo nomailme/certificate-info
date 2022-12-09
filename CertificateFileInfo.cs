@@ -5,7 +5,7 @@ using MugenMvvmToolkit;
 
 namespace CertificateViewer;
 
-public class  CertificateFileInfo
+public class CertificateFileInfo
 {
     private readonly RootCertificateStore rootCertificateStore;
 
@@ -24,16 +24,17 @@ public class  CertificateFileInfo
         {
             RevocationMode = X509RevocationMode.NoCheck,
             RevocationFlag = X509RevocationFlag.EntireChain,
-            TrustMode = rootCertificateStore.UseSystemRootStore? X509ChainTrustMode.System : X509ChainTrustMode.CustomRootTrust
+            TrustMode = rootCertificateStore.UseSystemRootStore ? X509ChainTrustMode.System : X509ChainTrustMode.CustomRootTrust
         };
         if (rootCertificateStore.UseSystemRootStore == false)
         {
             policy.CustomTrustStore.AddRange(rootCertificateStore.RootCertificates);
         }
-        Certificates.Skip(1).ForEach(x=>policy.ExtraStore.Add(x));
+        Certificates.Skip(1).ForEach(x => policy.ExtraStore.Add(x));
         chain.ChainPolicy = policy;
 
         var result = chain.Build(Certificates.First());
         return result ? new List<string>() : chain.ChainStatus.Select(x => x.StatusInformation).ToList();
     }
 }
+

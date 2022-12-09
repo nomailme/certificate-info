@@ -22,8 +22,8 @@ public class MainWindowVm : INotifyPropertyChanged
     private readonly RootCertificateStore rootCertificateStore = new();
 
     private ObservableCollection<CertificateVm> certificateVms = new();
-    private CertificateVm? selectedItem;
     private ObservableCollection<string> errors;
+    private CertificateVm? selectedItem;
 
 
     public MainWindowVm()

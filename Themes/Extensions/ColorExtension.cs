@@ -32,7 +32,10 @@ public static class ColorExtension
     {
         var accentColor = Application.Current.TryFindResource(AccentBrush) as SolidColorBrush;
 
-        if (accentColor != null) return;
+        if (accentColor != null)
+        {
+            return;
+        }
 
         if (_accentResources != null)
         {
@@ -58,10 +61,10 @@ public static class ColorExtension
         resources.Add(PressedBorderColorDark, color.GetPressedBorderColorDark());
         resources.Add(PressedBackgroundColorDark, color.GetPressedBackgroundColorDark());
 
-        resources.Add(AccentBrush, new SolidColorBrush((Color) resources[AccentColor]));
+        resources.Add(AccentBrush, new SolidColorBrush((Color)resources[AccentColor]));
         resources.Add(AccentBrush1, new SolidColorBrush((Color)resources[AccentColor1]));
-        resources.Add(MouseOverBorderBrush, new SolidColorBrush((Color) resources[MouseOverBorderColor]));
-        resources.Add(MouseOverBackgroundBrush, new SolidColorBrush((Color) resources[MouseOverBackgroundColor]));
+        resources.Add(MouseOverBorderBrush, new SolidColorBrush((Color)resources[MouseOverBorderColor]));
+        resources.Add(MouseOverBackgroundBrush, new SolidColorBrush((Color)resources[MouseOverBackgroundColor]));
         resources.Add(PressedBorderBrush, new SolidColorBrush((Color)resources[PressedBorderColor]));
         resources.Add(PressedBackgroundBrush, new SolidColorBrush((Color)resources[PressedBackgroundColor]));
         resources.Add(PressedBorderBrushDark, new SolidColorBrush((Color)resources[PressedBorderColorDark]));
@@ -110,10 +113,7 @@ public static class ColorExtension
         return MixColors(c, Colors.Black);
     }
 
-    private static Color MakeOpaque(this Color color)
-    {
-        return MixColors(color, Colors.White);
-    }
+    private static Color MakeOpaque(this Color color) => MixColors(color, Colors.White);
 
     private static Color MixColors(Color color1, Color color2)
     {

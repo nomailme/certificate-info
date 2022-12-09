@@ -5,26 +5,26 @@
         <ResourceDictionary Source="/Themes/Styles/CommonControls.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
+    <BorderGapMaskConverter x:Key="BorderGapMaskConverter" />
     <Style TargetType="{x:Type GroupBox}">
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GroupBox}">
                     <Grid SnapsToDevicePixels="true"
                           Margin="{TemplateBinding Margin}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="6"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="6"/>
+                            <ColumnDefinition Width="6" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="6" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="6"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="6" />
                         </Grid.RowDefinitions>
                         <Border BorderBrush="Transparent"
                                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -33,7 +33,7 @@
                                 Grid.Column="0"
                                 CornerRadius="4"
                                 Grid.Row="1"
-                                Grid.RowSpan="3"/>
+                                Grid.RowSpan="3" />
                         <Border BorderBrush="{StaticResource BackgroundBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Grid.ColumnSpan="4"
@@ -41,10 +41,11 @@
                                 Grid.Row="1"
                                 Grid.RowSpan="3">
                             <Border.OpacityMask>
-                                <MultiBinding ConverterParameter="7" Converter="{StaticResource BorderGapMaskConverter}">
-                                    <Binding ElementName="Header" Path="ActualWidth"/>
-                                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}"/>
-                                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource Self}"/>
+                                <MultiBinding ConverterParameter="7"
+                                              Converter="{StaticResource BorderGapMaskConverter}">
+                                    <Binding ElementName="Header" Path="ActualWidth" />
+                                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource Self}" />
                                 </MultiBinding>
                             </Border.OpacityMask>
                             <Border BorderBrush="{TemplateBinding BorderBrush}"
@@ -52,7 +53,7 @@
                                     CornerRadius="3">
                                 <Border BorderBrush="White"
                                         BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="2"/>
+                                        CornerRadius="2" />
                             </Border>
                         </Border>
                         <Border x:Name="Header"
@@ -62,45 +63,45 @@
                                 Grid.RowSpan="2">
                             <ContentPresenter ContentSource="Header"
                                               RecognizesAccessKey="True"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Border>
                         <ContentPresenter Grid.ColumnSpan="2"
                                           Grid.Column="1"
                                           Margin="{TemplateBinding Padding}"
                                           Grid.Row="2"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="AccentGroupBox" TargetType="{x:Type GroupBox}">
-        <Setter Property="Background" Value="{StaticResource Accent.LightBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush.Light}"/>
+        <Setter Property="Background" Value="{StaticResource Accent.LightBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush.Light}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GroupBox}">
                     <Grid SnapsToDevicePixels="true"
                           Margin="{TemplateBinding Margin}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Border x:Name="Header"
-                                Padding="6 3" 
+                                Padding="6 3"
                                 Grid.Row="0"
                                 Background="{TemplateBinding Background}">
                             <ContentPresenter ContentSource="Header"
                                               RecognizesAccessKey="True"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                               TextElement.Foreground="{TemplateBinding Foreground}"
-                                              TextElement.FontWeight="Medium"/>
+                                              TextElement.FontWeight="Medium" />
                         </Border>
                         <ContentPresenter Grid.Row="1"
                                           Margin="{TemplateBinding Padding}"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                          TextElement.Foreground="{StaticResource ForegroundBrush}"/>
+                                          TextElement.Foreground="{StaticResource ForegroundBrush}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -108,7 +109,7 @@
     </Style>
 
     <Style x:Key="GrayGroupBox" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource AccentGroupBox}">
-        <Setter Property="Background" Value="{StaticResource BackgroundBrush.Dark}"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush.Dark}" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
     </Style>
 </ResourceDictionary>

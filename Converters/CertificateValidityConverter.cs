@@ -5,8 +5,8 @@ using System.Windows.Data;
 
 namespace CertificateViewer.Converters;
 
-[ValueConversion(typeof(X509Certificate2),typeof(string))]
-public class CertificateValidityConverter: IValueConverter
+[ValueConversion(typeof(X509Certificate2), typeof(string))]
+public class CertificateValidityConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -26,8 +26,5 @@ public class CertificateValidityConverter: IValueConverter
         return $"{certificate?.NotBefore:d}-{certificate?.NotAfter:d}";
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
-    }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
 }

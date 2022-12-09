@@ -54,7 +54,9 @@
             <Label>Enter URL:</Label>
             <TextBox Name="UrlAddressTextBox">
                 <TextBox.Text>
-                    <Binding Path="Url" RelativeSource="{RelativeSource FindAncestor, AncestorType=dialogs:OpenUrlWindow}"  UpdateSourceTrigger="PropertyChanged">
+                    <Binding Path="Url"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType=dialogs:OpenUrlWindow}"
+                             UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <dialogs:UrlValidationRule HttpsOnly="True" />
                         </Binding.ValidationRules>

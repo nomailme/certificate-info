@@ -6,16 +6,16 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type ToggleButton}">
-        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-        <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
-        <Setter Property="Padding" Value="4 2"/>
-        <Setter Property="Margin" Value="4 2"/>
-        <Setter Property="Height" Value="22"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+        <Setter Property="Background" Value="{StaticResource Button.Static.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+        <Setter Property="Padding" Value="4 2" />
+        <Setter Property="Margin" Value="4 2" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -30,36 +30,48 @@
                                           Margin="{TemplateBinding Padding}"
                                           RecognizesAccessKey="True"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsDefaulted" Value="true">
-                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource Button.MouseOver.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource Button.MouseOver.Border}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource ToggleButton.Pressed.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ToggleButton.Pressed.Border}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource ToggleButton.Pressed.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource ToggleButton.Pressed.Border}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ToggleButton.Pressed.Border}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource Button.Pressed.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource ToggleButton.Pressed.Border}" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsChecked" Value="true"/>
-                                <Condition Property="IsMouseOver" Value="true"/>
+                                <Condition Property="IsChecked" Value="true" />
+                                <Condition Property="IsMouseOver" Value="true" />
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ToggleButton.Pressed.Border}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource Button.MouseOver.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource ToggleButton.Pressed.Border}" />
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource Button.Disabled.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource Button.Disabled.Border}" />
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter"
+                                    Value="{StaticResource Button.Disabled.Foreground}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -67,10 +79,11 @@
         </Setter>
     </Style>
 
-    <Style x:Key="AccentToggleButton" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
-        <Setter Property="Background" Value="{StaticResource Accent.BackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Accent.BackgroundBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush.Light}"/>
+    <Style x:Key="AccentToggleButton" TargetType="{x:Type ToggleButton}"
+           BasedOn="{StaticResource {x:Type ToggleButton}}">
+        <Setter Property="Background" Value="{StaticResource Accent.BackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Accent.BackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush.Light}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -85,36 +98,46 @@
                                           Margin="{TemplateBinding Padding}"
                                           RecognizesAccessKey="True"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsDefaulted" Value="true">
-                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Accent.LightBrush}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Accent.LightBrush}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource Accent.LightBrush}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource Accent.LightBrush}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Accent.DarkBrush}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Accent.DarkBrush}"/>
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource Accent.DarkBrush}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource Accent.DarkBrush}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Accent.DarkBrush}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Accent.DarkBrush}"/>
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource Accent.DarkBrush}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource Accent.DarkBrush}" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsChecked" Value="true"/>
-                                <Condition Property="IsMouseOver" Value="true"/>
+                                <Condition Property="IsChecked" Value="true" />
+                                <Condition Property="IsMouseOver" Value="true" />
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Accent.LightBrush}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Accent.LightBrush}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource Accent.LightBrush}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource Accent.LightBrush}" />
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            <Setter Property="Background" TargetName="border"
+                                    Value="{StaticResource Button.Disabled.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border"
+                                    Value="{StaticResource Button.Disabled.Border}" />
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter"
+                                    Value="{StaticResource Button.Disabled.Foreground}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

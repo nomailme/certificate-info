@@ -1,33 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net7.0-windows</TargetFramework>
-        <Nullable>enable</Nullable>
-        <UseWPF>true</UseWPF>
-        <LangVersion>11</LangVersion>
-        <ApplicationIcon>256.ico</ApplicationIcon>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <LangVersion>11</LangVersion>
+    <ApplicationIcon>256.ico</ApplicationIcon>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="MugenMvvmToolkit.WPF" Version="6.5.0" />
-      <PackageReference Include="Serilog" Version="2.12.1-dev-01587" />
-      <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MugenMvvmToolkit.WPF" Version="6.5.0"/>
+    <PackageReference Include="Serilog" Version="2.12.1-dev-01587"/>
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <Resource Include="Icons\delete.png" />
-      <Resource Include="Icons\plus.png" />
-      <None Remove="Icons\certificate.png" />
-      <Resource Include="Icons\certificate.png" />
-    </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\delete.png"/>
+    <Resource Include="Icons\plus.png"/>
+    <None Remove="Icons\certificate.png"/>
+    <Resource Include="Icons\certificate.png"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <Page Update="Windows\OpenUrlWindow.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-    </ItemGroup>
+  <ItemGroup>
+    <Page Update="Windows\OpenUrlWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 
 </Project>

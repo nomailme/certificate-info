@@ -4,9 +4,9 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/Styles/Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <Style TargetType="{x:Type Separator}">
-        <Setter Property="Background" Value="{StaticResource SeparatorBrush}"/>
+        <Setter Property="Background" Value="{StaticResource SeparatorBrush}" />
     </Style>
 
     <Style x:Key="VerticalSeparatorStyle" TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Type Separator}}">
@@ -15,7 +15,7 @@
                 <TransformGroup>
                     <TransformGroup.Children>
                         <TransformCollection>
-                            <RotateTransform Angle="90"/>
+                            <RotateTransform Angle="90" />
                         </TransformCollection>
                     </TransformGroup.Children>
                 </TransformGroup>
