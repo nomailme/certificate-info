@@ -11,14 +11,8 @@ namespace CertificateViewer.Dialogs;
 public partial class OpenUrlWindow : Window, INotifyPropertyChanged
 {
     private string? url = "https://";
+
     public OpenUrlWindow() => InitializeComponent();
-
-
-    protected override void OnContentRendered(EventArgs e)
-    {
-        base.OnContentRendered(e);
-        UrlAddressTextBox.CaretIndex = UrlAddressTextBox.Text.Length;
-    }
 
     public string? Url
     {
@@ -29,10 +23,17 @@ public partial class OpenUrlWindow : Window, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+    public event PropertyChangedEventHandler? PropertyChanged;
 
 
-    private void cancelButton_Click(object sender, RoutedEventArgs e) =>
-        DialogResult = false;
+    protected override void OnContentRendered(EventArgs e)
+    {
+        base.OnContentRendered(e);
+        UrlAddressTextBox.CaretIndex = UrlAddressTextBox.Text.Length;
+    }
+
+
+    private void cancelButton_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
     private void okButton_Click(object sender, RoutedEventArgs e)
     {
@@ -43,22 +44,17 @@ public partial class OpenUrlWindow : Window, INotifyPropertyChanged
         DialogResult = true;
     }
 
-    // Validate all dependency objects in a window
     private bool IsValid(DependencyObject? node)
     {
         // Check if dependency object was passed
         if (node != null)
         {
-            // Check if dependency object is valid.
-            // NOTE: Validation.GetHasError works for controls that have validation rules attached
             var isValid = !Validation.GetHasError(node);
             if (!isValid)
             {
-                // If the dependency object is invalid, and it can receive the focus,
-                // set the focus
-                if (node is IInputElement)
+                if (node is IInputElement element)
                 {
-                    Keyboard.Focus((IInputElement)node);
+                    Keyboard.Focus(element);
                 }
                 return false;
             }
@@ -66,9 +62,7 @@ public partial class OpenUrlWindow : Window, INotifyPropertyChanged
 
         // If this dependency object is valid, check all child dependency objects
         return LogicalTreeHelper.GetChildren(node).OfType<DependencyObject>().All(IsValid);
-
-        // All dependency objects are valid
     }
-    public event PropertyChangedEventHandler? PropertyChanged;
+
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

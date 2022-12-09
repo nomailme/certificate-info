@@ -65,7 +65,7 @@
             <!-- Accept or Cancel -->
             <StackPanel>
                 <Button Name="OkButton" Click="okButton_Click" IsDefault="True">OK</Button>
-                <Button Name="CancelButton" IsCancel="True">Cancel</Button>
+                <Button Name="CancelButton" Click="cancelButton_Click" IsCancel="True">Cancel</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

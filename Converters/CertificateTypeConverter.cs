@@ -26,6 +26,10 @@ public class CertificateTypeConverter: IValueConverter
         {
             return "PEM";
         }
+        if (certificateType == CertificateType.Web)
+        {
+            return "WEB";
+        }
         return certificateType.ToString("G");
     }
 

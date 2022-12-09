@@ -50,6 +50,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="10" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="250" />
@@ -176,5 +178,7 @@
                          IsReadOnly="True" />
             </TabItem>
         </TabControl>
+        <GridSplitter Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="3" Height="5" VerticalAlignment="Center" HorizontalAlignment="Stretch"></GridSplitter>
+        <ListView Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" ItemsSource="{Binding Errors}" />
     </Grid>
 </Window>

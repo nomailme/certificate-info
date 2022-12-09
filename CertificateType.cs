@@ -4,5 +4,6 @@ public enum CertificateType
 {
     Unknown,
     Der,
-    Pem
+    Pem,
+    Web
 }

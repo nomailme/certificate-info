@@ -23,6 +23,7 @@ public class MainWindowVm : INotifyPropertyChanged
 
     private ObservableCollection<CertificateVm> certificateVms = new();
     private CertificateVm? selectedItem;
+    private ObservableCollection<string> errors;
 
 
     public MainWindowVm()
@@ -71,7 +72,9 @@ public class MainWindowVm : INotifyPropertyChanged
             }
             X509Certificate2[] certificates = certificateVms.Select(x => x.Certificate).Where(x => x != null).ToArray()!;
             var info = new CertificateFileInfo(new X509Certificate2Collection(certificates), rootCertificateStore);
-            return info.Validate().IsEmpty();
+            var validationResult = info.Validate();
+            SetField(ref errors, new ObservableCollection<string>(validationResult), nameof(Errors));
+            return validationResult.IsEmpty();
         }
     }
 
@@ -79,6 +82,11 @@ public class MainWindowVm : INotifyPropertyChanged
 
     public ObservableCollection<X509Certificate2> RootCertificates => new(rootCertificateStore.RootCertificates.ToList());
     public ICommand OpenUrlCommand { get; }
+    public ObservableCollection<string> Errors
+    {
+        get => errors;
+        set => errors = value;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -95,7 +103,9 @@ public class MainWindowVm : INotifyPropertyChanged
             var certificates = await ServerCertificateRetriever.GetAsync(openUrlWindow.Url);
             var certificatesVm = certificates.Select(x => new CertificateVm(x)).ToList();
             Certificates = new ObservableCollection<CertificateVm>(certificatesVm);
+            CertificateType = CertificateType.Web;
             OnPropertyChanged(nameof(IsValid));
+            OnPropertyChanged(nameof(CertificateType));
         }
         catch (Exception e)
         {
