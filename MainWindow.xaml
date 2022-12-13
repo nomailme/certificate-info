@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CertificateViewer"
         xmlns:converters="clr-namespace:CertificateViewer.Converters"
-        xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography.X509Certificates"
         DataContext=""
         mc:Ignorable="d"
         Title="Certificate Viewer" Height="450" Width="800">
@@ -16,34 +15,8 @@
         <converters:CertificateToBase64Converter x:Key="Base64Converter" />
         <converters:CertificateInfoConverter x:Key="CertificateInfoConverter" />
         <converters:BooleanToBackgroundStyle x:Key="BooleanToBackgroundStyle" />
-        <converters:CertificateValidityConverter x:Key="CertificateValidityConverter" />
         <converters:CertificateTypeConverter x:Key="CertificateTypeConverter" />
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-
-        <Image Height="16" x:Key="PlusIcon" Source="/Icons/plus.png" />
-        <Image Height="16" x:Key="PlusIconDisabled">
-            <Image.Source>
-                <FormatConvertedBitmap Source="/Icons/plus.png" DestinationFormat="Gray32Float" />
-            </Image.Source>
-            <Image.Effect>
-                <BlurEffect Radius="4" />
-            </Image.Effect>
-            <Image.OpacityMask>
-                <ImageBrush ImageSource="/Icons/plus.png" />
-            </Image.OpacityMask>
-        </Image>
-        <Image Height="16" x:Key="DeleteIcon" Source="/Icons/delete.png" />
-        <Image Height="16" x:Key="DeleteIconDisabled">
-            <Image.Source>
-                <FormatConvertedBitmap Source="/Icons/delete.png" DestinationFormat="Gray32Float" />
-            </Image.Source>
-            <Image.Effect>
-                <BlurEffect Radius="4" />
-            </Image.Effect>
-            <Image.OpacityMask>
-                <ImageBrush ImageSource="/Icons/delete.png" />
-            </Image.OpacityMask>
-        </Image>
     </Window.Resources>
 
     <Grid>
@@ -59,7 +32,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.DataContext>
-            <local:MainWindowVm />
+            <local:MainWindowVm2 />
         </Grid.DataContext>
         <Grid Grid.Row="0" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
@@ -160,11 +133,10 @@
                       SelectedItem="{Binding SelectedRootCertificate, UpdateSourceTrigger=PropertyChanged}"
                       ItemsSource="{Binding RootCertificates, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
-                    <DataTemplate DataType="{x:Type x509Certificates:X509Certificate2}">
+                    <DataTemplate DataType="{x:Type local:CertificateVm}">
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="{Binding Subject, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock
-                                Text="{Binding Path=., Converter={StaticResource CertificateValidityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="{Binding Path=.Validity, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

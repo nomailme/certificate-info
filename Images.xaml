@@ -1,0 +1,27 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Image Height="16" x:Key="PlusIcon" Source="/Icons/plus.png" />
+    <Image Height="16" x:Key="PlusIconDisabled">
+        <Image.Source>
+            <FormatConvertedBitmap Source="/Icons/plus.png" DestinationFormat="Gray32Float" />
+        </Image.Source>
+        <Image.Effect>
+            <BlurEffect Radius="4" />
+        </Image.Effect>
+        <Image.OpacityMask>
+            <ImageBrush ImageSource="/Icons/plus.png" />
+        </Image.OpacityMask>
+    </Image>
+    <Image Height="16" x:Key="DeleteIcon" Source="/Icons/delete.png" />
+    <Image Height="16" x:Key="DeleteIconDisabled">
+        <Image.Source>
+            <FormatConvertedBitmap Source="/Icons/delete.png" DestinationFormat="Gray32Float" />
+        </Image.Source>
+        <Image.Effect>
+            <BlurEffect Radius="4" />
+        </Image.Effect>
+        <Image.OpacityMask>
+            <ImageBrush ImageSource="/Icons/delete.png" />
+        </Image.OpacityMask>
+    </Image>
+</ResourceDictionary>
