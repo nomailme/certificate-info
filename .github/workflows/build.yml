@@ -41,6 +41,6 @@ jobs:
          directory: release/win-x86
       - uses: ncipollo/release-action@v1
         with:
-         artifacts: "release/*.zip"
+         artifacts: "release/*/*.zip"
          commit: ${{ github.ref }}
          tag: ${{ env.NOW }}
