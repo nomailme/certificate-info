@@ -31,14 +31,14 @@ jobs:
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: 'release/certificateViewer-linux64.zip'
-         directory: release
+         filename: 'certificateViewer-linux64.zip'
+         directory: release/linux-x64
       - name: Archive Release (win)
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: 'release/certificateViewer-win86.zip'
-         directory: release
+         filename: 'certificateViewer-win86.zip'
+         directory: release/win-x86
       - uses: ncipollo/release-action@v1
         with:
          artifacts: "release/*.zip"
