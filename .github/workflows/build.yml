@@ -31,16 +31,16 @@ jobs:
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: 'publish/certificateViewer-linux64.zip'
+         filename: 'release/certificateViewer-linux64.zip'
          directory: release
       - name: Archive Release (win)
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: 'publish/certificateViewer-win86.zip'
+         filename: 'release/certificateViewer-win86.zip'
          directory: release
       - uses: ncipollo/release-action@v1
         with:
-         artifacts: "release/*.*"
+         artifacts: "release/*.zip"
          commit: ${{ github.ref }}
          tag: ${{ env.NOW }}
