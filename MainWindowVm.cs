@@ -1,39 +1,42 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using CertificateViewer.CertificateImporters;
 using CertificateViewer.Dialogs;
-using Microsoft.Win32;
-using MugenMvvmToolkit;
-using MugenMvvmToolkit.Models;
+using ReactiveUI;
 
 namespace CertificateViewer;
 
-public sealed class MainWindowVm2 : INotifyPropertyChanged, IDisposable
+public sealed class MainWindowVm : BaseViewModel, IDisposable
 {
-    private readonly ImportFromFileHelper importFromFileHelper = new();
     private readonly CertificateManager certificateManager = new();
+    private readonly ImportFromFileHelper importFromFileHelper = new();
 
     private CertificateVm? selectedItem;
 
 
-    public MainWindowVm2()
+    public MainWindowVm()
     {
-        OpenCommand = new RelayCommand(OpenFile);
-        AddRootCommand = new RelayCommand(AddRootCertificate);
-        RemoveRootCommand = new RelayCommand(RemoveRootCertificate);
-        OpenUrlCommand = new RelayCommand( async o => await OpenUrl());
-    }
+        OpenCommand = ReactiveCommand.CreateFromTask(x => OpenFile(x));
+        AddRootCommand = ReactiveCommand.CreateFromTask(AddRootCertificate);
+        RemoveRootCommand = ReactiveCommand.Create(RemoveRootCertificate);
+        OpenUrlCommand = ReactiveCommand.CreateFromTask(o => OpenUrl());
 
-    public ICommand OpenCommand { get; }
-    public ICommand AddRootCommand { get; }
-    public ICommand RemoveRootCommand { get; }
+        ShowMessageBox = new Interaction<(string Title, string Message), MessageBox.MessageBoxResult>();
+        ShowOpenFileDialog = new Interaction<string, string?>();
+        ShowOpenUrlDialog = new Interaction<string, string?>();
+    }
+    public Interaction<string, string?> ShowOpenFileDialog { get; set; }
+    public Interaction<string, string?> ShowOpenUrlDialog { get; set; }
+
+    public ReactiveCommand<Unit, Unit> OpenCommand { get; }
+    public ReactiveCommand<Unit, Unit> AddRootCommand { get; }
+    public ReactiveCommand<Unit, Unit> RemoveRootCommand { get; }
+
+    public Interaction<(string Title, string Message), MessageBox.MessageBoxResult> ShowMessageBox { get; set; }
     public ObservableCollection<CertificateVm> Certificates => certificateManager.Certificates;
 
     public CertificateVm? SelectedRootCertificate { get; set; }
@@ -41,7 +44,7 @@ public sealed class MainWindowVm2 : INotifyPropertyChanged, IDisposable
     public CertificateVm? SelectedItem
     {
         get => selectedItem;
-        set => SetField(ref selectedItem, value);
+        set => this.RaiseAndSetIfChanged(ref selectedItem, value);
     }
 
 
@@ -50,7 +53,7 @@ public sealed class MainWindowVm2 : INotifyPropertyChanged, IDisposable
     public CertificateType CertificateType { get; set; }
 
     public ObservableCollection<CertificateVm> RootCertificates => certificateManager.RootCertificates;
-    public ICommand OpenUrlCommand { get; }
+    public ReactiveCommand<Unit, Unit> OpenUrlCommand { get; }
 
     public ObservableCollection<string> Errors => certificateManager.Errors;
     public bool UseSystemStore
@@ -59,47 +62,48 @@ public sealed class MainWindowVm2 : INotifyPropertyChanged, IDisposable
         set
         {
             certificateManager.UseSystemStore = value;
-            OnPropertyChanged(nameof(IsValid));
-            OnPropertyChanged(nameof(Errors));
-            OnPropertyChanged();
+            this.RaisePropertyChanged(nameof(CertificateType));
+            this.RaisePropertyChanged(nameof(IsValid));
+            this.RaisePropertyChanged(nameof(Errors));
+            this.RaisePropertyChanged(nameof(UseSystemStore));
         }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public void Dispose() => certificateManager.Dispose();
 
     private async Task OpenUrl()
     {
         try
         {
-            var openUrlWindow = new OpenUrlWindow { DataContext = new Uri("https://google.com") };
-            if (openUrlWindow.ShowDialog() != true)
+            var url = await ShowOpenUrlDialog.Handle(string.Empty);
+            if (url == null)
             {
                 return;
             }
-            var result = await ImportFromUrlService.OpenFromUrlAsync(openUrlWindow.Url!);
+            var result = await ImportFromUrlService.OpenFromUrlAsync(url);
             LoadCertificates(result);
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.Message, "Error opening URL");
+            await ShowMessageBox.Handle(("Error opening URL", e.Message));
         }
     }
 
-    private void OpenFile(object value)
+    private async Task OpenFile(object value)
     {
         try
         {
-            var fileDialog = new OpenFileDialog();
-            if (fileDialog.ShowDialog() != true)
+            var fileDialogResult = await ShowOpenFileDialog.Handle(String.Empty);
+            if (fileDialogResult == null)
             {
                 return;
             }
-            var result = importFromFileHelper.LoadCertificate(fileDialog.FileName);
+            var result = importFromFileHelper.LoadCertificate(fileDialogResult);
             LoadCertificates(result);
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.Message, "Error loading file");
+            await ShowMessageBox.Handle(("Error opening URL", e.Message));
         }
     }
 
@@ -109,9 +113,9 @@ public sealed class MainWindowVm2 : INotifyPropertyChanged, IDisposable
         {
             certificateManager.LoadCertificates(operationResult.Certificates!.ToList());
             CertificateType = operationResult.Type;
-            OnPropertyChanged(nameof(IsValid));
-            OnPropertyChanged(nameof(CertificateType));
-            OnPropertyChanged(nameof(Errors));
+            this.RaisePropertyChanged(nameof(CertificateType));
+            this.RaisePropertyChanged(nameof(IsValid));
+            this.RaisePropertyChanged(nameof(Errors));
         }
         else
         {
@@ -119,51 +123,38 @@ public sealed class MainWindowVm2 : INotifyPropertyChanged, IDisposable
         }
     }
 
-    private void AddRootCertificate(object value)
+    private async Task AddRootCertificate()
     {
         try
         {
-            var fileDialog = new OpenFileDialog();
-            if (fileDialog.ShowDialog() != true)
+            var fileDialogResult = await ShowOpenFileDialog.Handle(String.Empty);
+            if (fileDialogResult == null)
             {
                 return;
             }
-            var result = importFromFileHelper.LoadCertificate(fileDialog.FileName);
+            var result = importFromFileHelper.LoadCertificate(fileDialogResult);
             if (result.Success)
             {
-                var vm = result.Certificates!.Select(x=>new CertificateVm(x)).Single();
+                var vm = result.Certificates!.Select(x => new CertificateVm(x)).Single();
                 certificateManager.RootCertificates.Add(vm);
-                OnPropertyChanged(nameof(RootCertificates));
-                OnPropertyChanged(nameof(IsValid));
+                this.RaisePropertyChanged(nameof(RootCertificates));
+                this.RaisePropertyChanged(nameof(IsValid));
             }
         }
         catch (Exception e)
         {
-            MessageBox.Show(e.Message, "Error loading file");
+            await ShowMessageBox.Handle(("Error loading file", e.Message));
         }
     }
 
-    private void RemoveRootCertificate(object value)
+    private void RemoveRootCertificate()
     {
         if (SelectedRootCertificate is null)
         {
             return;
         }
         RootCertificates.Remove(SelectedRootCertificate);
-        OnPropertyChanged(nameof(RootCertificates));
-        OnPropertyChanged(nameof(IsValid));
+        this.RaisePropertyChanged(nameof(RootCertificates));
+        this.RaisePropertyChanged(nameof(IsValid));
     }
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value))
-        {
-            return;
-        }
-        field = value;
-        OnPropertyChanged(propertyName);
-    }
-    public void Dispose() => certificateManager.Dispose();
 }

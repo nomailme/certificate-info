@@ -2,15 +2,13 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Windows.Data;
-using MugenMvvmToolkit;
+using Avalonia.Data.Converters;
 
 namespace CertificateViewer.Converters;
 
-[ValueConversion(typeof(CertificateVm), typeof(string))]
 public class CertificateToBase64Converter : IValueConverter
 {
-    public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is null)
         {
@@ -30,10 +28,11 @@ public class CertificateToBase64Converter : IValueConverter
         builder.AppendLine("-----BEGIN CERTIFICATE-----");
         System.Convert.ToBase64String(certificate.RawData)
             .Chunk(64)
+            .ToList()
             .ForEach(x => builder.AppendLine(new string(x)));
         builder.AppendLine("-----END CERTIFICATE-----");
         return builder.ToString();
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotImplementedException();
 }

@@ -2,36 +2,35 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
     <LangVersion>11</LangVersion>
-    <ApplicationIcon>256.ico</ApplicationIcon>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MugenMvvmToolkit.WPF" Version="6.5.0" />
+    <PackageReference Include="Avalonia" Version="0.10.18" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
     <PackageReference Include="Serilog" Version="2.12.1-dev-01587" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icons\delete.png" />
-    <Resource Include="Icons\plus.png" />
-    <None Remove="Icons\certificate.png" />
-    <Resource Include="Icons\certificate.png" />
+    <TrimmerRootDescriptor Include="Roots.xml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <AvaloniaXaml Include="ListboxItemTemplate.axaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Windows\OpenUrlWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <XamlRuntime>Wpf</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Proxy" />
+        <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
 </Project>

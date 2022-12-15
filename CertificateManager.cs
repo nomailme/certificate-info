@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using MugenMvvmToolkit;
+using DynamicData;
 
 namespace CertificateViewer;
 
@@ -52,14 +52,14 @@ public class CertificateManager : IDisposable
         var errors = Validate();
         if (errors is not null)
         {
-            IsValid = errors.IsEmpty();
+            IsValid = errors.Any() == false;
             Errors = new ObservableCollection<string>(errors);
         }
     }
 
     private List<string>? Validate()
     {
-        if (Certificates.IsEmpty())
+        if (Certificates.Any()==false)
         {
             return null;
         }
@@ -74,7 +74,7 @@ public class CertificateManager : IDisposable
         {
             policy.CustomTrustStore.AddRange(RootCertificates.Select(x => x.Certificate).ToArray());
         }
-        Certificates.Skip(1).ForEach(x => policy.ExtraStore.Add(x.Certificate));
+        Certificates.Skip(1).ToList().ForEach(x => policy.ExtraStore.Add(x.Certificate));
         chain.ChainPolicy = policy;
 
         var result = chain.Build(Certificates.Select(x => x.Certificate).First());

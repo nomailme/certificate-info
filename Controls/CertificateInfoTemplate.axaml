@@ -1,0 +1,32 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:CertificateViewer.Templates"
+        xmlns:converters="clr-namespace:CertificateViewer.Converters">
+    <Design.PreviewWith>
+        <controls:CertificateInfoTemplate />
+    </Design.PreviewWith>
+    <Styles.Resources>
+        <converters:CertificateToBase64Converter x:Key="Base64Converter" />
+        <converters:CertificateInfoConverter x:Key="CertificateInfoConverter" />
+    </Styles.Resources>
+    <Style Selector="controls|CertificateInfoTemplate">
+        <!-- Set Defaults -->
+        <Setter Property="Background" Value="Blue"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <TabControl>
+                    <TabItem Header="Info" VerticalContentAlignment="Stretch">
+                        <TextBox FontFamily="Consolas" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
+                                 Text="{TemplateBinding Certificate, Mode=OneWay, Converter={StaticResource CertificateInfoConverter}}"
+                                 IsReadOnly="True" />
+                    </TabItem>
+                    <TabItem Header="Base64" VerticalContentAlignment="Stretch">
+                        <TextBox FontFamily="Consolas" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
+                                 Text="{TemplateBinding Certificate, Mode=OneWay, Converter={StaticResource Base64Converter}}"
+                                 IsReadOnly="True" />
+                    </TabItem>
+                </TabControl>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
