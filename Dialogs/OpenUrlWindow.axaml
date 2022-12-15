@@ -1,0 +1,72 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dialogs="clr-namespace:CertificateViewer.Dialogs"
+    x:Class="CertificateViewer.Dialogs.OpenUrlWindow"
+    Title="Enter server address"
+    Width="300"
+    Height="150"
+    MinHeight="10"
+    MinWidth="300"
+    CanResize="False"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <Grid>
+
+        <Grid.Resources>
+            <!-- <Style Selector="Grid"> -->
+                <!-- <Setter Property="Margin" Value="10" /> -->
+            <!-- </Style> -->
+            <!-- <Style Selector="Label"> -->
+                <!-- <Setter Property="Margin" Value="0,3,5,5" /> -->
+                <!-- <Setter Property="Padding" Value="0,0,0,5" /> -->
+            <!-- </Style> -->
+            <!-- <Style Selector="TextBox"> -->
+                <!-- <Setter Property="Margin" Value="0,0,0,5" /> -->
+                <!-- <Style.Triggers> -->
+                    <!-- <Trigger Property="Validation.HasError" Value="true"> -->
+                        <!-- <Setter Property="ToolTip" -->
+                                <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" /> -->
+                    <!-- </Trigger> -->
+                <!-- </Style.Triggers> -->
+            <!-- </Style> -->
+            <!-- <Style Selector="StackPanel"> -->
+                <!-- <Setter Property="Orientation" Value="Horizontal" /> -->
+                <!-- <Setter Property="HorizontalAlignment" Value="Right" /> -->
+            <!-- </Style> -->
+            <!-- <Style Selector="Button"> -->
+                <!-- <Setter Property="Width" Value="70" /> -->
+                <!-- <Setter Property="Height" Value="25" /> -->
+                <!-- <Setter Property="Margin" Value="5,0,0,0" /> -->
+            <!-- </Style> -->
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+            <Label>Enter URL:</Label>
+            <TextBox Name="UrlAddressTextBox">
+                <TextBox.Text>
+                    <Binding Path="Url"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType=dialogs:OpenUrlWindow}">
+                        <!-- <Binding.ValidationRules> -->
+                            <!-- <dialogs:UrlValidationRule HttpsOnly="True" /> -->
+                        <!-- </Binding.ValidationRules> -->
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <!-- Accept or Cancel -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="OkButton" Click="okButton_Click" IsDefault="True">OK</Button>
+                <Button Name="CancelButton" Click="cancelButton_Click" IsCancel="True">Cancel</Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+
+</Window>

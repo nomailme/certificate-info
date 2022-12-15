@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using MugenMvvmToolkit;
 
 namespace CertificateViewer.CertificateImporters;
 
@@ -39,7 +38,7 @@ public sealed class ImportFromUrlService
                 CertificateChainPolicy = policy,
                 RemoteCertificateValidationCallback = (_, _, chain, _) =>
                 {
-                    chain?.ChainElements.Select(x => x.Certificate).ForEach(x => serverCertificates.Add(new X509Certificate2(x.RawData)));
+                    chain?.ChainElements.Select(x => x.Certificate).ToList().ForEach(x => serverCertificates.Add(new X509Certificate2(x.RawData)));
                     return true;
                 }
             }

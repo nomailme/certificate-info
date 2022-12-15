@@ -1,14 +1,26 @@
 using System;
 using System.Globalization;
-using System.Windows.Data;
+using Avalonia.Data.Converters;
 
 namespace CertificateViewer.Converters;
 
-[ValueConversion(typeof(bool), typeof(bool))]
 public class InverseBooleanConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => !(bool)value;
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        return !(bool)value;
+    }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => !(bool)value;
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+        return !(bool)value;
+    }
 }
-

@@ -1,24 +1,27 @@
 using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
-using Avalonia.Media;
 
 namespace CertificateViewer.Converters;
 
-public class BooleanToBackgroundStyle : IValueConverter
+public class IsValidConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value == null)
+        if (value is null)
         {
-            return Brushes.Gray;
+            return "Empty";
+        }
+        if (value is not bool)
+        {
+            throw new NotSupportedException("Only string is acceptable");
         }
         if ((bool)value)
         {
 
-            return new SolidColorBrush(Color.Parse("#1b5e20"));
+            return "Valid";
         }
-        return new SolidColorBrush(Color.Parse("#8e0000"));
+        return "Invalid";
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotImplementedException();
