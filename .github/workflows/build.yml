@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: artifacts-linux
-          path: certificateViewer-linux64.zip
+          path: release/linux-x64/certificateViewer-linux64.zip
   build-windows:
     runs-on: windows-latest
     steps:
@@ -66,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: artifacts-win
-          path: certificateViewer-win86.zip
+          path: release/linux-x64/certificateViewer-win86.zip
   release:
     concurrency: ci-${{ github.ref }}
     needs: [build-windows, build-linux] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
