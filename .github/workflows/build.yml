@@ -28,17 +28,13 @@ jobs:
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: 'certificateViewer-linux64.zip'
+         filename: '../../distrib/certificateViewer-linux64.zip'
          directory: release/linux-x64
-      - name: Run ls
-        run: ls
-      - name: Run ls in release
-        run: ls release
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: artifacts-linux
-          path: release/linux-x64/certificateViewer-linux64.zip
+          name: artifacts
+          path: distrib/certificateViewer-linux64.zip
   build-windows:
     runs-on: windows-latest
     steps:
@@ -65,7 +61,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
-          name: artifacts-win
+          name: artifacts
           path: distrib/certificateViewer-win86.zip
   release:
     concurrency: ci-${{ github.ref }}
@@ -76,15 +72,10 @@ jobs:
         run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
       - name: Checkout 🛎️
         uses: actions/checkout@v3
-
       - name: Download Artifacts 
         uses: actions/download-artifact@v1
         with:
-          name: artifacts-linux
-      - name: Download Artifacts 
-        uses: actions/download-artifact@v1
-        with:
-          name: artifacts-win
+          name: artifacts
 
       - name: Publish win
         run: ls
