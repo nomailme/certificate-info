@@ -35,7 +35,7 @@ jobs:
       - name: ls
         run: ls release
       - name: ls
-        run: ls relase/${{ matrix.target }}
+        run: ls release/${{ matrix.target }}
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
