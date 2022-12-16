@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: artifacts
-          path: distrib/CertificateViewer-${{ matrix.target }}.zip
+          path: CertificateViewer-${{ matrix.target }}.zip
   release:
     concurrency: ci-${{ github.ref }}
     needs: [build] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
