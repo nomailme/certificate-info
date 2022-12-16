@@ -30,6 +30,10 @@ jobs:
          type: 'zip'
          filename: 'certificateViewer-linux64.zip'
          directory: release/linux-x64
+      - name: Run ls
+        run: ls
+      - name: Run ls in release
+        run: ls release
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
