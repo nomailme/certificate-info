@@ -32,17 +32,19 @@ jobs:
         run: dotnet build --no-restore
       - name: Publish linux
         run: dotnet publish CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true --self-contained true
+      - name: ls
+        run: ls release
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: '../../distrib/certificateViewer-${{ matrix.target }}.zip'
+         filename: '../distrib/CertificateViewer-${{ matrix.target }}.zip'
          directory: release/${{ matrix.target }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
           name: artifacts
-          path: distrib/certificateViewer-${{ matrix.target }}.zip
+          path: distrib/CertificateViewer-${{ matrix.target }}.zip
   release:
     concurrency: ci-${{ github.ref }}
     needs: [build] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
