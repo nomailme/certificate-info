@@ -90,6 +90,6 @@ jobs:
         run: ls
       - uses: ncipollo/release-action@v1
         with:
-         artifacts: "artifacts/*.*"
+         artifacts: "artifacts-*/*.zip"
          commit: ${{ github.ref }}
          tag: ${{ env.NOW }}
