@@ -40,7 +40,7 @@ jobs:
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: 'distrib/CertificateViewer-${{ matrix.target }}.zip'
+         filename: 'CertificateViewer-${{ matrix.target }}.zip'
          directory: .
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
