@@ -30,12 +30,6 @@ jobs:
          type: 'zip'
          filename: 'certificateViewer-linux64.zip'
          directory: release/linux-x64
-      - name: Archive Release (win)
-        uses: thedoctor0/zip-release@main
-        with:
-         type: 'zip'
-         filename: 'certificateViewer-win86.zip'
-         directory: release/win-x86
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
