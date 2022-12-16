@@ -1,4 +1,4 @@
-name: Build&Publish
+name: Build main branch
 
 on:
   push:
@@ -34,12 +34,14 @@ jobs:
         run: dotnet publish CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true --self-contained true
       - name: ls
         run: ls release
+      - name: ls
+        run: ls relase/${{ matrix.target }}
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
          type: 'zip'
-         filename: '../distrib/CertificateViewer-${{ matrix.target }}.zip'
-         directory: release/${{ matrix.target }}
+         filename: '../../distrib/CertificateViewer-${{ matrix.target }}.zip'
+         directory: 'release/${{ matrix.target }}'
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
