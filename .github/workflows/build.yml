@@ -32,10 +32,6 @@ jobs:
         run: dotnet build --no-restore
       - name: Publish linux
         run: dotnet publish CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true --self-contained true
-      - name: ls
-        run: ls release
-      - name: ls
-        run: ls release/${{ matrix.target }}
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
