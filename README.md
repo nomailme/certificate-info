@@ -1,10 +1,17 @@
 
 # Certificate viewer
 
+Certificate viewer is a small piece of software that allows to inspect certificate files.
+
+Main features are:
+* Supports multiple certificate file formats: DER, PEM, PFX
+* Retrieve certificates from a remote HTTPS server (including chain)
+* Check certificate validity against system store or custom certificate store
+* View certificate info
+* Works on Windows/Linux
+
 ![screenshot](/.github/screenshot.png?raw=true)
 
-
-Theme for WPF used https://github.com/TanyaPristupova/WpfOfficeTheme
 
 
 Icons used created by kliwir art on Flaticon https://www.flaticon.com/authors/kliwir-art/flat
