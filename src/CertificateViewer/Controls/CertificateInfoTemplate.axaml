@@ -1,0 +1,47 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:CertificateViewer.Converters"
+        xmlns:controls="clr-namespace:CertificateViewer.Controls">
+    <Design.PreviewWith>
+        <controls:CertificateInfoTemplate />
+    </Design.PreviewWith>
+    <Styles.Resources>
+        <converters:CertificateToBase64Converter x:Key="Base64Converter" />
+        <converters:CertificateInfoConverter x:Key="CertificateInfoConverter" />
+    </Styles.Resources>
+    <Style Selector="controls|CertificateInfoTemplate">
+        <!-- Set Defaults -->
+        <Setter Property="Background" Value="Blue"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <TabControl VerticalAlignment="Stretch">
+                    <TabItem Header="Info">
+                        <TextBox FontFamily="Consolas"
+                                 Text="{TemplateBinding Certificate, Mode=OneWay, Converter={StaticResource CertificateInfoConverter}}"
+                                 IsReadOnly="True" />
+                    </TabItem>
+                    <TabItem Header="Base64">
+                        <TextBox FontFamily="Consolas" VerticalAlignment="Stretch"
+                                 Text="{TemplateBinding Certificate, Mode=OneWay, Converter={StaticResource Base64Converter}}"
+                                 IsReadOnly="True" />
+                    </TabItem>
+                </TabControl>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="TabItem">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="14"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="Padding" Value="10 0"/>
+    </Style>
+    <Style Selector="TabItem.Header"></Style>
+
+    <Style Selector="TabItem:focus">
+        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="Padding" Value="10 0"/>
+    </Style>
+
+</Styles>
