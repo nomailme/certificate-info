@@ -2,11 +2,20 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class PfxImporter: IImporter<string>
+public class PfxImporter: CertificateLoader<byte[], PfxImporter.PfxLoaderOptions>, ICertificateTypeValidator<byte[]>
 {
-    public Task<ImportResult> ImportAsync(string input, params object[] parameters)
+    public class PfxLoaderOptions: ICertificateLoaderOptions
+    {
+        public string Password { get; set; } = string.Empty;
+    }
+
+    protected override Task<ImportResult> ImportCore(byte[] input, PfxLoaderOptions options)
     {
         var certificateCollection = new X509Certificate2Collection();
+        if (options is not { } pfxOptions)
+        {
+            throw new ArgumentException("Use PfxLoader options as a parameter", nameof(options));
+        }
         try
         {
             var contentType = X509Certificate2.GetCertContentType(input);
@@ -14,11 +23,7 @@ public class PfxImporter: IImporter<string>
             {
                 throw new WrongContentTypeException();
             }
-            if (parameters[0] is not string password)
-            {
-                throw new ArgumentException("Provide password for a PFX file");
-            }
-            certificateCollection.Import(input, password);
+            certificateCollection.Import(input, pfxOptions.Password);
             if (certificateCollection.Any() == false)
             {
                 throw new ArgumentException("No certificates found in file");
@@ -29,5 +34,11 @@ public class PfxImporter: IImporter<string>
         {
             return Task.FromResult(ImportResult.CreateFail(e));
         }
+    }
+
+    public bool IsSupported(byte[] input)
+    {
+        var type = X509Certificate2.GetCertContentType(input);
+        return type == X509ContentType.Pfx;
     }
 }

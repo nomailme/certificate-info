@@ -4,27 +4,25 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class RemoteServerImporter: IImporter<string>
+public class RemoteServerImporter: CertificateLoader<string>
 {
-    public async Task<ImportResult> ImportAsync(string input, params object[] parameters)
-    {
-        try
-        {
-            var certificates = await RetrieveServerCertificatesAsync(input);
-            return ImportResult.CreateSuccess(certificates.ToList());
-        }
-        catch (Exception e)
-        {
-            return ImportResult.CreateFail(e);
-        }
-    }
-
     private static async Task<X509Certificate2Collection> RetrieveServerCertificatesAsync(string address)
     {
         X509Certificate2Collection serverCertificates = new();
         var targetUri = new Uri(address);
+        var handler = BuildHandler(targetUri, serverCertificates);
+        var httpClient = new HttpClient(handler);
+        await httpClient.GetAsync(targetUri);
 
-        var policy = new X509ChainPolicy { TrustMode = X509ChainTrustMode.CustomRootTrust };
+        return serverCertificates;
+    }
+
+    private static SocketsHttpHandler BuildHandler(Uri targetUri, X509Certificate2Collection collection)
+    {
+        var policy = new X509ChainPolicy
+        {
+            TrustMode = X509ChainTrustMode.CustomRootTrust
+        };
         var handler = new SocketsHttpHandler
         {
             UseProxy = HttpClient.DefaultProxy.IsBypassed(targetUri) == false,
@@ -37,14 +35,24 @@ public class RemoteServerImporter: IImporter<string>
                     chain?.ChainElements
                         .Select(x => x.Certificate)
                         .ToList()
-                        .ForEach(x => serverCertificates.Add(new X509Certificate2(x.RawData)));
+                        .ForEach(x => collection.Add(new X509Certificate2(x.RawData)));
                     return true;
                 }
             }
         };
-        var httpClient = new HttpClient(handler);
-        await httpClient.GetAsync(targetUri);
+        return handler;
+    }
 
-        return serverCertificates;
+    protected override async Task<ImportResult> ImportCore(string input, EmptyOptions? options)
+    {
+        try
+        {
+            var certificates = await RetrieveServerCertificatesAsync(input);
+            return ImportResult.CreateSuccess(certificates.ToList());
+        }
+        catch (Exception e)
+        {
+            return ImportResult.CreateFail(e);
+        }
     }
 }

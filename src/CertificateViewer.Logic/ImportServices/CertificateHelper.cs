@@ -32,10 +32,18 @@ public static class CertificateHelper
         return await ValidateUsingMagicBytes(stream, magicBytes);
     }
 
+
     public static async ValueTask<bool> IsDerCertificate(string filename)
     {
         var magicBytes = new byte[] { 0x30, 0x82 };
         await using var stream = File.OpenRead(filename);
+        return await ValidateUsingMagicBytes(stream, magicBytes);
+    }
+
+    public static async ValueTask<bool> IsDerCertificate(byte[] rawData)
+    {
+        var magicBytes = new byte[] { 0x30, 0x82 };
+        await using var stream = new MemoryStream(rawData);
         return await ValidateUsingMagicBytes(stream, magicBytes);
     }
 

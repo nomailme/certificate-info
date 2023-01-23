@@ -2,9 +2,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class DerImporter: IImporter<string>
+public class DerImporter: CertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>
 {
-    public async Task<ImportResult> ImportAsync(string input, params object[] parameters)
+    protected override async Task<ImportResult> ImportCore(byte[] input, EmptyOptions? options)
     {
         var certificateCollection = new X509Certificate2Collection();
         try
@@ -25,5 +25,11 @@ public class DerImporter: IImporter<string>
         {
             return ImportResult.CreateFail(e);
         }
+    }
+    
+    public bool IsSupported(byte[] rawData)
+    {
+        var magicBytes = new byte[] { 0x30, 0x82 };
+        return MagicByteHelper.Match(rawData, magicBytes);
     }
 }

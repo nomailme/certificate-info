@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -51,11 +53,12 @@ public class OpenCertificateService
 
     private static async Task<DialogResult> LoadCertificate(string filename, CertificateType certificateType, string password = "")
     {
+        var rawData = await File.ReadAllBytesAsync(filename);
         var result = certificateType switch
         {
-            CertificateType.Der => await new DerImporter().ImportAsync(filename),
-            CertificateType.Pem => await new PemImporter().ImportAsync(filename),
-            CertificateType.Pfx => await new PfxImporter().ImportAsync(filename, password),
+            CertificateType.Der => await new DerImporter().ImportAsync(rawData),
+            CertificateType.Pem => await new PemImporter().ImportAsync(rawData),
+            CertificateType.Pfx => await new PfxImporter().ImportAsync(rawData, new PfxImporter.PfxLoaderOptions { Password = password }),
             _ => throw new ArgumentOutOfRangeException(nameof(certificateType), certificateType, null)
         };
         return result.ToDialogResult(certificateType);
