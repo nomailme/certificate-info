@@ -9,7 +9,7 @@ public class PfxImporter: ICertificateLoader<byte[], PfxImporter.PfxLoaderOption
         public string Password { get; set; } = string.Empty;
     }
 
-    public Task<ImportResult> ImportAsync(byte[] input, PfxLoaderOptions options)
+    public Task<ImportResult> ImportAsync(byte[] input, PfxLoaderOptions? options)
     {
         var certificateCollection = new X509Certificate2Collection();
         if (options is not { } pfxOptions)
