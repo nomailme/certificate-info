@@ -48,7 +48,7 @@ public sealed class MainWindowViewModel : BaseViewModel
     public ReactiveCommand<Unit, Unit> AddRootCommand { get; }
     public ReactiveCommand<X509Certificate2, Unit> RemoveRootCommand { get; }
 
-    public Interaction<(string Title, string Message), MessageBox.MessageBoxResult> ShowMessageBox { get; set; }
+    public Interaction<(string Title, string Message), MessageBox.MessageBoxResult> ShowMessageBox { get; }
     public ObservableCollection<X509Certificate2> Certificates => _certificateManager.Certificates;
 
     public X509Certificate2? SelectedRootCertificate

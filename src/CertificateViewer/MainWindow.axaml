@@ -1,6 +1,5 @@
 ﻿<Window x:Class="CertificateViewer.MainWindow"
         xmlns="https://github.com/avaloniaui"
-        xmlns:local="clr-namespace:CertificateViewer"
         xmlns:converters="clr-namespace:CertificateViewer.Converters"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:CertificateViewer.Controls"

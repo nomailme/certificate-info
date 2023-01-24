@@ -2,14 +2,14 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class PfxImporter: CertificateLoader<byte[], PfxImporter.PfxLoaderOptions>, ICertificateTypeValidator<byte[]>
+public class PfxImporter: ICertificateLoader<byte[], PfxImporter.PfxLoaderOptions>, ICertificateTypeValidator<byte[]>
 {
     public class PfxLoaderOptions: ICertificateLoaderOptions
     {
         public string Password { get; set; } = string.Empty;
     }
 
-    protected override Task<ImportResult> ImportCore(byte[] input, PfxLoaderOptions options)
+    public Task<ImportResult> ImportAsync(byte[] input, PfxLoaderOptions options)
     {
         var certificateCollection = new X509Certificate2Collection();
         if (options is not { } pfxOptions)

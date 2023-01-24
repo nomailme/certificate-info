@@ -1,10 +1,11 @@
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class PemImporter: CertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>
+public class PemImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>
 {
-    protected override Task<ImportResult> ImportCore(byte[] input, EmptyOptions? options)
+    public Task<ImportResult> ImportAsync(byte[] input, EmptyOptions? options=default)
     {
         var certificateCollection = new X509Certificate2Collection();
         try
@@ -13,8 +14,8 @@ public class PemImporter: CertificateLoader<byte[]>, ICertificateTypeValidator<b
             {
                 throw new WrongContentTypeException();
             }
-
-            certificateCollection.Import(input);
+            var data = Encoding.ASCII.GetString(input);
+            certificateCollection.ImportFromPem(data);
             if (certificateCollection.Any() == false)
             {
                 throw new ArgumentException("No certificates found in file");

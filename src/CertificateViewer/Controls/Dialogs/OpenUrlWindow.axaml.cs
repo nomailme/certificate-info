@@ -8,7 +8,7 @@ public partial class OpenUrlWindow : Window
 {
     public OpenUrlWindow() => InitializeComponent();
 
-    public bool DialogResult { get; set; }
+    public bool DialogResult { get; private set; }
 
     public string? Url { get; set; } = "https://";
 

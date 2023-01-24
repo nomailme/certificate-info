@@ -30,11 +30,7 @@ public partial class PasswordBox : Window
     {
         var passwordBox = new PasswordBox();
         await passwordBox.ShowDialog(owner);
-        if (passwordBox.DialogResult == true)
-        {
-            return passwordBox.Password;
-        }
-        return null;
+        return passwordBox.DialogResult == true ? passwordBox.Password : null;
     }
 
     private void Ok_OnClick(object? sender, RoutedEventArgs e)

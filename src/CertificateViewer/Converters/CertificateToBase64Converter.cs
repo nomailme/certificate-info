@@ -11,8 +11,7 @@ public class CertificateToBase64Converter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var certificate = value as X509Certificate2;
-        if (certificate == null)
+        if (value is not X509Certificate2 certificate)
         {
             return string.Empty;
         }

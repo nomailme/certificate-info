@@ -26,9 +26,9 @@ public partial class MessageBox : Window
 
     public static Task<MessageBoxResult> Show(Window? parent, string text, string title, MessageBoxButtons buttons)
     {
-        var msgbox = new MessageBox { Title = title };
-        msgbox.FindControl<TextBlock>("Text").Text = text;
-        var buttonPanel = msgbox.FindControl<StackPanel>("Buttons");
+        var messageBox = new MessageBox { Title = title };
+        messageBox.FindControl<TextBlock>("Text").Text = text;
+        var buttonPanel = messageBox.FindControl<StackPanel>("Buttons");
 
         var res = MessageBoxResult.Ok;
 
@@ -38,7 +38,7 @@ public partial class MessageBox : Window
             btn.Click += (_, __) =>
             {
                 res = r;
-                msgbox.Close();
+                messageBox.Close();
             };
             buttonPanel.Children.Add(btn);
             if (def)
@@ -47,31 +47,33 @@ public partial class MessageBox : Window
             }
         }
 
-        if (buttons == MessageBoxButtons.Ok || buttons == MessageBoxButtons.OkCancel)
+        switch (buttons)
         {
-            AddButton("Ok", MessageBoxResult.Ok, true);
-        }
-        if (buttons == MessageBoxButtons.YesNo || buttons == MessageBoxButtons.YesNoCancel)
-        {
-            AddButton("Yes", MessageBoxResult.Yes);
-            AddButton("No", MessageBoxResult.No, true);
+            case MessageBoxButtons.Ok or MessageBoxButtons.OkCancel:
+                AddButton("Ok", MessageBoxResult.Ok, true);
+                break;
+            case MessageBoxButtons.YesNo:
+            case MessageBoxButtons.YesNoCancel:
+                AddButton("Yes", MessageBoxResult.Yes);
+                AddButton("No", MessageBoxResult.No, true);
+                break;
         }
 
-        if (buttons == MessageBoxButtons.OkCancel || buttons == MessageBoxButtons.YesNoCancel)
+        if (buttons is MessageBoxButtons.OkCancel or MessageBoxButtons.YesNoCancel)
         {
             AddButton("Cancel", MessageBoxResult.Cancel, true);
         }
 
 
         var tcs = new TaskCompletionSource<MessageBoxResult>();
-        msgbox.Closed += delegate { tcs.TrySetResult(res); };
+        messageBox.Closed += delegate { tcs.TrySetResult(res); };
         if (parent != null)
         {
-            msgbox.ShowDialog(parent);
+            messageBox.ShowDialog(parent);
         }
         else
         {
-            msgbox.Show();
+            messageBox.Show();
         }
         return tcs.Task;
     }

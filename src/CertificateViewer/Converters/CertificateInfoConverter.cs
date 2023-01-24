@@ -13,8 +13,7 @@ public class CertificateInfoConverter : IValueConverter
         {
             return string.Empty;
         }
-        var certificate = value as X509Certificate2;
-        if (certificate == null)
+        if (value is not X509Certificate2 certificate)
         {
             throw new NotSupportedException("Only X509Certificate2 is supported");
         }

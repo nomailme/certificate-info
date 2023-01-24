@@ -12,16 +12,11 @@ public class IsValidConverter : IValueConverter
         {
             return "Empty";
         }
-        if (value is not bool)
+        if (value is not bool booleanValue)
         {
             throw new NotSupportedException("Only string is acceptable");
         }
-        if ((bool)value)
-        {
-
-            return "Valid";
-        }
-        return "Invalid";
+        return booleanValue ? "Valid" : "Invalid";
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotImplementedException();

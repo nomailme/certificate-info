@@ -1,6 +1,6 @@
 namespace CertificateViewer.Logic.ImportServices;
 
-public interface ICertificateTypeValidator<TIn>
+public interface ICertificateTypeValidator<in TIn>
 {
     bool IsSupported(TIn input);
 }

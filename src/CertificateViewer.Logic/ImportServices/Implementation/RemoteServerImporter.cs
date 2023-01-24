@@ -4,8 +4,20 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class RemoteServerImporter: CertificateLoader<string>
+public class RemoteServerImporter: ICertificateLoader<string>
 {
+    public async Task<ImportResult> ImportAsync(string input, EmptyOptions? options = default)
+    {
+        try
+        {
+            var certificates = await RetrieveServerCertificatesAsync(input);
+            return ImportResult.CreateSuccess(certificates.ToList());
+        }
+        catch (Exception e)
+        {
+            return ImportResult.CreateFail(e);
+        }
+    }
     private static async Task<X509Certificate2Collection> RetrieveServerCertificatesAsync(string address)
     {
         X509Certificate2Collection serverCertificates = new();
@@ -41,18 +53,5 @@ public class RemoteServerImporter: CertificateLoader<string>
             }
         };
         return handler;
-    }
-
-    protected override async Task<ImportResult> ImportCore(string input, EmptyOptions? options)
-    {
-        try
-        {
-            var certificates = await RetrieveServerCertificatesAsync(input);
-            return ImportResult.CreateSuccess(certificates.ToList());
-        }
-        catch (Exception e)
-        {
-            return ImportResult.CreateFail(e);
-        }
     }
 }

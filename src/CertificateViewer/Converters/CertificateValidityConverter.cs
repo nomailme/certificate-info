@@ -9,12 +9,10 @@ public class CertificateValidityConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var certificate2 = value as X509Certificate2;
-        if (certificate2 == null)
+        if (value is not X509Certificate2 certificate)
         {
             throw new NotSupportedException("Only X509Certificate2 is supported");
         }
-        var certificate = certificate2;
         return $"{certificate.NotBefore} - {certificate.NotAfter}";
 
     }

@@ -2,9 +2,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class DerImporter: CertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>
+public class DerImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>
 {
-    protected override async Task<ImportResult> ImportCore(byte[] input, EmptyOptions? options)
+    public async Task<ImportResult> ImportAsync(byte[] input, EmptyOptions? options=default)
     {
         var certificateCollection = new X509Certificate2Collection();
         try

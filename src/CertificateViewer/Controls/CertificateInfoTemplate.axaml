@@ -30,18 +30,62 @@
             </ControlTemplate>
         </Setter>
     </Style>
-    <Style Selector="TabItem">
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Height" Value="14"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="0 0 0 0"/>
-        <Setter Property="Padding" Value="10 0"/>
-    </Style>
+    <!-- <Style Selector="TabItem /template/ ContentPresenter#PART_ContentPresenter"> -->
+    <!--     ~1~ <Setter Property="FontSize" Value="12"/> @1@ -->
+    <!--     <Setter Property="Height" Value="20"/> -->
+    <!--     <Setter Property="VerticalAlignment" Value="Center"/> -->
+    <!--     <Setter Property="Margin" Value="0 0 0 0"/> -->
+    <!--     <Setter Property="Padding" Value="10 0"/> -->
+    <!-- </Style> -->
     <Style Selector="TabItem.Header"></Style>
 
     <Style Selector="TabItem:focus">
         <Setter Property="Margin" Value="0 0 0 0"/>
         <Setter Property="Padding" Value="10 0"/>
+
+    </Style>
+    <Style Selector="TabItem">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <!-- <Setter Property="Background" Value="#dbdbdb"/> -->
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="Padding" Value="10 0"/>
+
+    </Style>
+    <Style Selector="TabItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <!-- <Setter Property="Background" Value="#124078"/> -->
+
+    </Style>
+
+    <Style Selector="TabItem:focus">
+        <!-- <Setter Property="Foreground" Value="#2B579A"/> -->
+        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="Padding" Value="10 0"/>
+
+    </Style>
+    <Style Selector="TabItem:focus /template/ ContentPresenter#PART_ContentPresenter">
+        <!-- <Setter Property="Background" Value="#f0f0f0"/> -->
+
+
+    </Style>
+
+    <Style Selector="TabItem:selected">
+
+        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="Padding" Value="10 0"/>
+        <Setter Property="Foreground" Value="White"/>
+
+
+    </Style>
+    <Style Selector="TabItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#454545"/>
+
+
+
+
     </Style>
 
 </Styles>

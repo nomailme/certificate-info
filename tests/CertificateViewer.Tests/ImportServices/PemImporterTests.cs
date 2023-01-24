@@ -1,10 +1,11 @@
+using CertificateViewer.Logic.ImportServices;
 using CertificateViewer.Logic.ImportServices.Implementation;
 
 namespace CertificateViewer.Tests.ImportServices;
 
 public class PemImporterTests
 {
-    private readonly PemImporter _importer = new();
+    private readonly ICertificateLoader<byte[]> _importer = new PemImporter();
     
     [Fact]
     public async Task Import_PemFile_Success()
@@ -15,6 +16,17 @@ public class PemImporterTests
         Assert.True(result.Success);
         Assert.NotNull(result.Certificates);
         Assert.Single(result.Certificates);
+    } 
+    
+    [Fact]
+    public async Task Import_PemChainFile_Success()
+    {
+     
+        
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\pem_chain.crt"));
+        Assert.True(result.Success);
+        Assert.NotNull(result.Certificates);
+        Assert.Equal(2,result.Certificates.Count);
     }
 
     [Fact]
