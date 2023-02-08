@@ -4,6 +4,7 @@
 Certificate viewer is a small piece of software that allows to inspect certificate files.
 
 Main features are:
+* View PFX file contents
 * Supports multiple certificate file formats: DER, PEM, PFX
 * Retrieve certificates from a remote HTTPS server (including chain)
 * Check certificate validity against system store or custom certificate store
