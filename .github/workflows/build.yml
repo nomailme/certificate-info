@@ -39,7 +39,7 @@ jobs:
          filename: '../../CertificateViewer-${{ matrix.target }}.zip'
          directory: release/${{ matrix.target }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: CertificateViewer-${{ matrix.target }}.zip
