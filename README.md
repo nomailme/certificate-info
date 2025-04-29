@@ -14,7 +14,6 @@ Main features are:
 ![screenshot](/.github/screenshot.png?raw=true)
 
 
-
 Icons used created by kliwir art on Flaticon https://www.flaticon.com/authors/kliwir-art/flat
 
 <a href="https://www.flaticon.com/free-icons/search" title="search icons">Search icons created by Freepik - Flaticon</a>
