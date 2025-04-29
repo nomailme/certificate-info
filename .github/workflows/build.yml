@@ -42,6 +42,7 @@ jobs:
         with:
           name: artifacts
           path: CertificateViewer-${{ matrix.target }}.zip
+          overwrite: true
   release:
     concurrency: ci-${{ github.ref }}
     needs: [build] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
