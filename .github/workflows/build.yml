@@ -55,7 +55,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
          pattern: artifact-*
-
+         path: artifacts
       - name: Publish win
         run: ls
       - uses: ncipollo/release-action@v1
