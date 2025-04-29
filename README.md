@@ -11,7 +11,7 @@ Main features are:
 * View certificate info
 * Works on Windows/Linux
 
-![screenshot](/.github/screenshot.png?raw=true)
+![screenshot](/.github/screenshot.png?raw=true&id=0)
 
 
 Icons used created by kliwir art on Flaticon https://www.flaticon.com/authors/kliwir-art/flat
