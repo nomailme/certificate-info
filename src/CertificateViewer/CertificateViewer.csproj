@@ -2,22 +2,35 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <LangVersion>11</LangVersion>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <LangVersion>default</LangVersion>
+<!--    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>-->
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <PublishAot>true</PublishAot>
+    <!-- Recommended Avalonia trimming settings for Native AOT -->
+    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+    <TrimMode>link</TrimMode>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.18" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
-    <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
-    <PackageReference Include="Serilog" Version="2.12.1-dev-01587" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
+    <!-- Preserve Avalonia types for reflection -->
+    <TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
+<!--    <TrimmerRootAssembly Include="Avalonia.Themes.Default" />-->
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.0-beta2" />
+    
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.0-beta2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0-beta2" />
+    <PackageReference Include="Serilog" Version="4.2.1-dev-02352" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0-dev-02301" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <PackageReference Include="Avalonia.Diagnostics"  Version="11.3.0-beta2" />
+    
   </ItemGroup>
 
   <ItemGroup>
@@ -39,9 +52,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="Controls\Dialogs\MessageBox.axaml" />
     <AdditionalFiles Include="Controls\Dialogs\OpenUrlWindow.axaml" />
     <AdditionalFiles Include="Controls\Dialogs\PasswordBox.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Components\CertificateDetails\CertificateDetailsPanel.axaml.cs">
+      <DependentUpon>CertificateDetailsPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\MainWindow2\MainWindow2.axaml.cs">
+      <DependentUpon>MainWindow2.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\CertificateChain\CertificateChainPanel.axaml.cs">
+      <DependentUpon>CertificateChainPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\TrustStore\TrustStorePanel.axaml.cs">
+      <DependentUpon>TrustStorePanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

@@ -14,9 +14,9 @@ namespace CertificateViewer.Services;
 
 public class OpenCertificateService
 {
-    private Lazy<Window> MainWindow { get; set; } = new(GetMainWindow);
+    private Lazy<Window?> MainWindow { get; set; } = new(GetMainWindow);
 
-    private static Window GetMainWindow()
+    private static Window? GetMainWindow()
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -30,7 +30,8 @@ public class OpenCertificateService
         try
         {
             var password = string.Empty;
-            var certificateType = await CertificateHelper.CheckAsync(filename);
+            var path = Uri.UnescapeDataString(filename);
+            var certificateType = await CertificateHelper.CheckAsync(path);
 
             if (certificateType == CertificateType.Pfx)
             {
@@ -41,7 +42,7 @@ public class OpenCertificateService
                 }
             }
 
-            var result = await LoadCertificate(filename, certificateType, password);
+            var result = await LoadCertificate(path, certificateType, password);
             return result;
         }
         catch (Exception ex)

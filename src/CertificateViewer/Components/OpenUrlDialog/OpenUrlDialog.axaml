@@ -1,0 +1,94 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="CertificateViewer.Components.OpenUrlDialog.OpenUrlDialog"
+        Title="Enter URL"
+        mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="240"
+        Width="480" Height="240"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        SystemDecorations="BorderOnly"
+        Background="#F9FAFB">
+
+    <Window.Styles>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Padding" Value="16,8"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+        </Style>
+    </Window.Styles>
+
+
+    <Border Background="White"
+            CornerRadius="8"
+            BoxShadow="0 4 6 0 #0000001A"
+            BorderBrush="#6b7280"
+            BorderThickness="1">
+        <DockPanel>
+            <!-- Header -->
+            <Border DockPanel.Dock="Top"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="0,0,0,1"
+                    Padding="16">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0"
+                             Text="Enter URL"
+                             FontSize="18"
+                             VerticalAlignment="Center"
+                             FontWeight="SemiBold"/>
+                    <Button Grid.Column="1"
+                            Classes="secondary"
+                            Padding="8"
+                            Click="OnCloseClick">
+                        <!-- <PathIcon Data="{StaticResource x_regular}" -->
+                        <!--          Foreground="#6B7280"/> -->
+                        <TextBlock Text="&#57778;"
+                                   FontSize="24"
+                                   FontWeight="Regular"
+                                   Foreground="#6B7280"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource Lucide}" />
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Content -->
+            <StackPanel Margin="16" Spacing="16">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Website URL"
+                             FontWeight="Medium"
+                             Foreground="#374151"/>
+                    <TextBox Name="UrlInput"
+                            Watermark="https://example.com"/>
+                </StackPanel>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal"
+                          HorizontalAlignment="Right"
+                          Spacing="8">
+                    <Button Classes="secondary"
+                            Content="Cancel"
+                            Click="OnCloseClick"/>
+                    <Button Classes="primary"
+                            Content="Fetch Certificate"
+                            Click="OnFetchClick"/>
+                </StackPanel>
+            </StackPanel>
+        </DockPanel>
+    </Border>
+</Window>
+

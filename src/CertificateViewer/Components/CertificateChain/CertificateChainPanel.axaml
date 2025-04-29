@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CertificateViewer.Components.CertificateChain"
+             xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography"
+
+             x:Class="CertificateViewer.Components.CertificateChain.CertificateChainPanel"
+             x:DataType="vm:CertificateChainPanel"
+
+             Name="CertificateChainList">
+    <Border Classes="panel" DataContext="{CompiledBinding #CertificateChainList}">
+        <DockPanel>
+            <Border DockPanel.Dock="Top"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="0,0,0,1"
+                    Padding="16">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <!-- <PathIcon Data="{StaticResource file_text_regular}" -->
+                    <!--          Foreground="#6B7280"/> -->
+                    <TextBlock Text="&#57552;"
+                               FontSize="24"
+                               Foreground="#6b7280"
+                               FontFamily="{StaticResource Lucide}" />
+                    <TextBlock Classes="heading" Text="Certificate Chain" />
+                </StackPanel>
+            </Border>
+            <ListBox Margin="8"
+                     DockPanel.Dock="Top"
+                     ItemsSource="{CompiledBinding $parent[UserControl].((vm:CertificateChainPanel)DataContext).ItemsSource}"
+                     HorizontalAlignment="Stretch"
+                     SelectedItem="{CompiledBinding  #CertificateChainList.SelectedItem}">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type x509Certificates:X509Certificate2}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="8">
+                            <!-- <PathIcon Grid.Column="0" -->
+                            <!--           Data="{StaticResource shield_check_regular}" -->
+                            <!--           Foreground="#22C55E"/> -->
+                            <TextBlock Text="&#57855;"
+                                       FontSize="24"
+                                       Foreground="#22C55E"
+                                       FontFamily="{StaticResource Lucide}" />
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch">
+                                <TextBlock Text="{CompiledBinding Subject}" Classes="h3" />
+                                <TextBlock Text="{CompiledBinding Issuer}"
+                                           Foreground="#6B7280"
+                                           FontSize="12" />
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="2"
+                                       Text="&#57459;"
+                                       FontSize="24"
+                                       Foreground="#9CA3AF"
+                                       FontFamily="{StaticResource Lucide}" />
+                            <!-- <PathIcon Grid.Column="2" -->
+                            <!--          Data="{StaticResource chevron_right_regular}" -->
+                            <!--          Foreground="#9CA3AF"/> -->
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Foreground="#6B7280"
+                       HorizontalAlignment="Center"
+                       Margin="0,16"
+                       DockPanel.Dock="Top"
+                       IsVisible="{CompiledBinding !#CertificateChainList.ItemsSource.Count}">
+                No certificates loaded.
+            </TextBlock>
+        </DockPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,94 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography"
+             x:Class="CertificateViewer.Components.CertificateDetails.CertificateDetailsPanel"
+             x:DataType="x509Certificates:X509Certificate2"
+             Name="certificateDetails">
+    <Border Classes="panel">
+        <DockPanel>
+            <Border DockPanel.Dock="Top"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="0,0,0,1"
+                    Padding="16">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                        <!-- <PathIcon Data="{StaticResource shield_regular}" -->
+                        <!--           Foreground="#6B7280" /> -->
+                        <TextBlock Text="&#57692;"
+                                   FontSize="24"
+                                   Foreground="#6b7280"
+                                   FontFamily="{StaticResource Lucide}" />
+                        <TextBlock Classes="heading"
+                                   Text="Certificate Details" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Raw"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Medium"
+                                   Classes="heading" Margin="0,0,8,0" />
+                        <ToggleSwitch
+                            IsChecked="{Binding #certificateDetails.ShowRaw}"
+                            OnContent=""
+                            OffContent="" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <ScrollViewer DockPanel.Dock="Top" IsVisible="{CompiledBinding !#certificateDetails.ShowRaw}">
+                <StackPanel Margin="16" Spacing="16">
+                    <StackPanel>
+                        <TextBlock Text="Subject" Classes="h4" />
+                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.Subject}"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Issuer" Classes="h4" />
+                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.Issuer}"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Valid From" Classes="h4" />
+                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.NotBefore}"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Valid To" Classes="h4" />
+                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.NotAfter}"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Serial Number" Classes="h4" />
+                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.SerialNumber}"
+                                   FontFamily="Cascadia Code"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Thumbprint" Classes="h4" />
+                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.Thumbprint}"
+                                   FontFamily="Cascadia Code"
+                                   Margin="0,4,0,0" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Subject Alternative Names" Classes="h4" />
+                        <ListBox ItemsSource="{CompiledBinding #certificateDetails.SubjectAlternativeNames}"
+                                 FontSize="14"
+                                 FontFamily="Cascadia Code"
+                                 Margin="0,4,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+            <ScrollViewer DockPanel.Dock="Bottom" IsVisible="{CompiledBinding #certificateDetails.ShowRaw}">
+                <StackPanel Margin="16" Spacing="16" >
+                    <TextBlock
+
+                        Text="{CompiledBinding #certificateDetails.RawData}" />
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</UserControl>

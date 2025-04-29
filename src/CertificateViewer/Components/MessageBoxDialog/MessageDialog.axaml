@@ -1,0 +1,111 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:messageBoxDialog="using:CertificateViewer.Components.MessageBoxDialog"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        x:Class="CertificateViewer.Components.MessageBoxDialog.MessageDialog"
+        MinWidth="400" MinHeight="200"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="#F9FAFB"
+        SystemDecorations="BorderOnly"
+        Name="MessageDialogWindow"
+        x:DataType="messageBoxDialog:MessageBoxVm">
+    <!-- <Window.DataContext> -->
+    <!--     <messageBoxDialog:MessageBoxVm /> -->
+    <!-- </Window.DataContext> -->
+
+    <Window.Styles>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#2563EB" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="MinWidth" Value="80" />
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="MinWidth" Value="40" />
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+    </Window.Styles>
+
+    <Border Background="White"
+            CornerRadius="8"
+            BoxShadow="0 4 6 0 #0000001A"
+            BorderBrush="#6b7280"
+            BorderThickness="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+        <DockPanel>
+            <!-- Header -->
+            <Border DockPanel.Dock="Top"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="0,0,0,1"
+                    Padding="16">
+                <Grid ColumnDefinitions="Auto,*,Auto" >
+                    <!-- <PathIcon Grid.Column="0" -->
+                    <!--          Data="{Binding #MessageDialog.Icon}" -->
+                    <!--          Foreground="{Binding #MessageDialog.IconColor}" -->
+                    <!--          Width="20" Height="20"/> -->
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding Icon}"
+                               FontSize="24"
+                               FontWeight="Regular"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding IconColor}"
+                               FontFamily="{StaticResource Lucide}" />
+                    <TextBlock Grid.Column="1"
+                               Text="{CompiledBinding Title}"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               Margin="12,0,0,0" />
+                    <Button Grid.Column="2"
+                            Classes="secondary"
+                            VerticalAlignment="Center"
+                            Padding="8"
+
+                            Click="OnCloseClick">
+                        <TextBlock
+                                   Text="&#57778;"
+                                   FontSize="24"
+                                   FontWeight="Regular"
+                                   Foreground="#6B7280"
+                                   HorizontalAlignment="Center"
+                                   FontFamily="{StaticResource Lucide}" />
+                        <!-- <PathIcon Data="{StaticResource x_regular}" -->
+                        <!--           Foreground="#6B7280" /> -->
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Content -->
+            <DockPanel Margin="16">
+                <StackPanel DockPanel.Dock="Bottom"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Spacing="8">
+                    <Button Classes="secondary"
+                            Content="Cancel"
+                            IsVisible="{Binding ShowCancel}"
+                            Click="OnCancelClick" />
+                    <Button Classes="primary"
+                            Content="{Binding OkButtonText}"
+                            Click="OnOkClick" />
+                </StackPanel>
+
+                <TextBlock Text="{CompiledBinding Message}"
+                           TextWrapping="Wrap"
+                           Foreground="#374151" />
+            </DockPanel>
+        </DockPanel>
+    </Border>
+</Window>

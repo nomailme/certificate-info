@@ -1,0 +1,88 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="Button.icon-button">
+        <Setter Property="Background" Value="Transparent" />
+        <!-- <Setter Property="Padding" Value="8" /> -->
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="BorderBrush" Value="Transparent"></Setter>
+    </Style>
+
+    <Style Selector="Button.icon-button:pointerover">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector=".icon-button ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector=".icon-button TextBlock">
+        <Setter Property="Background" Value="Transparent" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="TextDecorations" Value="Underline"></Setter>
+        </Style>
+    </Style>
+
+    <!-- <Style Selector=".icon-button TextBlock:pointerover"> -->
+
+
+    <!-- </Style> -->
+
+
+
+    <Style Selector="TextBlock.heading">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.h4">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#6B7280"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock.h3">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="Black"></Setter>
+    </Style>
+
+
+
+
+
+    <Style Selector="Border.panel">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BoxShadow" Value="0 1 3 0 #0000001A" />
+    </Style>
+
+    <Style Selector="ListBox">
+        <Setter Property="Margin" Value="8,8"></Setter>
+        <Setter Property="Padding" Value="0"></Setter>
+        <Setter Property="BorderBrush" Value="Transparent"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+
+    </Style>
+
+    <Style Selector="ListBoxItem">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="2 1" />
+        <Setter Property="CornerRadius" Value="5"></Setter>
+    </Style>
+    <Style Selector="ListBoxItem:selected ContentPresenter">
+        <Setter Property="Background" Value="#eff6ff"></Setter>
+    </Style>
+    <Style Selector="ListBoxItem:selected TextBlock.h3">
+        <Setter Property="Foreground" Value="#2563EB"></Setter>
+    </Style>
+
+</Styles>

@@ -7,7 +7,14 @@ namespace CertificateViewer.Controls.Dialogs;
 
 public record DialogResult
 {
-    public List<X509Certificate2>? Certificates { get; init; }
+    public enum OperationResult
+    {
+        Success,
+        Failure,
+        Canceled
+    }
+
+    public List<X509Certificate2> Certificates { get; init; } = new();
 
     public CertificateType Type { get; init; }
 
@@ -17,19 +24,8 @@ public record DialogResult
 
     public static DialogResult CreateFail(Exception exception) => new()
     {
-        Success = OperationResult.Failure,
-        Error = exception
+        Success = OperationResult.Failure, Error = exception
     };
 
-    public static DialogResult OperationCanceled() => new()
-    {
-        Success = OperationResult.Canceled
-    };
-
-    public enum OperationResult
-    {
-        Success,
-        Failure,
-        Canceled
-    }
+    public static DialogResult OperationCanceled() => new() { Success = OperationResult.Canceled };
 }

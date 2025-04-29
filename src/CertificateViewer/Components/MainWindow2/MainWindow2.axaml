@@ -1,0 +1,92 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:certificateChain="using:CertificateViewer.Components.CertificateChain"
+        xmlns:certificateDetails="using:CertificateViewer.Components.CertificateDetails"
+        xmlns:trustStore="using:CertificateViewer.Components.TrustStore"
+        xmlns:mainWindow2="using:CertificateViewer.Components.MainWindow2"
+        xmlns:dialogManager="clr-namespace:CertificateViewer.Components.DialogManager"
+        x:Class="CertificateViewer.Components.MainWindow2.MainWindow2"
+        x:DataType="mainWindow2:MainWindow2ViewModel"
+        Name="MainWindow"
+        Title="Certificate Inspector"
+        Width="1400" Height="800"
+        Background="#F9FAFB"
+        dialogManager:DialogManager.Register="{Binding}">
+    <Window.DataContext>
+        <mainWindow2:MainWindow2ViewModel />
+    </Window.DataContext>
+    <Grid RowDefinitions="Auto,*" Margin="16">
+        <!-- Header -->
+        <Border Grid.Row="0"
+
+                Background="White"
+                BoxShadow="0 1 2 0 #0000000D"
+                Padding="16,16">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                    <TextBlock Text="&#57692;"
+                               FontSize="24"
+                               FontWeight="Regular"
+                               Foreground="#2563EB"
+                               FontFamily="{StaticResource Lucide}" />
+                    <TextBlock Text="Certificate Inspector"
+                               FontSize="20"
+                               FontWeight="SemiBold" />
+
+                </StackPanel>
+                <!-- Import Buttons -->
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                    <Button Classes="icon-button"
+                            Command="{Binding OpenCertificateFileCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <!-- <PathIcon Data="{StaticResource file_regular}" -->
+                            <!--           Foreground="#2563EB" /> -->
+                            <TextBlock Text="&#57540;"
+                                       FontSize="24"
+                                       FontWeight="Regular"
+                                       VerticalAlignment="Center"
+                                       Foreground="#2563EB"
+                                       FontFamily="{StaticResource Lucide}" />
+                            <TextBlock Text="Open Certificate File"
+                                       VerticalAlignment="Center"
+                                       Foreground="#2563EB" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="icon-button"
+                            Command="{Binding GetCertificateFromUrlCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <!-- <PathIcon Data="{StaticResource globe_regular}" -->
+                            <!--           Foreground="#2563EB" /> -->
+                            <TextBlock Text="&#57580;"
+                                       FontSize="24"
+                                       FontWeight="Regular"
+                                       Foreground="#2563EB"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource Lucide}" />
+                            <TextBlock Text="Get from URL"
+                                       VerticalAlignment="Center"
+                                       Foreground="#2563EB" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="0,24,0,0" ColumnDefinitions="4*,5*,4*" ColumnSpacing="24">
+            <certificateChain:CertificateChainPanel Grid.Column="0"
+                                                    SelectedItem="{Binding #MainWindow.DataContext.SelectedCertificate, Mode=TwoWay}"
+                                                    ItemsSource="{Binding #MainWindow.DataContext.CertificateChain}" />
+            <certificateDetails:CertificateDetailsPanel Grid.Column="1"
+                                                        Certificate="{Binding Path= SelectedCertificate}" />
+            <trustStore:TrustStorePanel Grid.Column="2"
+                                        CertificateChain="{Binding #MainWindow.DataContext.CertificateChain}"
+                                        OpenFileDialog="{Binding #MainWindow.DataContext.ShowOpenFileDialog}" />
+        </Grid>
+    </Grid>
+</Window>
