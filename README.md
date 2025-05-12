@@ -15,5 +15,6 @@ Main features are:
 
 
 Icons used created by kliwir art on Flaticon https://www.flaticon.com/authors/kliwir-art/flat
-
 <a href="https://www.flaticon.com/free-icons/search" title="search icons">Search icons created by Freepik - Flaticon</a>
+
+Lucide font icon pack is used  <a href="https://github.com/lucide-icons/lucide">Repository</a> <a href="https://github.com/lucide-icons/lucide/blob/main/LICENSE">License</a>
