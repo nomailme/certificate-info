@@ -21,6 +21,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - name: Set current date as env variable
+        run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
@@ -30,7 +32,7 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Publish linux
-        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false --self-contained true
+        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=${{ env.NOW }} --self-contained true
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
@@ -47,8 +49,6 @@ jobs:
     needs: [build] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
     steps:
-      - name: Set current date as env variable
-        run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       - name: Download Artifacts 
