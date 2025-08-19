@@ -33,7 +33,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - env:
+      - run: echo "NOW=$NOW" >> $GITHUB_ENV
+        env:
           NOW: ${{needs.prepare.outputs.NOW}}  
       - name: Print env
         run: echo ${{ env.NOW }}
@@ -46,6 +47,8 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Publish linux
+        env:
+          NOW: ${{needs.prepare.outputs.NOW}}  
         run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=${{ env.NOW }} --self-contained true
       - name: Archive Release
         uses: thedoctor0/zip-release@main
@@ -63,8 +66,11 @@ jobs:
     needs: [build, prepare] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
     steps:
-      - env:
+      - run: echo "NOW=$NOW" >> $GITHUB_ENV
+        env:
           NOW: ${{needs.prepare.outputs.NOW}}  
+      - name: Print env
+        run: echo ${{ env.NOW }}
       - name: Print env
         run: echo ${{ env.NOW }}
       - name: Checkout 🛎️
