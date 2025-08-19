@@ -15,7 +15,7 @@
     <Window.DataContext>
         <mainWindow2:MainWindow2ViewModel />
     </Window.DataContext>
-    <Grid RowDefinitions="Auto,*" Margin="16">
+    <Grid RowDefinitions="Auto,*,Auto" Margin="16,16,16,0">
         <!-- Header -->
         <Border Grid.Row="0"
 
@@ -80,6 +80,7 @@
         <!-- Main Content -->
         <Grid Grid.Row="1" Margin="0,24,0,0" ColumnDefinitions="4*,5*,4*" ColumnSpacing="24">
             <certificateChain:CertificateChainPanel Grid.Column="0"
+                                                    CertificateSource="{Binding #MainWindow.DataContext.CertificateSource}"
                                                     SelectedItem="{Binding #MainWindow.DataContext.SelectedCertificate, Mode=TwoWay}"
                                                     ItemsSource="{Binding #MainWindow.DataContext.CertificateChain}" />
             <certificateDetails:CertificateDetailsPanel Grid.Column="1"
@@ -88,5 +89,13 @@
                                         CertificateChain="{Binding #MainWindow.DataContext.CertificateChain}"
                                         OpenFileDialog="{Binding #MainWindow.DataContext.ShowOpenFileDialog}" />
         </Grid>
+        <DockPanel Grid.Row="2" >
+            <HyperlinkButton
+                Content="GitHub"
+                Classes="h3"
+                NavigateUri="https://github.com/nomailme/certificate-info"
+                HorizontalAlignment="Center"></HyperlinkButton>
+        </DockPanel>
     </Grid>
+
 </Window>

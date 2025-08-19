@@ -21,6 +21,13 @@
                                Foreground="#6b7280"
                                FontFamily="{StaticResource Lucide}" />
                     <TextBlock Classes="heading" Text="Certificate Chain" />
+                    <Border CornerRadius="4"
+                            Padding="4"
+                            Background="#F0FDF4"
+                            IsVisible="{CompiledBinding #CertificateChainList.ItemsSource.Count}">
+                        <TextBlock Classes="h3"
+                            Text="{CompiledBinding $parent[UserControl].((vm:CertificateChainPanel)DataContext).CertificateSource}"></TextBlock>
+                    </Border>
                 </StackPanel>
             </Border>
             <ListBox Margin="8"

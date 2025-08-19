@@ -14,6 +14,11 @@ public partial class CertificateChainPanel : UserControl
                 o => o.ItemsSource,
                 (o, v) => o.ItemsSource = v);
 
+    public static readonly DirectProperty<CertificateChainPanel, string> CertificateSourceProperty = AvaloniaProperty.RegisterDirect<CertificateChainPanel, string>(
+        nameof(CertificateSource),
+        o => o.CertificateSource,
+        (o, v) => o.CertificateSource = v
+    );
 
     public static readonly DirectProperty<CertificateChainPanel, X509Certificate2?> SelectedItemProperty =
         AvaloniaProperty.RegisterDirect<CertificateChainPanel, X509Certificate2?>(
@@ -21,6 +26,7 @@ public partial class CertificateChainPanel : UserControl
             o => o.SelectedItem,
             (o, v) => o.SelectedItem = v,
             enableDataValidation: false);
+    private string _certificateSource;
 
     private ObservableCollection<X509Certificate2> _items = new();
     private X509Certificate2? _selectedItem;
@@ -31,19 +37,14 @@ public partial class CertificateChainPanel : UserControl
         AffectsArrange<CertificateChainPanel>(ItemsSourceProperty);
         DataContext = this;
     }
+    public string CertificateSource { get => _certificateSource; set => SetAndRaise(CertificateSourceProperty, ref _certificateSource, value); }
 
 
     public ObservableCollection<X509Certificate2> ItemsSource
     {
         get => _items;
-        set
-        {
-            SetAndRaise(ItemsSourceProperty, ref _items, value);
-        }
+        set => SetAndRaise(ItemsSourceProperty, ref _items, value);
     }
-
-
-
 
     public bool IsEmpty => ItemsSource.Count == 0;
 

@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Avalonia.ReactiveUI;
@@ -17,6 +18,18 @@ public partial class MainWindow2 : ReactiveWindow<MainWindow2ViewModel>
                 d(ViewModel!.ShowOpenFileDialog.RegisterHandler(DoShowOpenFileDialog));
                 d(ViewModel!.ShowOpenUrlDialog.RegisterHandler(DoShowOpenUrlDialog));
             });
+        SetVersion();
+
+    }
+
+    private void SetVersion()
+    {
+        string? version = Assembly.GetEntryAssembly()?.
+            GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.
+            InformationalVersion;
+
+        this.Title = $"Certificate Viewer {version}";
+
     }
 
     private async Task DoShowOpenFileDialog(IInteractionContext<string, string> arg)
