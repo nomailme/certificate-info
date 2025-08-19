@@ -15,6 +15,7 @@ jobs:
       - name: Print env
         run: echo ${{ env.NOW }}
   build:
+    needs: [prepare]
     strategy:
       matrix:
         kind: ['linux', 'windows']
