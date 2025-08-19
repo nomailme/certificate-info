@@ -7,7 +7,19 @@ on:
     branches: [main]
     
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      NOW: ${{ steps.step1.outputs.NOW }}
+    steps:
+      - id: step1
+        run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> "$GITHUB_OUTPUT"
+      - name: Set current date as env variable
+        run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
+      - name: Print env
+        run: echo ${{ env.NOW }}
   build:
+    needs: [prepare]
     strategy:
       matrix:
         kind: ['linux', 'windows']
@@ -21,6 +33,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
+        env:
+          NOW: ${{needs.prepare.outputs.NOW}}  
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
@@ -30,7 +45,9 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Publish linux
-        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false --self-contained true
+        env:
+          NOW: ${{needs.prepare.outputs.NOW}}  
+        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=${{ env.NOW }} --self-contained true
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
@@ -44,11 +61,16 @@ jobs:
           path: CertificateViewer-${{ matrix.target }}.zip
   release:
     concurrency: ci-${{ github.ref }}
-    needs: [build] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
+    needs: [build, prepare] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
     steps:
-      - name: Set current date as env variable
-        run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
+      - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
+        env:
+          NOW: ${{needs.prepare.outputs.NOW}}  
+      - name: Print env
+        run: echo ${{ env.NOW }}
+      - name: Print env
+        run: echo ${{ env.NOW }}
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       - name: Download Artifacts 
