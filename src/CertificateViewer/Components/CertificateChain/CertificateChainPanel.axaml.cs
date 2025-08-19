@@ -26,7 +26,7 @@ public partial class CertificateChainPanel : UserControl
             o => o.SelectedItem,
             (o, v) => o.SelectedItem = v,
             enableDataValidation: false);
-    private string _certificateSource;
+    private string _certificateSource = string.Empty;
 
     private ObservableCollection<X509Certificate2> _items = new();
     private X509Certificate2? _selectedItem;

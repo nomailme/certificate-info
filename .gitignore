@@ -265,3 +265,10 @@ FakesAssemblies/
 
 #Rider
 .idea/
+/global.json
+/src/CertificateViewer.Logic/Extensions/X509Certificate2Extensions.cs
+/src/CertificateViewer/Components/InputDialogWindow.axaml
+/src/CertificateViewer/Components/InputDialogWindow.axaml.cs
+/src/CertificateViewer/Controls/IconButton.axaml
+/src/CertificateViewer/Controls/IconButton.axaml.cs
+/tests/CertificateViewer.Tests/DataStore/Generic Root CA 3.crt
