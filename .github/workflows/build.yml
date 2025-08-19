@@ -33,7 +33,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - run: echo "NOW=${{ steps.step1.outputs.NOW }}" >> $GITHUB_ENV
+      - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
         env:
           NOW: ${{needs.prepare.outputs.NOW}}  
       - name: Print env
@@ -66,7 +66,7 @@ jobs:
     needs: [build, prepare] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
     steps:
-      - run: echo "NOW=${{ steps.step1.outputs.NOW }}" >> $GITHUB_ENV
+      - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
         env:
           NOW: ${{needs.prepare.outputs.NOW}}  
       - name: Print env
