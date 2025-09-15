@@ -38,44 +38,51 @@
                 <StackPanel Margin="16" Spacing="16">
                     <StackPanel>
                         <TextBlock Text="Subject" Classes="h4" />
-                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.Subject}"
+                        <TextBlock Classes="text"
+                                  Text="{CompiledBinding #certificateDetails.Certificate.Subject}"
                                    Margin="0,4,0,0" />
                     </StackPanel>
 
                     <StackPanel>
                         <TextBlock Text="Issuer" Classes="h4" />
-                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.Issuer}"
+                        <TextBlock Classes="text"
+                                   Text="{CompiledBinding #certificateDetails.Certificate.Issuer}"
                                    Margin="0,4,0,0" />
                     </StackPanel>
 
                     <StackPanel>
                         <TextBlock Text="Valid From" Classes="h4" />
-                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.NotBefore}"
+                        <TextBlock Classes="text"
+                                   Text="{CompiledBinding #certificateDetails.Certificate.NotBefore}"
                                    Margin="0,4,0,0" />
                     </StackPanel>
 
                     <StackPanel>
                         <TextBlock Text="Valid To" Classes="h4" />
-                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.NotAfter}"
+                        <TextBlock Classes="text"
+                                   Text="{CompiledBinding #certificateDetails.Certificate.NotAfter}"
                                    Margin="0,4,0,0" />
                     </StackPanel>
 
                     <StackPanel>
                         <TextBlock Text="Serial Number" Classes="h4" />
-                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.SerialNumber}"
+                        <TextBlock Classes="text"
+                                   Text="{CompiledBinding #certificateDetails.Certificate.SerialNumber}"
                                    FontFamily="Cascadia Code"
                                    Margin="0,4,0,0" />
                     </StackPanel>
 
                     <StackPanel>
                         <TextBlock Text="Thumbprint" Classes="h4" />
-                        <TextBlock Text="{CompiledBinding #certificateDetails.Certificate.Thumbprint}"
+                        <TextBlock Classes="text"
+                                   Text="{CompiledBinding #certificateDetails.Certificate.Thumbprint}"
                                    FontFamily="Cascadia Code"
                                    Margin="0,4,0,0" />
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="Subject Alternative Names" Classes="h4" />
-                        <ListBox ItemsSource="{CompiledBinding #certificateDetails.SubjectAlternativeNames}"
+                        <ListBox Classes="text"
+                                 ItemsSource="{CompiledBinding #certificateDetails.SubjectAlternativeNames}"
                                  FontSize="14"
                                  FontFamily="Cascadia Code"
                                  Margin="0,4,0,0" />
@@ -85,7 +92,7 @@
             <ScrollViewer DockPanel.Dock="Bottom" IsVisible="{CompiledBinding #certificateDetails.ShowRaw}">
                 <StackPanel Margin="16" Spacing="16" >
                     <TextBlock
-
+                        Classes="text"
                         Text="{CompiledBinding #certificateDetails.RawData}" />
                 </StackPanel>
             </ScrollViewer>

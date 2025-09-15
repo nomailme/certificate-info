@@ -50,6 +50,11 @@
         <Setter Property="Foreground" Value="#6B7280"></Setter>
     </Style>
 
+    <Style Selector="TextBlock.text">
+
+        <Setter Property="Foreground" Value="Black"></Setter>
+    </Style>
+
     <Style Selector="TextBlock.h3">
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="SemiBold" />

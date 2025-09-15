@@ -24,11 +24,11 @@ public partial class MainWindow2 : ReactiveWindow<MainWindow2ViewModel>
 
     private void SetVersion()
     {
-        string? version = Assembly.GetEntryAssembly()?.
-            GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.
+        var version = Assembly.GetEntryAssembly()?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.
             InformationalVersion;
 
-        this.Title = $"Certificate Viewer {version}";
+        Title = $"Certificate Viewer {version}";
 
     }
 

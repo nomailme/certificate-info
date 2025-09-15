@@ -48,7 +48,9 @@
                                        FontFamily="{StaticResource Lucide}" />
                             <StackPanel Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch">
                                 <TextBlock Text="{CompiledBinding Subject}" Classes="h3" />
-                                <TextBlock Text="{CompiledBinding Issuer}"
+                                <TextBlock
+                                           Classes="text"
+                                           Text="{CompiledBinding Issuer}"
                                            Foreground="#6B7280"
                                            FontSize="12" />
                             </StackPanel>
@@ -58,14 +60,12 @@
                                        FontSize="24"
                                        Foreground="#9CA3AF"
                                        FontFamily="{StaticResource Lucide}" />
-                            <!-- <PathIcon Grid.Column="2" -->
-                            <!--          Data="{StaticResource chevron_right_regular}" -->
-                            <!--          Foreground="#9CA3AF"/> -->
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <TextBlock Foreground="#6B7280"
+            <TextBlock Classes="text"
+                       Foreground="#6B7280"
                        HorizontalAlignment="Center"
                        Margin="0,16"
                        DockPanel.Dock="Top"

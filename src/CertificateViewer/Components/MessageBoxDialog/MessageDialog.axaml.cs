@@ -19,7 +19,7 @@ public partial class MessageDialog : Window
         DataContext = ViewModel = viewModel;
     }
 
-    public MessageBoxVm ViewModel { get; set; } = new();
+    public MessageBoxVm ViewModel { get; set; }
 
     public static MessageDialog Info(string title, string message, string okButtonText = "OK")
     {
@@ -58,15 +58,6 @@ public partial class MessageDialog : Window
             ShowCancel = false,
             OkButtonText = "OK"
         });
-    // ViewModel = new MessageBoxVm
-    // {
-    //     Title = title,
-    //     Message = message,
-    //     Icon = Application.Current.FindResource("error_circle_regular") as string,
-    //     IconColor = new SolidColorBrush(Color.Parse("#DC2626")),
-    //     ShowCancel = false,
-    //     OkButtonText = "OK"
-    // }
 
     private void OnCloseClick(object sender, RoutedEventArgs e) => Close(false);
 

@@ -8,7 +8,7 @@
         x:Class="CertificateViewer.Components.MainWindow2.MainWindow2"
         x:DataType="mainWindow2:MainWindow2ViewModel"
         Name="MainWindow"
-        Title="Certificate Inspector"
+        Title="{CompiledBinding Title}"
         Width="1400" Height="800"
         Background="#F9FAFB"
         dialogManager:DialogManager.Register="{Binding}">
@@ -31,7 +31,8 @@
                                FontWeight="Regular"
                                Foreground="#2563EB"
                                FontFamily="{StaticResource Lucide}" />
-                    <TextBlock Text="Certificate Inspector"
+                    <TextBlock Text="Certificate Viewer"
+                               Foreground="Black"
                                FontSize="20"
                                FontWeight="SemiBold" />
 

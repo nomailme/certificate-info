@@ -21,8 +21,8 @@ public class MessageBoxVm : BaseViewModel
         set => this.RaiseAndSetIfChanged(ref _message, value);
     }
 
-    public string Icon { get; set; }
-    public IBrush IconColor { get; set; }
-    public bool ShowCancel { get; set; }
-    public string OkButtonText { get; set; }
+    public required string Icon { get; set; }
+    public required IBrush IconColor { get; set; }
+    public required bool ShowCancel { get; set; }
+    public required string OkButtonText { get; set; }
 }

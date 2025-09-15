@@ -23,6 +23,7 @@ public class MainWindow2ViewModel : BaseViewModel
     private ObservableCollection<X509Certificate2> _certificateChain = new();
     private string _certificateSource = string.Empty;
     private X509Certificate2? selectedCertificate;
+    private string title;
 
     public MainWindow2ViewModel()
     {
@@ -35,6 +36,8 @@ public class MainWindow2ViewModel : BaseViewModel
     public ReactiveCommand<Unit, Unit> GetCertificateFromUrlCommand { get; set; }
 
     public ReactiveCommand<Unit, Unit> OpenCertificateFileCommand { get; set; }
+
+    public string Title { get => title; set => this.RaiseAndSetIfChanged(ref title, value); }
 
     public ObservableCollection<X509Certificate2> CertificateChain
     {
@@ -74,6 +77,7 @@ public class MainWindow2ViewModel : BaseViewModel
 
             CertificateSource = GetDomain(url);
             await LoadCertificates(result.ToDialogResult(CertificateType.Web));
+            SetTitle(url);
         }
         catch (Exception e)
         {
@@ -88,17 +92,23 @@ public class MainWindow2ViewModel : BaseViewModel
 
     }
 
+    private void SetTitle(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            Title = "Certificate Viewer";
+        }
+        Title = $"Certificate Viewer: {input}";
+    }
+
     private async Task OpenFile()
     {
         var fileDialogResult = await this.OpenFileDialogAsync("Open file", false);
-        if (fileDialogResult is null)
-        {
-            return;
-        }
 
         var result = await _openCertificateService.OpenFile(fileDialogResult.Single());
         CertificateSource = GetFileName(fileDialogResult.Single());
         await LoadCertificates(result);
+        SetTitle(fileDialogResult.Single());
 
         string GetFileName(string input)
         {

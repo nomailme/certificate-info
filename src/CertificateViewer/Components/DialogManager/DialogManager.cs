@@ -19,23 +19,14 @@ public class DialogManager
     /// <summary>
     /// Accessor for Attached property <see cref="RegisterProperty"/>.
     /// </summary>
-    public static void SetRegister(AvaloniaObject element, object value)
-    {
-        element.SetValue(RegisterProperty, value);
-    }
+    public static void SetRegister(AvaloniaObject element, object value) => element.SetValue(RegisterProperty, value);
 
     /// <summary>
     /// Accessor for Attached property <see cref="RegisterProperty"/>.
     /// </summary>
-    public static object? GetRegister(AvaloniaObject element)
-    {
-        return element.GetValue(RegisterProperty);
-    }
+    public static object? GetRegister(AvaloniaObject element) => element.GetValue(RegisterProperty);
 
-    static DialogManager()
-    {
-        RegisterProperty.Changed.AddClassHandler<Visual>(RegisterChanged);
-    }
+    static DialogManager() => RegisterProperty.Changed.AddClassHandler<Visual>(RegisterChanged);
 
     private static void RegisterChanged(Visual sender, AvaloniaPropertyChangedEventArgs e)
     {
@@ -62,18 +53,14 @@ public class DialogManager
     /// </summary>
     /// <param name="context">The context to lookup</param>
     /// <returns>The registered Visual for the context or null if none was found</returns>
-    public static Visual? GetVisualForContext(object context)
-    {
-        return RegistrationMapper.TryGetValue(context, out var result) ? result : null;
-    }
+    public static Visual? GetVisualForContext(object context) =>
+        RegistrationMapper.GetValueOrDefault(context);
 
     /// <summary>
     /// Gets the parent <see cref="TopLevel"/> for the given context. Returns null, if no TopLevel was found
     /// </summary>
     /// <param name="context">The context to lookup</param>
     /// <returns>The registered TopLevel for the context or null if none was found</returns>
-    public static TopLevel? GetTopLevelForContext(object context)
-    {
-        return TopLevel.GetTopLevel(GetVisualForContext(context));
-    }
+    public static TopLevel? GetTopLevelForContext(object context) =>
+        TopLevel.GetTopLevel(GetVisualForContext(context));
 }

@@ -108,6 +108,7 @@
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="System Trust Store"
+                                       Foreground="Black"
                                        FontWeight="Medium" />
                             <TextBlock Text="Use certificates from system trust store"
                                        Foreground="#64748B"
@@ -163,6 +164,7 @@
                                         <StackPanel Grid.Column="1"
                                                     Margin="8,0,0,0">
                                             <TextBlock Text="{Binding Subject}"
+                                                       Foreground="Black"
                                                        TextTrimming="CharacterEllipsis" />
                                             <TextBlock Text="{Binding Thumbprint}"
                                                        Foreground="#6B7280"

@@ -1,4 +1,3 @@
-using CertificateViewer.Logic;
 using CertificateViewer.Logic.ImportServices.Implementation;
 
 namespace CertificateViewer.Tests.ImportServices;

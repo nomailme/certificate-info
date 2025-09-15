@@ -18,7 +18,7 @@ public static class DialogHelper
     /// <param name="selectMany">Is selecting many files allowed?</param>
     /// <returns>An array of file names</returns>
     /// <exception cref="ArgumentNullException">if context was null</exception>
-    public static async Task<List<string>?> OpenFileDialogAsync(this object? context, string? title = null,
+    public static async Task<List<string>> OpenFileDialogAsync(this object? context, string? title = null,
         bool selectMany = true)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -28,7 +28,7 @@ public static class DialogHelper
 
         if (topLevel == null)
         {
-            return null;
+            return new List<string>();
         }
 
         // Open the file dialog
@@ -37,20 +37,17 @@ public static class DialogHelper
 
         if (storageFiles.Count == 0)
         {
-            return null;
+            return new List<string>();
         }
 
         // return the result
-        return storageFiles.Select(s => s.TryGetLocalPath()).Where(x=>x is not null).ToList();
+        return storageFiles.Select(s => s.TryGetLocalPath()).Select(x=>x!).ToList();
 
     }
 
     public static async Task<string?> ShowInfoMessage(this object? context, string title, string message, string okButtonText = "OK")
     {
         ArgumentNullException.ThrowIfNull(context);
-
-        // lookup the TopLevel for the context
-        var topLevel = DialogManager.GetTopLevelForContext(context);
 
             //if (topLevel != null)
         {

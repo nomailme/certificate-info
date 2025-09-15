@@ -48,14 +48,6 @@ public partial class TrustStorePanel : UserControl
                 nameof(IsChainValid),
                 o => o.IsChainValid);
 
-    // public static readonly DirectProperty<TrustStorePanel, Interaction<DialogViewModel, MessageBox.MessageBoxResult>?>
-    //     MessageBoxDialogProperty =
-    //         AvaloniaProperty
-    //             .RegisterDirect<TrustStorePanel, Interaction<DialogViewModel, MessageBox.MessageBoxResult>?>(
-    //                 nameof(MessageBoxDialog),
-    //                 o => o.MessageBoxDialog,
-    //                 (o, v) => o.MessageBoxDialog = v);
-
     public static readonly DirectProperty<TrustStorePanel, Interaction<string, string?>?>
         OpenFileDialogProperty =
             AvaloniaProperty.RegisterDirect<TrustStorePanel, Interaction<string, string?>?>(
@@ -151,19 +143,13 @@ public partial class TrustStorePanel : UserControl
 
     private void UpdateValidity()
     {
-        if (CertificateChain is null)
-        {
-            return;
-        }
-
         if (!CertificateChain.Any())
         {
             return;
         }
 
-        List<string> errors = new();
         var validityService = new ChainValidator();
-        var result = validityService.Validate(CertificateChain, TrustedCertificates, _useSystemStore, out errors);
+        var result = validityService.Validate(CertificateChain, TrustedCertificates, _useSystemStore, out var errors);
         Errors.Clear();
         Errors.AddRange(errors);
         IsChainValid = result;
@@ -175,11 +161,6 @@ public partial class TrustStorePanel : UserControl
         try
         {
             var fileDialogResult = await this.OpenFileDialogAsync("Root certificates", selectMany: true);
-
-            if (fileDialogResult is null)
-            {
-                return;
-            }
 
             foreach (var file in fileDialogResult)
             {
