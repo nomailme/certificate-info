@@ -29,6 +29,21 @@
             <Setter Property="TextDecorations" Value="Underline"></Setter>
         </Style>
     </Style>
+    <Style Selector=".icon TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Lucide}"></Setter>
+        <Setter Property="FontSize" Value="24"></Setter>
+    </Style>
+
+    <Style Selector=".icon-grey TextBlock">
+        <Setter Property="Foreground" Value="#6b7280"></Setter>
+    </Style>
+    <Style Selector=".icon-green TextBlock">
+        <Setter Property="Foreground" Value="#22C55E"></Setter>
+    </Style>
+
+    <Style Selector=".icon-red TextBlock">
+        <Setter Property="Foreground" Value="#22C55E"></Setter>
+    </Style>
 
     <!-- <Style Selector=".icon-button TextBlock:pointerover"> -->
 
@@ -51,7 +66,9 @@
     </Style>
 
     <Style Selector="TextBlock.text">
-
+        <Setter Property="Foreground" Value="Black"></Setter>
+    </Style>
+    <Style Selector="ListBox.text">
         <Setter Property="Foreground" Value="Black"></Setter>
     </Style>
 
