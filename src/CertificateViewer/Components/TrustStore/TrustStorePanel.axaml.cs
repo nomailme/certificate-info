@@ -1,27 +1,30 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using CertificateViewer.Components.DialogManager;
-using CertificateViewer.Components.MessageBoxDialog;
 using CertificateViewer.Controls.Dialogs;
 using CertificateViewer.Logic;
 using CertificateViewer.Services;
 using DynamicData;
 using ReactiveUI;
+using ShadUI;
 
 namespace CertificateViewer.Components.TrustStore;
 
 public partial class TrustStorePanel : UserControl
 {
+    private ShadUI.DialogManager _dialogManager;
+
     public static readonly DirectProperty<TrustStorePanel, ObservableCollection<X509Certificate2>>
         CertificateChainProperty =
             AvaloniaProperty.RegisterDirect<TrustStorePanel, ObservableCollection<X509Certificate2>>(
@@ -55,14 +58,39 @@ public partial class TrustStorePanel : UserControl
                 o => o.OpenFileDialog,
                 (o, v) => o.OpenFileDialog = v);
 
+    public static readonly DirectProperty<TrustStorePanel, ShadUI.DialogManager>
+        DialogManagerProperty =
+            AvaloniaProperty.RegisterDirect<TrustStorePanel, ShadUI.DialogManager>(
+                nameof(DialogManager),
+                o => o.DialogManager,
+                (o, v) => o.DialogManager = v);
 
-    private readonly OpenCertificateService _certificateService = new();
+    public static readonly DirectProperty<TrustStorePanel, OpenCertificateService>
+        OpenCertificateServiceProperty =
+            AvaloniaProperty.RegisterDirect<TrustStorePanel, OpenCertificateService>(
+                nameof(OpenCertificateService),
+                o => o.OpenCertificateService,
+                (o, v) => o.OpenCertificateService = v);
+
+
+    public ShadUI.DialogManager DialogManager
+    {
+        get => _dialogManager;
+        set => SetAndRaise(DialogManagerProperty, ref _dialogManager, value);
+    }
+
+    public OpenCertificateService OpenCertificateService
+    {
+        get => _openCertificateService;
+        set => SetAndRaise(OpenCertificateServiceProperty, ref _openCertificateService, value);
+    }
+
     private ObservableCollection<X509Certificate2> _certificateChain = new();
     private ObservableCollection<string> _errors = new();
     private bool _isChainValid = true;
-    // private Interaction<DialogViewModel, MessageBox.MessageBoxResult>? _messageBoxDialog;
     private Interaction<string, string?>? _openFileDialog;
     private bool _useSystemStore = true;
+    private OpenCertificateService _openCertificateService;
 
     public TrustStorePanel()
     {
@@ -75,7 +103,7 @@ public partial class TrustStorePanel : UserControl
             x => x.TrustedCertificates,
             x => x.CertificateChain,
             x => x.UseSystemStore,
-            (p1, p2, p3) => "changed");
+            (_, _, _) => "changed");
 
         trustedCertificates.Subscribe(_ => UpdateValidity());
         RemoveFromTrustStoreCommand =
@@ -121,13 +149,6 @@ public partial class TrustStorePanel : UserControl
         set => SetAndRaise(IsChainValidProperty, ref _isChainValid, value);
     }
 
-
-    // public Interaction<DialogViewModel, MessageBox.MessageBoxResult>? MessageBoxDialog
-    // {
-    //     get => _messageBoxDialog;
-    //     set => SetAndRaise(MessageBoxDialogProperty, ref _messageBoxDialog, value);
-    // }
-
     public Interaction<string, string?>? OpenFileDialog
     {
         get => _openFileDialog;
@@ -141,7 +162,7 @@ public partial class TrustStorePanel : UserControl
     }
 
 
-    private void UpdateValidity()
+    private async Task UpdateValidity()
     {
         if (!CertificateChain.Any())
         {
@@ -149,10 +170,10 @@ public partial class TrustStorePanel : UserControl
         }
 
         var validityService = new ChainValidator();
-        var result = validityService.Validate(CertificateChain, TrustedCertificates, _useSystemStore, out var errors);
+        var result = await validityService.Validate(CertificateChain, TrustedCertificates, _useSystemStore);
         Errors.Clear();
-        Errors.AddRange(errors);
-        IsChainValid = result;
+        Errors.AddRange(result);
+        IsChainValid = result.Count == 0;
     }
 
 
@@ -164,7 +185,7 @@ public partial class TrustStorePanel : UserControl
 
             foreach (var file in fileDialogResult)
             {
-                var result = await _certificateService.OpenFile(file);
+                var result = await _openCertificateService.OpenFile(file);
                 if (result.Success == DialogResult.OperationResult.Success)
                 {
                     TrustedCertificates.Add(result.Certificates);
@@ -174,8 +195,9 @@ public partial class TrustStorePanel : UserControl
         }
         catch (Exception e)
         {
-
-            MessageDialog.Error("Error loading file", e.Message).Show();
+            _dialogManager.CreateDialog("Error loading file", e.Message)
+                .Dismissible()
+                .Show();
         }
     }
 

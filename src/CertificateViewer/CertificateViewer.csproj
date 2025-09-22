@@ -24,8 +24,11 @@
 
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.4" />
-    <PackageReference Include="Serilog" Version="4.2.1-dev-02352"/>
-    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0-dev-02301"/>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="ShadUI" Version="0.1.5" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
     <PackageReference Include="Avalonia.Diagnostics" Version="11.3.4" />
@@ -51,10 +54,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="Controls\Dialogs\PasswordBox.axaml"/>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Components\CertificateDetails\CertificateDetailsPanel.axaml.cs">
       <DependentUpon>CertificateDetailsPanel.axaml</DependentUpon>
       <SubType>Code</SubType>
@@ -69,6 +68,10 @@
     </Compile>
     <Compile Update="Components\TrustStore\TrustStorePanel.axaml.cs">
       <DependentUpon>TrustStorePanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\Dialogs\OpenUrl\OpenUrlContent.axaml.cs">
+      <DependentUpon>OpenUrlContent.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

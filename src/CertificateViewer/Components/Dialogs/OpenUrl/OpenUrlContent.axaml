@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shadUi="clr-namespace:ShadUI;assembly=ShadUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:openUrl="clr-namespace:CertificateViewer.Components.Dialogs.OpenUrl"
+             x:DataType="openUrl:OpenUrlViewModel2"
+             x:Class="CertificateViewer.Components.Dialogs.OpenUrl.OpenUrlContent">
+    <StackPanel
+        Width="275"
+        Margin="24"
+        Spacing="16">
+        <TextBlock Classes="h4" Text="Enter address" />
+        <TextBox
+            shadUi:ControlAssist.Label="Domain"
+            shadUi:ElementAssist.FocusOnLoad="True"
+            Classes="Clearable"
+            Text="{Binding Url, Mode=TwoWay}"
+            Watermark="https://google.com" />
+
+        <StackPanel Margin="0,24,0,0" Spacing="16">
+            <Button
+                Classes="Primary"
+                Command="{Binding SubmitCommand}"
+                HotKey="Enter">
+                Submit
+            </Button>
+            <Button
+                Classes="Outline"
+                Command="{Binding CancelCommand}"
+                HotKey="Escape">
+                Cancel
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
+
