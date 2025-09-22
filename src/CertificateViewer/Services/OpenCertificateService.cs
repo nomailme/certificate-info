@@ -2,17 +2,19 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Controls.Dialogs;
 using CertificateViewer.Extensions;
 using CertificateViewer.Logic;
 using CertificateViewer.Logic.ImportServices;
 using CertificateViewer.Logic.ImportServices.Implementation;
+using ShadUI;
+using Window = Avalonia.Controls.Window;
 
 namespace CertificateViewer.Services;
 
-public class OpenCertificateService
+public class OpenCertificateService(DialogManager dialogManager, PasswordDialogViewModel passwordViewModel)
 {
     private Lazy<Window?> MainWindow { get; set; } = new(GetMainWindow);
 
@@ -25,29 +27,60 @@ public class OpenCertificateService
         throw new NotSupportedException();
     }
 
-    public async Task<DialogResult> OpenFile(string filename)
+    public async Task<DialogResult> OpenFile(string path)
     {
-        try
+        var tcs = new TaskCompletionSource<DialogResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var filepath = Uri.UnescapeDataString(path);
+        var certificateType = await CertificateHelper.CheckAsync(filepath);
+        if (certificateType == CertificateType.Pfx)
         {
-            var password = string.Empty;
-            var path = Uri.UnescapeDataString(filename);
-            var certificateType = await CertificateHelper.CheckAsync(path);
+            dialogManager.CreateDialog(passwordViewModel)
 
-            if (certificateType == CertificateType.Pfx)
-            {
-                password = await PasswordBox.ShowPasswordBoxAsync(MainWindow.Value);
-                if (password == null)
+                .WithSuccessCallback(async vm =>
                 {
-                    return DialogResult.OperationCanceled();
-                }
-            }
+                    var result = await LoadCertificate(filepath, CertificateType.Pfx, vm.Password);
+                    tcs.SetResult(result);
+                })
+                .WithCancelCallback(() => tcs.SetResult(DialogResult.OperationCanceled()))
+                .Show();
 
-            var result = await LoadCertificate(path, certificateType, password);
-            return result;
         }
-        catch (Exception ex)
+        else
         {
-            return DialogResult.CreateFail(ex);
+            var result = await LoadCertificate(filepath, certificateType, string.Empty);
+            tcs.SetResult(result);
+        }
+
+        return await tcs.Task;
+    }
+
+    public async Task<DialogResult> OpenFile2(string filename)
+    {
+        var dialogResult = DialogResult.OperationCanceled();
+        var path = Uri.UnescapeDataString(filename);
+        var certificateType = await CertificateHelper.CheckAsync(path);
+
+        if (certificateType == CertificateType.Pfx)
+        {
+            dialogManager.CreateDialog(passwordViewModel)
+                .WithSuccessCallback(vm =>
+                {
+                    dialogResult = LoadPfx(vm.Password).Result;
+                })
+                .WithCancelCallback(() => dialogResult = DialogResult.OperationCanceled())
+                .Show();
+        }
+        else if  (certificateType == CertificateType.Unknown)
+        {
+            dialogResult = await LoadCertificate(path, certificateType);
+        }
+
+        return dialogResult;
+
+        async Task<DialogResult>  LoadPfx(string secret)
+        {
+            var result = await LoadCertificate(path, certificateType, secret);
+            return result;
         }
     }
 

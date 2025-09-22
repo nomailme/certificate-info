@@ -1,5 +1,6 @@
 ﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:shadUi="clr-namespace:ShadUI;assembly=ShadUI"
              x:Class="CertificateViewer.App">
     <!-- <Application.DataTemplates> -->
     <!--     <viewModels:ViewLocator /> -->
@@ -10,8 +11,8 @@
         </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>
-        <FluentTheme />
-        <StyleInclude Source="/GlobalStyles.axaml" />
+        <shadUi:ShadTheme />
+        <!-- <StyleInclude Source="/GlobalStyles.axaml" /> -->
     </Application.Styles>
 
 </Application>

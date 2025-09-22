@@ -4,12 +4,13 @@ namespace CertificateViewer.Logic;
 
 public class ChainValidator
 {
-    public bool Validate(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore, out List<string> errors)
+    public async Task<List<string>> Validate(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore)
     {
-        return this.ValidateCore(certificates, rootCertificates, useSystemStore, out errors);
+        var result = await this.ValidateCore(certificates, rootCertificates, useSystemStore, out var errors);
+        return errors;
     }
 
-    private bool ValidateCore(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore, out List<string> errors)
+    private Task<bool> ValidateCore(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore, out List<string> errors)
     {
         var chain = X509Chain.Create();
         var policy = new X509ChainPolicy
@@ -29,6 +30,6 @@ public class ChainValidator
         
         var result = chain.Build(certificates.First());
         errors = chain.ChainStatus.Select(x => x.StatusInformation).ToList();
-        return result;
+        return Task.FromResult(result);
     }
 }

@@ -6,32 +6,30 @@
              x:Class="CertificateViewer.Components.TrustStore.TrustStorePanel"
              x:CompileBindings="True"
              Name="TrustStorePanelControl"
-             dialogManager:DialogManager.Register="{Binding}"
-             >
-    <Border Classes="panel">
-        <!--  -->
-        <!-- DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" -->
+             dialogManager:DialogManager.Register="{Binding}">
+    <Border>
         <DockPanel>
             <Border DockPanel.Dock="Top"
                     BorderBrush="#E5E7EB"
                     BorderThickness="0,0,0,1"
-                    Padding="16">
+                    Padding="16,0, 16,16">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <!-- <PathIcon Data="{StaticResource store_regular}" -->
-                    <!--          Foreground="#6B7280"/> -->
-                    <TextBlock Text="&#58344;"
+                    <!-- <PathIcon Data="{StaticResource shield_regular}" -->
+                    <!--           Foreground="#6B7280" /> -->
+                    <TextBlock Foreground="{ DynamicResource ForegroundLeadColor}"
                                FontSize="24"
-                               Foreground="#6b7280"
-                               FontFamily="{StaticResource Lucide}" />
-                    <TextBlock Classes="heading"
-                               Text="Trust Store" />
+                               FontFamily="{StaticResource Lucide}"
+                               Text="&#58344;" />
+                    <TextBlock Classes="h4" Text="Trust Store" />
                 </StackPanel>
+
             </Border>
+
 
             <StackPanel Margin="16" Spacing="16">
                 <!-- Trust Status -->
                 <Border IsVisible="{Binding IsChainValid}"
-                        Background="#F0FDF4"
+                        Background="{DynamicResource SuccessColor20}"
                         CornerRadius="8"
                         Padding="12">
                     <Grid ColumnDefinitions="Auto,*">
@@ -40,26 +38,24 @@
                         <!--           Foreground="#22C55E" /> -->
                         <TextBlock
                             Grid.Column="0" Text="&#57855;"
-                            FontSize="20"
-                            Foreground="#22C55E"
+                            FontSize="24"
+                            Foreground="{DynamicResource SuccessColor}"
                             VerticalAlignment="Center"
                             FontFamily="{StaticResource Lucide}" />
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="Certificate is trusted"
-                                       Classes="h3"
-                                       Foreground="#15803D"
-                                       FontWeight="Bold" />
-                            <TextBlock Text="Valid chain found in store"
-                                       Foreground="#16A34A"
-                                       FontSize="12" />
+                                       Classes="Large"
+                                       Foreground="{DynamicResource SuccessColor}" />
+                            <TextBlock Classes="Caption"
+                                       Text="Valid chain found in store"
+                                       Foreground="{DynamicResource SuccessColor}" />
                         </StackPanel>
                     </Grid>
                 </Border>
                 <Border IsVisible="{CompiledBinding !#TrustStorePanelControl.IsChainValid}"
-                        Background="#FEF2F2"
+                        Background="{DynamicResource WarningColor20}"
                         CornerRadius="8"
                         Padding="12"
-
                         Name="BorderWarning">
 
                     <FlyoutBase.AttachedFlyout>
@@ -73,28 +69,28 @@
                         <!--           Foreground="#22C55E" /> -->
                         <TextBlock
                             Grid.Column="0" Text="&#57855;"
-                            FontSize="20"
-                            Foreground="#EF4444"
+                            FontSize="24"
+                            Foreground="{DynamicResource WarningColor}"
                             VerticalAlignment="Center"
                             FontFamily="{StaticResource Lucide}" />
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="Certificate is not trusted"
-                                       Classes="h3"
-                                       Foreground="#B91C1C"
+                                       Classes="Large"
+                                       Foreground="{DynamicResource WarningColor}"
                                        FontWeight="Bold" />
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="There were errors during validation"
-                                           Foreground="#DC2626"
-                                           FontSize="12"
+                                           Classes="Caption"
+                                           Foreground="{DynamicResource WarningColor}"
                                            VerticalAlignment="Center" />
                                 <TextBlock
                                     Text="&#57599;"
                                     FontSize="14"
-                                    Foreground="#EF4444"
+                                    Foreground="{DynamicResource WarningColor}"
                                     VerticalAlignment="Center"
                                     PointerEntered="InputElement_OnPointerEntered"
                                     FontFamily="{StaticResource Lucide}"
-                                    Margin="8,0"/>
+                                    Margin="8,0" />
 
                             </StackPanel>
 
@@ -102,16 +98,16 @@
                     </Grid>
                 </Border>
                 <!-- System Store Toggle -->
-                <Border Background="#F8FAFC"
+                <Border Background="{DynamicResource TabItemsBackgroundColor}"
                         CornerRadius="8"
                         Padding="12">
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="System Trust Store"
-                                       Foreground="Black"
+                                       Foreground="{DynamicResource ForegroundColor}"
                                        FontWeight="Medium" />
                             <TextBlock Text="Use certificates from system trust store"
-                                       Foreground="#64748B"
+                                       Foreground="{DynamicResource ForegroundLeadColor}"
                                        FontSize="12" />
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1"
@@ -121,14 +117,14 @@
                     </Grid>
                 </Border>
                 <!-- Trusted Certificates -->
-                <StackPanel IsVisible="{CompiledBinding !$parent[UserControl].((vm:TrustStorePanel)DataContext).UseSystemStore}">
+                <StackPanel
+                    IsVisible="{CompiledBinding !$parent[UserControl].((vm:TrustStorePanel)DataContext).UseSystemStore}">
                     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
                         <TextBlock Grid.Column="0"
-                                   Classes="h3"
+                                   Classes="Large"
                                    VerticalAlignment="Center"
                                    Text="Custom Trusted Certificates" />
                         <Button Grid.Column="1"
-                                Classes="icon-button"
                                 Command="{CompiledBinding $parent[UserControl].((vm:TrustStorePanel)DataContext).AddToTrustStoreCommand}">
                             <!-- IsVisible="{Binding CanAddSelectedCertificate}"> -->
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
@@ -149,8 +145,7 @@
                     <ItemsControl ItemsSource="{Binding TrustedCertificates}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#F9FAFB"
-                                        CornerRadius="6"
+                                <Border CornerRadius="6"
                                         Padding="8"
                                         Margin="0,0,0,8">
                                     <Grid ColumnDefinitions="Auto,*,Auto">
@@ -159,23 +154,21 @@
                                         <!--           Foreground="#22C55E" /> -->
                                         <TextBlock Grid.Column="0" Text="&#57855;"
                                                    FontSize="24"
-                                                   Foreground="#22C55E"
+                                                   Foreground="{DynamicResource SuccessColor}"
                                                    FontFamily="{StaticResource Lucide}" />
                                         <StackPanel Grid.Column="1"
                                                     Margin="8,0,0,0">
                                             <TextBlock Text="{Binding Subject}"
-                                                       Foreground="Black"
+                                                       Classes="Caption"
                                                        TextTrimming="CharacterEllipsis" />
                                             <TextBlock Text="{Binding Thumbprint}"
-                                                       Foreground="#6B7280"
-                                                       FontSize="12"
+                                                       Classes="Muted"
                                                        TextTrimming="CharacterEllipsis" />
                                         </StackPanel>
                                         <Button Grid.Column="2"
-                                                Classes="icon-button"
                                                 Command="{Binding $parent[ItemsControl].((vm:TrustStorePanel)DataContext).RemoveFromTrustStoreCommand}"
                                                 CommandParameter="{Binding}"
-                                                Foreground="#EF4444">
+                                                Foreground="{DynamicResource ErrorColor}">
                                             <!-- <PathIcon Data="{StaticResource trash_2_regular}" /> -->
                                             <TextBlock Text="&#57742;"
                                                        FontSize="24"
@@ -188,7 +181,7 @@
                     </ItemsControl>
 
                     <TextBlock Text="No certificates in a custom trust store"
-                               Foreground="#6B7280"
+                               Classes="Muted"
                                HorizontalAlignment="Center"
                                Margin="0,16"
                                IsVisible="{Binding !TrustedCertificates.Count}" />

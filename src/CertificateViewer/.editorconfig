@@ -306,14 +306,6 @@ dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_r
 dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.style = pascal_case_style
 dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.severity = warning
 
-dotnet_naming_rule.private_members_with_underscore.symbols  = private_fields
-dotnet_naming_rule.private_members_with_underscore.style    = prefix_underscore
-dotnet_naming_rule.private_members_with_underscore.severity = suggestion
-
-dotnet_naming_symbols.private_fields.applicable_kinds           = field
-dotnet_naming_symbols.private_fields.applicable_accessibilities = private
-dotnet_naming_symbols.private_fields.required_modifiers         = readonly
-
 dotnet_naming_style.prefix_underscore.capitalization = camel_case
 dotnet_naming_style.prefix_underscore.required_prefix = _
 
@@ -360,11 +352,16 @@ dotnet_naming_rule.stylecop_instance_fields_must_be_private_rule.severity = erro
 
 # Private fields must be camelCase
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1306.md
-dotnet_naming_symbols.stylecop_private_fields_group.applicable_accessibilities = private
-dotnet_naming_symbols.stylecop_private_fields_group.applicable_kinds = field
-dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.symbols = stylecop_private_fields_group
-dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.style = camel_case_style
-dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.severity = warning
+# Define what we will treat as private fields.
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+# Define rule that something must begin with an underscore and be in camel case.
+dotnet_naming_style.require_underscore_prefix_and_camel_case.required_prefix = _
+dotnet_naming_style.require_underscore_prefix_and_camel_case.capitalization = camel_case
+# Appy our rule to private fields.
+dotnet_naming_rule.private_fields_must_begin_with_underscore_and_be_in_camel_case.symbols = private_fields
+dotnet_naming_rule.private_fields_must_begin_with_underscore_and_be_in_camel_case.style = require_underscore_prefix_and_camel_case
+dotnet_naming_rule.private_fields_must_begin_with_underscore_and_be_in_camel_case.severity = warning
 
 # Local variables must be camelCase
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1312.md

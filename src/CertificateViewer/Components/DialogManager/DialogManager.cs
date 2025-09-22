@@ -7,8 +7,7 @@ namespace CertificateViewer.Components.DialogManager;
 
 public class DialogManager
 {
-    private static readonly Dictionary<object, Visual> RegistrationMapper =
-        new Dictionary<object, Visual>();
+    private static readonly Dictionary<object, Visual> RegistrationMapper = new();
 
     /// <summary>
     /// This property handles the registration of Views and ViewModel

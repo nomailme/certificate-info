@@ -2,35 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:CertificateViewer.Components.CertificateChain"
              xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography"
-
+             xmlns:shadUi="clr-namespace:ShadUI;assembly=ShadUI"
              x:Class="CertificateViewer.Components.CertificateChain.CertificateChainPanel"
              x:DataType="vm:CertificateChainPanel"
 
              Name="CertificateChainList">
-    <Border Classes="panel" DataContext="{CompiledBinding #CertificateChainList}">
+    <Border DataContext="{CompiledBinding #CertificateChainList}">
         <DockPanel>
             <Border DockPanel.Dock="Top"
                     BorderBrush="#E5E7EB"
                     BorderThickness="0,0,0,1"
-                    Padding="16">
+                    Padding="16,0, 16,16">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <!-- <PathIcon Data="{StaticResource file_text_regular}" -->
                     <!--          Foreground="#6B7280"/> -->
-                    <TextBlock Text="&#57552;"
+                    <TextBlock
+                               Foreground="{ DynamicResource ForegroundLeadColor}"
                                FontSize="24"
-                               Foreground="#6b7280"
-                               FontFamily="{StaticResource Lucide}" />
-                    <TextBlock Classes="heading" Text="Certificate Chain" />
-                    <Border CornerRadius="4"
-                            Padding="4"
-                            Background="#F0FDF4"
-                            IsVisible="{CompiledBinding #CertificateChainList.ItemsSource.Count}">
-                        <TextBlock Classes="h3"
-                            Text="{CompiledBinding $parent[UserControl].((vm:CertificateChainPanel)DataContext).CertificateSource}"></TextBlock>
-                    </Border>
+                               FontFamily="{StaticResource Lucide}" Text="&#57552;" />
+                    <TextBlock Classes="h4" Text="Certificate Chain" />
+                    <shadUi:Badge IsVisible="{CompiledBinding #CertificateChainList.ItemsSource.Count}"
+                                  VerticalAlignment="Center"
+                                  Background="{DynamicResource InfoColor}" Foreground="White">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{CompiledBinding $parent[UserControl].((vm:CertificateChainPanel)DataContext).CertificateSource}" />
+                    </shadUi:Badge>
                 </StackPanel>
             </Border>
-            <ListBox Margin="8"
+            <ListBox BorderBrush="{x:Null}"
+                Margin="0,8"
                      DockPanel.Dock="Top"
                      ItemsSource="{CompiledBinding $parent[UserControl].((vm:CertificateChainPanel)DataContext).ItemsSource}"
                      HorizontalAlignment="Stretch"
@@ -38,40 +38,40 @@
 
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type x509Certificates:X509Certificate2}">
-                        <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="8">
+                        <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="0,8">
                             <!-- <PathIcon Grid.Column="0" -->
                             <!--           Data="{StaticResource shield_check_regular}" -->
                             <!--           Foreground="#22C55E"/> -->
-                            <TextBlock Text="&#57855;"
+                            <TextBlock
+                                       Text="&#57855;"
                                        FontSize="24"
                                        Foreground="#22C55E"
                                        FontFamily="{StaticResource Lucide}" />
                             <StackPanel Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{CompiledBinding Subject}" Classes="h3" />
+                                <TextBlock Text="{CompiledBinding Subject}" Classes="Caption" />
                                 <TextBlock
-                                           Classes="text"
-                                           Text="{CompiledBinding Issuer}"
-                                           Foreground="#6B7280"
-                                           FontSize="12" />
+                                    Classes="Muted"
+                                    Text="{CompiledBinding Issuer}"
+                                    Foreground="#6B7280"
+                                    FontSize="12" />
                             </StackPanel>
 
                             <TextBlock Grid.Column="2"
                                        Text="&#57459;"
                                        FontSize="24"
-                                       Foreground="#9CA3AF"
+                                       Foreground="{DynamicResource SwitchBackgroundColor}"
                                        FontFamily="{StaticResource Lucide}" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <TextBlock Classes="text"
+            <TextBlock Classes="Muted"
                        Foreground="#6B7280"
                        HorizontalAlignment="Center"
                        Margin="0,16"
                        DockPanel.Dock="Top"
-                       IsVisible="{CompiledBinding !#CertificateChainList.ItemsSource.Count}">
-                No certificates loaded.
-            </TextBlock>
+                       Text="No certificates loaded."
+                       IsVisible="{CompiledBinding !#CertificateChainList.ItemsSource.Count}"/>
         </DockPanel>
     </Border>
 </UserControl>
