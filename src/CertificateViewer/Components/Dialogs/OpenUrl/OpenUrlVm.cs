@@ -7,7 +7,7 @@ using ShadUI;
 
 namespace CertificateViewer.Components.Dialogs.OpenUrl;
 
-public sealed partial class OpenUrlViewModel2(ShadUI.DialogManager dialogManager) : BaseViewModel
+public sealed partial class OpenUrlVm(ShadUI.DialogManager dialogManager) : BaseViewModel
 {
     private string _url = "https://";
 

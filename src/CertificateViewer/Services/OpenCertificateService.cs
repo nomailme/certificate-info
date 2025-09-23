@@ -54,36 +54,6 @@ public class OpenCertificateService(DialogManager dialogManager, PasswordDialogV
         return await tcs.Task;
     }
 
-    public async Task<DialogResult> OpenFile2(string filename)
-    {
-        var dialogResult = DialogResult.OperationCanceled();
-        var path = Uri.UnescapeDataString(filename);
-        var certificateType = await CertificateHelper.CheckAsync(path);
-
-        if (certificateType == CertificateType.Pfx)
-        {
-            dialogManager.CreateDialog(passwordViewModel)
-                .WithSuccessCallback(vm =>
-                {
-                    dialogResult = LoadPfx(vm.Password).Result;
-                })
-                .WithCancelCallback(() => dialogResult = DialogResult.OperationCanceled())
-                .Show();
-        }
-        else if  (certificateType == CertificateType.Unknown)
-        {
-            dialogResult = await LoadCertificate(path, certificateType);
-        }
-
-        return dialogResult;
-
-        async Task<DialogResult>  LoadPfx(string secret)
-        {
-            var result = await LoadCertificate(path, certificateType, secret);
-            return result;
-        }
-    }
-
     private static async Task<DialogResult> LoadCertificate(string filename, CertificateType certificateType, string password = "")
     {
         var rawData = await File.ReadAllBytesAsync(filename);

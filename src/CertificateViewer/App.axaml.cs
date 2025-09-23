@@ -4,12 +4,13 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
+using CertificateViewer.Components.Dialogs.OpenUrl;
 using CertificateViewer.Components.Dialogs.PasswordBox;
-using CertificateViewer.Components.MainWindow2;
+using CertificateViewer.Components.MainWindow;
 using CertificateViewer.Services;
 using Microsoft.Extensions.DependencyInjection;
 using ShadUI;
-using OpenUrlViewModel2 = CertificateViewer.Components.Dialogs.OpenUrl.OpenUrlViewModel2;
 
 namespace CertificateViewer;
 
@@ -33,20 +34,31 @@ public class App : Application
         var collection = new ServiceCollection();
         collection.AddSingleton<ViewModelFactory>();
         collection.AddSingleton<DialogManager>();
-        collection.AddTransient<OpenUrlViewModel2>();
+        collection.AddTransient<OpenUrlVm>();
         collection.AddTransient<PasswordDialogViewModel>();
-        collection.AddSingleton<MainWindow2ViewModel>();
+        collection.AddSingleton<MainWindowVm>();
         collection.AddSingleton<ThemeWatcher>(_ => new ThemeWatcher(Current!));
 
         var services = collection.BuildServiceProvider();
 
         services.RegisterDialogs();
 
-        var vm = DataContext = services.GetRequiredService<MainWindow2ViewModel>();
-        var mainWindow = new MainWindow2 { DataContext = vm };
+        var vm = services.GetRequiredService<MainWindowVm>();
+        var mainWindow = new MainWindow { DataContext = vm };
         desktop.MainWindow = mainWindow;
 
+        var args = desktop.Args;
+        if (args?.Length == 1)
+        {
+            Dispatcher.UIThread.Invoke(async () =>
+            {
+                await vm.LoadFileAsync(args.Single());
+            });
+
+        }
+
         base.OnFrameworkInitializationCompleted();
+
     }
 
     private void DisableAvaloniaDataAnnotationValidation()
