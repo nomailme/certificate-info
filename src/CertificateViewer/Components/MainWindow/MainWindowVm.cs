@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using CertificateViewer.Components.DialogManager;
+using CertificateViewer.Components.Dialogs.OpenUrl;
 using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Controls.Dialogs;
 using CertificateViewer.Extensions;
@@ -13,13 +15,13 @@ using CertificateViewer.Logic;
 using CertificateViewer.Logic.ImportServices.Implementation;
 using CertificateViewer.Services;
 using CertificateViewer.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using ShadUI;
-using OpenUrlViewModel2 = CertificateViewer.Components.Dialogs.OpenUrl.OpenUrlViewModel2;
 
-namespace CertificateViewer.Components.MainWindow2;
+namespace CertificateViewer.Components.MainWindow;
 
-public class MainWindow2ViewModel : BaseViewModel
+public partial class MainWindowVm : BaseViewModel
 {
     private readonly ThemeWatcher _themeWatcher;
     private readonly ViewModelFactory _viewModelFactory;
@@ -32,7 +34,7 @@ public class MainWindow2ViewModel : BaseViewModel
     private X509Certificate2? _selectedCertificate;
     private string _title = string.Empty;
 
-    public MainWindow2ViewModel(
+    public MainWindowVm(
         ShadUI.DialogManager dialogManager,
         PasswordDialogViewModel passwordViewModel,
         ViewModelFactory viewModelFactory,
@@ -42,18 +44,11 @@ public class MainWindow2ViewModel : BaseViewModel
         _openCertificateService = new OpenCertificateService(dialogManager, passwordViewModel);
         _dialogManager = dialogManager;
         _viewModelFactory = viewModelFactory;
-        OpenCertificateFileCommand = ReactiveCommand.CreateFromTask(_ => OpenFile());
-        GetCertificateFromUrlCommand = ReactiveCommand.Create(OpenUrl);
-        SwitchThemeCommand = ReactiveCommand.CreateFromTask(_ => SwitchTheme());
         _themeWatcher = themeWatcher;
+        SetTitle(string.Empty);
     }
+
     public Interaction<string, string?> ShowOpenFileDialog { get; set; }
-
-    public ReactiveCommand<Unit, Unit> SwitchThemeCommand { get; set; }
-
-    public ReactiveCommand<Unit, Unit> GetCertificateFromUrlCommand { get; set; }
-
-    public ReactiveCommand<Unit, Unit> OpenCertificateFileCommand { get; set; }
 
     public string Title { get => _title; set => this.RaiseAndSetIfChanged(ref _title, value); }
 
@@ -80,6 +75,7 @@ public class MainWindow2ViewModel : BaseViewModel
         get => _selectedCertificate;
         set => this.RaiseAndSetIfChanged(ref _selectedCertificate, value);
     }
+
     public string CertificateSource { get => _certificateSource; set => this.RaiseAndSetIfChanged(ref _certificateSource, value); }
 
     public bool IsBusy
@@ -94,9 +90,10 @@ public class MainWindow2ViewModel : BaseViewModel
         private set => this.RaiseAndSetIfChanged(ref _currentTheme, value);
     }
 
+    [RelayCommand]
     private void OpenUrl()
     {
-        var openUrlViewModel = _viewModelFactory.Build<OpenUrlViewModel2>();
+        var openUrlViewModel = _viewModelFactory.Build<OpenUrlVm>();
         DialogManager.CreateDialog(openUrlViewModel)
             .WithSuccessCallback(vm => Load(vm.Url))
             .WithCancelCallback(() => { })
@@ -108,7 +105,7 @@ public class MainWindow2ViewModel : BaseViewModel
             return $"url:{url.Host}";
         }
 
-        async Task Load(string urlInput)
+        async Task Load(string uri)
         {
             using (BusyObject.Create(() => IsBusy = true, () => IsBusy = false))
             {
@@ -116,20 +113,20 @@ public class MainWindow2ViewModel : BaseViewModel
                 try
                 {
 
-                    if (string.IsNullOrWhiteSpace(urlInput))
+                    if (string.IsNullOrWhiteSpace(uri))
                     {
                         return;
                     }
 
-                    var result = await remoteServerCertificateImporter.ImportAsync(urlInput);
+                    var result = await remoteServerCertificateImporter.ImportAsync(uri);
                     if (!result.Success)
                     {
                         throw result.Error ?? new InvalidOperationException("Error loading certificate");
                     }
 
-                    CertificateSource = GetDomain(urlInput);
+                    CertificateSource = GetDomain(uri);
                     LoadCertificates(result.ToDialogResult(CertificateType.Web));
-                    SetTitle(urlInput);
+                    SetTitle(uri);
                 }
                 catch (Exception e)
                 {
@@ -144,27 +141,39 @@ public class MainWindow2ViewModel : BaseViewModel
 
     private void SetTitle(string input)
     {
+        var version = Assembly.GetEntryAssembly()?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion;
+
         if (string.IsNullOrWhiteSpace(input))
         {
-            Title = "Certificate Viewer";
+            Title = $"Certificate Viewer v{version}";
         }
 
-        Title = $"Certificate Viewer: {input}";
+        Title = $"Certificate Viewer v{version}: {input}";
     }
 
-    private async Task OpenFile()
+    [RelayCommand]
+    private async Task OpenCertificateFile()
     {
         var fileDialogResult = await this.OpenFileDialogAsync("Open file", false);
-        var result = await _openCertificateService.OpenFile(fileDialogResult.Single());
-        CertificateSource = GetFileName(fileDialogResult.Single());
-        LoadCertificates(result);
-        SetTitle(fileDialogResult.Single());
-
-        string GetFileName(string input)
+        if (fileDialogResult.Count == 0)
         {
-            return $"file:{Path.GetFileName(input)}";
+            return;
         }
+        await LoadFileAsync(fileDialogResult.Single());
     }
+
+    private static string GetFileSource(string input) => $"file:{Path.GetFileName(input)}";
+
+    public async Task LoadFileAsync(string filepath)
+    {
+        CertificateSource = GetFileSource(filepath);
+        var result = await _openCertificateService.OpenFile(filepath);
+        LoadCertificates(result);
+        SetTitle(filepath);
+    }
+
     private void LoadCertificates(DialogResult dialogResult)
     {
         switch (dialogResult.Success)
@@ -184,6 +193,7 @@ public class MainWindow2ViewModel : BaseViewModel
         }
     }
 
+    [RelayCommand]
     private Task SwitchTheme()
     {
         CurrentTheme = CurrentTheme switch
