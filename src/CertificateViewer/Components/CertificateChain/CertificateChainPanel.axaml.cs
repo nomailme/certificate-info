@@ -26,8 +26,8 @@ public partial class CertificateChainPanel : UserControl
             o => o.SelectedItem,
             (o, v) => o.SelectedItem = v,
             enableDataValidation: false);
-    private string _certificateSource = string.Empty;
 
+    private string _certificateSource = string.Empty;
     private ObservableCollection<X509Certificate2> _items = new();
     private X509Certificate2? _selectedItem;
 
@@ -37,7 +37,11 @@ public partial class CertificateChainPanel : UserControl
         AffectsArrange<CertificateChainPanel>(ItemsSourceProperty);
         DataContext = this;
     }
-    public string CertificateSource { get => _certificateSource; set => SetAndRaise(CertificateSourceProperty, ref _certificateSource, value); }
+    public string CertificateSource
+    {
+        get => _certificateSource;
+        set => SetAndRaise(CertificateSourceProperty, ref _certificateSource, value);
+    }
 
 
     public ObservableCollection<X509Certificate2> ItemsSource
@@ -45,9 +49,6 @@ public partial class CertificateChainPanel : UserControl
         get => _items;
         set => SetAndRaise(ItemsSourceProperty, ref _items, value);
     }
-
-    public bool IsEmpty => ItemsSource.Count == 0;
-
 
     public X509Certificate2? SelectedItem
     {

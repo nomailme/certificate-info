@@ -6,7 +6,7 @@ public class ChainValidator
 {
     public async Task<List<string>> Validate(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore)
     {
-        var result = await this.ValidateCore(certificates, rootCertificates, useSystemStore, out var errors);
+        await ValidateCore(certificates, rootCertificates, useSystemStore, out var errors);
         return errors;
     }
 

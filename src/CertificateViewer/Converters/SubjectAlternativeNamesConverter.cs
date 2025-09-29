@@ -7,10 +7,11 @@ using Avalonia.Data.Converters;
 
 namespace CertificateViewer.Converters;
 
-public class SubjectAlternativeNamesConverter:IValueConverter
+public class SubjectAlternativeNamesConverter : IValueConverter
 {
 
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
 
         if (value == null)
         {
@@ -24,7 +25,7 @@ public class SubjectAlternativeNamesConverter:IValueConverter
 
         return GetAlternativeDnsNames(cert);
     }
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotImplementedException();
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotImplementedException();
 
 
     private static List<string> GetAlternativeDnsNames(X509Certificate2 cert)

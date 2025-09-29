@@ -1,11 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,6 +11,7 @@ using CertificateViewer.Components.DialogManager;
 using CertificateViewer.Controls.Dialogs;
 using CertificateViewer.Logic;
 using CertificateViewer.Services;
+using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using ReactiveUI;
 using ShadUI;
@@ -23,7 +20,6 @@ namespace CertificateViewer.Components.TrustStore;
 
 public partial class TrustStorePanel : UserControl
 {
-    private ShadUI.DialogManager _dialogManager;
 
     public static readonly DirectProperty<TrustStorePanel, ObservableCollection<X509Certificate2>>
         CertificateChainProperty =
@@ -72,6 +68,29 @@ public partial class TrustStorePanel : UserControl
                 o => o.OpenCertificateService,
                 (o, v) => o.OpenCertificateService = v);
 
+    private ObservableCollection<X509Certificate2> _certificateChain = new();
+    private ShadUI.DialogManager _dialogManager;
+    private ObservableCollection<string> _errors = new();
+    private bool _isChainValid = true;
+    private OpenCertificateService _openCertificateService;
+    private Interaction<string, string?>? _openFileDialog;
+    private bool _useSystemStore = true;
+    static TrustStorePanel() => AffectsArrange<TrustStorePanel>(CertificateChainProperty);
+
+    public TrustStorePanel()
+    {
+        InitializeComponent();
+
+        this.WhenAnyValue(
+                x => x.TrustedCertificates,
+                x => x.CertificateChain,
+                x => x.UseSystemStore,
+                (_, _, _) => "changed")
+            .Subscribe(async void (_) => await UpdateValidity());
+
+        DataContext = this;
+    }
+
 
     public ShadUI.DialogManager DialogManager
     {
@@ -85,36 +104,6 @@ public partial class TrustStorePanel : UserControl
         set => SetAndRaise(OpenCertificateServiceProperty, ref _openCertificateService, value);
     }
 
-    private ObservableCollection<X509Certificate2> _certificateChain = new();
-    private ObservableCollection<string> _errors = new();
-    private bool _isChainValid = true;
-    private Interaction<string, string?>? _openFileDialog;
-    private bool _useSystemStore = true;
-    private OpenCertificateService _openCertificateService;
-
-    public TrustStorePanel()
-    {
-        InitializeComponent();
-
-        var canAddCertificate = this.WhenAnyValue(x => x.UseSystemStore).Select(x=>!x);
-        AddToTrustStoreCommand = ReactiveCommand.CreateFromTask(AddRootCertificate, canAddCertificate);
-
-        var trustedCertificates = this.WhenAnyValue(
-            x => x.TrustedCertificates,
-            x => x.CertificateChain,
-            x => x.UseSystemStore,
-            (_, _, _) => "changed");
-
-        trustedCertificates.Subscribe(_ => UpdateValidity());
-        RemoveFromTrustStoreCommand =
-            ReactiveCommand.CreateFromTask<X509Certificate2>(RemoveCertificateFromTrustedStore);
-        DataContext = this;
-
-    }
-    static TrustStorePanel() => AffectsArrange<TrustStorePanel>(CertificateChainProperty);
-
-
-    public ReactiveCommand<X509Certificate2, Unit> RemoveFromTrustStoreCommand { get; set; }
 
     public ObservableCollection<string> Errors
     {
@@ -125,16 +114,10 @@ public partial class TrustStorePanel : UserControl
     public bool UseSystemStore
     {
         get => _useSystemStore;
-        set
-        {
-            SetAndRaise(UseSystemStoreProperty, ref _useSystemStore, value);
-            UpdateValidity();
-        }
+        set => SetAndRaise(UseSystemStoreProperty, ref _useSystemStore, value);
     }
 
     public ObservableCollection<X509Certificate2> TrustedCertificates { get; set; } = new();
-
-    public ReactiveCommand<Unit, Unit> AddToTrustStoreCommand { get; set; }
 
     public ObservableCollection<X509Certificate2> CertificateChain
     {
@@ -155,7 +138,8 @@ public partial class TrustStorePanel : UserControl
         set => SetAndRaise(OpenFileDialogProperty, ref _openFileDialog, value);
     }
 
-    private Task RemoveCertificateFromTrustedStore(X509Certificate2 certificate)
+    [RelayCommand]
+    public Task RemoveFromTrustedStore(X509Certificate2 certificate)
     {
         TrustedCertificates.Remove(certificate);
         return Task.CompletedTask;
@@ -176,12 +160,12 @@ public partial class TrustStorePanel : UserControl
         IsChainValid = result.Count == 0;
     }
 
-
-    private async Task AddRootCertificate()
+    [RelayCommand]
+    public async Task AddRootCertificate()
     {
         try
         {
-            var fileDialogResult = await this.OpenFileDialogAsync("Root certificates", selectMany: true);
+            var fileDialogResult = await this.OpenFileDialogAsync("Root certificates");
 
             foreach (var file in fileDialogResult)
             {

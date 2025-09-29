@@ -12,4 +12,17 @@
         <Setter Property="Background" Value="Transparent"></Setter>
 
     </Style>
+
+    <Style Selector=".h4"></Style>
+    <Style Selector=".h3"></Style>
+    <Style Selector=".Caption"></Style>
+    <Style Selector=".Muted"></Style>
+    <Style Selector=".Small"></Style>
+    <Style Selector=".Clearable"></Style>
+    <Style Selector=".Primary"></Style>
+    <Style Selector=".Outline"></Style>
+    <Style Selector=".PasswordReveal"></Style>
+    <Style Selector=".Ghost"></Style>
+    <Style Selector=".Large"></Style>
+
 </Styles>

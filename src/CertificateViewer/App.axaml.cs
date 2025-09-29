@@ -1,15 +1,16 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reactive.Disposables;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
 using CertificateViewer.Components.Dialogs.OpenUrl;
 using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Components.MainWindow;
 using CertificateViewer.Services;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using ShadUI;
 
 namespace CertificateViewer;
@@ -29,6 +30,7 @@ public class App : Application
         {
             return;
         }
+
         DisableAvaloniaDataAnnotationValidation();
 
         var collection = new ServiceCollection();
@@ -44,30 +46,39 @@ public class App : Application
         services.RegisterDialogs();
 
         var vm = services.GetRequiredService<MainWindowVm>();
-        var mainWindow = new MainWindow { DataContext = vm };
+        var mainWindow = new MainWindow
+        {
+            DataContext = vm
+        };
         desktop.MainWindow = mainWindow;
 
         var args = desktop.Args;
+
+
         if (args?.Length == 1)
         {
-            Dispatcher.UIThread.Invoke(async () =>
-            {
-                await vm.LoadFileAsync(args.Single());
-            });
-
+            mainWindow.WhenActivated(async void (d) =>
+                {
+                    await vm.LoadFileAsync(args.Single());
+                    Disposable.Create(() => { }).DisposeWith(d);
+                }
+            );
         }
 
         base.OnFrameworkInitializationCompleted();
-
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
+    [RequiresUnreferencedCode("Calls Avalonia.Data.Core.Plugins.BindingPlugins.DataValidators")]
+    private static void DisableAvaloniaDataAnnotationValidation()
     {
         // Get an array of plugins to remove
         var dataValidationPluginsToRemove =
             BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
         // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove) BindingPlugins.DataValidators.Remove(plugin);
+        foreach (var plugin in dataValidationPluginsToRemove)
+        {
+            BindingPlugins.DataValidators.Remove(plugin);
+        }
     }
 }

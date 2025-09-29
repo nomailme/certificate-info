@@ -9,98 +9,99 @@
         <converters:SubjectAlternativeNamesConverter x:Key="SubjectAlternativeNamesConverter" />
         <converters:CertificateRawConverter x:Key="CertificateRawConverter" />
     </UserControl.Resources>
-    <Border>
-        <DockPanel>
-            <Border DockPanel.Dock="Top"
-                    BorderBrush="#E5E7EB"
-                    BorderThickness="0,0,0,1"
-                    Padding="16,0, 16,16">
-                <Grid ColumnDefinitions="*,Auto">
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                        <!-- <PathIcon Data="{StaticResource shield_regular}" -->
-                        <!--           Foreground="#6B7280" /> -->
-                        <TextBlock Foreground="{ DynamicResource ForegroundLeadColor}"
-                                   FontSize="24"
-                                   FontFamily="{StaticResource Lucide}" Text="&#57692;" />
-                        <TextBlock Classes="h4" Text="Certificate Details" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <ToggleSwitch
-                            Classes="h4"
-                            IsChecked="{Binding $parent[certificateDetails:CertificateDetailsPanel].ShowRaw}"
-                            OnContent="Raw"
-                            OffContent="Raw" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <ScrollViewer DockPanel.Dock="Top" IsVisible="{CompiledBinding !$parent[certificateDetails:CertificateDetailsPanel].ShowRaw}">
-                <StackPanel Margin="16" Spacing="16">
-                    <StackPanel>
-                        <TextBlock Text="Subject" Classes="Small" />
-                        <TextBlock Classes="Caption"
-                                  Text="{CompiledBinding Subject}"
-                                   Margin="0,4,0,0" />
-                    </StackPanel>
-
-                    <StackPanel>
-                        <TextBlock Text="Issuer" Classes="Small" />
-                        <TextBlock Classes="Caption"
-                                   Text="{CompiledBinding Issuer}"
-                                   Margin="0,4,0,0" />
-                    </StackPanel>
-
-                    <StackPanel>
-                        <TextBlock Text="Valid From" Classes="Small" />
-                        <TextBlock Classes="Caption"
-                                   Text="{CompiledBinding NotBefore}"
-                                   Margin="0,4,0,0" />
-                    </StackPanel>
-
-                    <StackPanel>
-                        <TextBlock Text="Valid To" Classes="Small" />
-                        <TextBlock Classes="Caption"
-                                   Text="{CompiledBinding NotAfter}"
-                                   Margin="0,4,0,0" />
-                    </StackPanel>
-
-                    <StackPanel>
-                        <TextBlock Text="Serial Number" Classes="Small" />
-                        <TextBlock Classes="Caption"
-                                   Text="{CompiledBinding SerialNumber}"
-                                   FontFamily="Cascadia Code"
-                                   Margin="0,4,0,0" />
-                    </StackPanel>
-
-                    <StackPanel>
-                        <TextBlock Text="Thumbprint" Classes="Small" />
-                        <TextBlock Classes="Caption"
-                                   Text="{CompiledBinding Thumbprint}"
-                                   FontFamily="Cascadia Code"
-                                   Margin="0,4,0,0" />
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock Text="Subject Alternative Names" Classes="Small" />
-                        <ListBox BorderBrush="{x:Null}"
-                                 ItemsSource="{CompiledBinding Path=., Converter={StaticResource SubjectAlternativeNamesConverter}}"
-                                 FontFamily="Cascadia Code"
-                                 Margin="0,4,0,0">
-                            <ListBox.Styles>
-                                <Style Selector="ListBoxItem">
-                                    <Setter Property="Padding" Value="2"></Setter>
-                                </Style>
-                            </ListBox.Styles>
-                        </ListBox>
-                    </StackPanel>
+    <DockPanel>
+        <Border DockPanel.Dock="Top"
+                BorderBrush="#E5E7EB"
+                BorderThickness="0,0,0,1"
+                Padding="16,0, 16,16">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <!-- <PathIcon Data="{StaticResource shield_regular}" -->
+                    <!--           Foreground="#6B7280" /> -->
+                    <TextBlock Foreground="{ DynamicResource ForegroundLeadColor}"
+                               FontSize="24"
+                               FontFamily="{StaticResource Lucide}"
+                               Text="&#57692;" />
+                    <TextBlock Classes="h4"
+                               Text="Certificate Details" />
                 </StackPanel>
-            </ScrollViewer>
-            <ScrollViewer DockPanel.Dock="Bottom" IsVisible="{CompiledBinding $parent[certificateDetails:CertificateDetailsPanel].ShowRaw}">
-                <StackPanel Margin="16" Spacing="16" >
-                    <TextBlock
-                        Classes="Caption"
-                        Text="{CompiledBinding Path=., Converter={StaticResource CertificateRawConverter}}" />
+                    <ToggleSwitch
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Classes="h4"
+                        IsChecked="{Binding $parent[certificateDetails:CertificateDetailsPanel].ShowRaw}"
+                        OnContent="Raw"
+                        OffContent="Raw" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer DockPanel.Dock="Top"
+                      IsVisible="{CompiledBinding !$parent[certificateDetails:CertificateDetailsPanel].ShowRaw}">
+            <StackPanel Margin="16" Spacing="16">
+                <StackPanel>
+                    <TextBlock Text="Subject" Classes="Small" />
+                    <TextBlock Classes="Caption"
+                               Text="{CompiledBinding Subject}"
+                               Margin="0,4,0,0" />
                 </StackPanel>
-            </ScrollViewer>
-        </DockPanel>
-    </Border>
+
+                <StackPanel>
+                    <TextBlock Text="Issuer" Classes="Small" />
+                    <TextBlock Classes="Caption"
+                               Text="{CompiledBinding Issuer}"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Valid From" Classes="Small" />
+                    <TextBlock Classes="Caption"
+                               Text="{CompiledBinding NotBefore}"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Valid To" Classes="Small" />
+                    <TextBlock Classes="Caption"
+                               Text="{CompiledBinding NotAfter}"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Serial Number" Classes="Small" />
+                    <TextBlock Classes="Caption"
+                               Text="{CompiledBinding SerialNumber}"
+                               FontFamily="Cascadia Code"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Thumbprint" Classes="Small" />
+                    <TextBlock Classes="Caption"
+                               Text="{CompiledBinding Thumbprint}"
+                               FontFamily="Cascadia Code"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Subject Alternative Names" Classes="Small" />
+                    <ListBox BorderBrush="{x:Null}"
+                             ItemsSource="{CompiledBinding Path=., Converter={StaticResource SubjectAlternativeNamesConverter}}"
+                             FontFamily="Cascadia Code"
+                             Margin="0,4,0,0">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="2" />
+                            </Style>
+                        </ListBox.Styles>
+                    </ListBox>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer DockPanel.Dock="Bottom"
+                      IsVisible="{CompiledBinding $parent[certificateDetails:CertificateDetailsPanel].ShowRaw}">
+            <SelectableTextBlock
+                Margin="16"
+                Classes="Caption"
+                Text="{CompiledBinding Path=., Converter={StaticResource CertificateRawConverter}}" />
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>
