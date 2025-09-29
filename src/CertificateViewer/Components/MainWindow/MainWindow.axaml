@@ -9,6 +9,7 @@
                xmlns:mainWindow="clr-namespace:CertificateViewer.Components.MainWindow"
                x:Class="CertificateViewer.Components.MainWindow.MainWindow"
                x:DataType="mainWindow:MainWindowVm"
+               x:CompileBindings="True"
                Background="{DynamicResource DialogBackgroundColor}"
                Title="{CompiledBinding Title}"
                dialogManager:DialogManager.Register="{Binding}"
@@ -94,7 +95,7 @@
                 <shadUi:Card Grid.Column="1">
                     <certificateDetails:CertificateDetailsPanel
                         DataContext="{CompiledBinding SelectedCertificate}"
-                        Certificate="{Binding Path= SelectedCertificate}" />
+                        Certificate="{CompiledBinding .}" />
                 </shadUi:Card>
                 <shadUi:Card Grid.Column="2">
                     <trustStore:TrustStorePanel

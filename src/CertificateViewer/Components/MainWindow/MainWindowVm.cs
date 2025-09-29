@@ -21,7 +21,7 @@ using ShadUI;
 
 namespace CertificateViewer.Components.MainWindow;
 
-public partial class MainWindowVm : BaseViewModel
+public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
 {
     private readonly ThemeWatcher _themeWatcher;
     private readonly ViewModelFactory _viewModelFactory;
@@ -40,15 +40,21 @@ public partial class MainWindowVm : BaseViewModel
         ViewModelFactory viewModelFactory,
         ThemeWatcher themeWatcher)
     {
+        Activator = new ViewModelActivator();
         ShowOpenFileDialog = new Interaction<string, string?>();
+        OpenFile = new Interaction<string, Unit>();
         _openCertificateService = new OpenCertificateService(dialogManager, passwordViewModel);
         _dialogManager = dialogManager;
         _viewModelFactory = viewModelFactory;
         _themeWatcher = themeWatcher;
+
         SetTitle(string.Empty);
     }
 
+
     public Interaction<string, string?> ShowOpenFileDialog { get; set; }
+
+    public Interaction<string, Unit> OpenFile { get; set; }
 
     public string Title { get => _title; set => this.RaiseAndSetIfChanged(ref _title, value); }
 
@@ -139,18 +145,18 @@ public partial class MainWindowVm : BaseViewModel
 
     }
 
-    private void SetTitle(string input)
+    private void SetTitle(string certficateSource)
     {
         var version = Assembly.GetEntryAssembly()?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
             .InformationalVersion;
 
-        if (string.IsNullOrWhiteSpace(input))
+        if (string.IsNullOrWhiteSpace(certficateSource))
         {
-            Title = $"Certificate Viewer v{version}";
+            Title = $"Certificate Viewer {version}";
         }
 
-        Title = $"Certificate Viewer v{version}: {input}";
+        Title = $"Certificate Viewer {version}: {certficateSource}";
     }
 
     [RelayCommand]
@@ -206,6 +212,8 @@ public partial class MainWindowVm : BaseViewModel
         _themeWatcher.SwitchTheme(CurrentTheme);
         return Task.CompletedTask;
     }
+    public ViewModelActivator Activator { get; }
+
 }
 
 public class BusyObject : IDisposable

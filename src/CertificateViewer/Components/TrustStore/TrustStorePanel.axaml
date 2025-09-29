@@ -125,7 +125,7 @@
                                    VerticalAlignment="Center"
                                    Text="Custom Trusted Certificates" />
                         <Button Grid.Column="1"
-                                Command="{CompiledBinding $parent[UserControl].((vm:TrustStorePanel)DataContext).AddToTrustStoreCommand}">
+                                Command="{CompiledBinding $parent[UserControl].((vm:TrustStorePanel)DataContext).AddRootCertificateCommand}">
                             <!-- IsVisible="{Binding CanAddSelectedCertificate}"> -->
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
                                 <!-- <PathIcon Data="{StaticResource plus_regular}" -->
@@ -166,7 +166,7 @@
                                                        TextTrimming="CharacterEllipsis" />
                                         </StackPanel>
                                         <Button Grid.Column="2"
-                                                Command="{Binding $parent[ItemsControl].((vm:TrustStorePanel)DataContext).RemoveFromTrustStoreCommand}"
+                                                Command="{Binding $parent[ItemsControl].((vm:TrustStorePanel)DataContext).RemoveFromTrustedStoreCommand}"
                                                 CommandParameter="{Binding}"
                                                 Foreground="{DynamicResource ErrorColor}">
                                             <!-- <PathIcon Data="{StaticResource trash_2_regular}" /> -->

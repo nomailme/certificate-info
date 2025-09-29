@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Controls.Dialogs;
 using CertificateViewer.Extensions;
@@ -10,23 +8,11 @@ using CertificateViewer.Logic;
 using CertificateViewer.Logic.ImportServices;
 using CertificateViewer.Logic.ImportServices.Implementation;
 using ShadUI;
-using Window = Avalonia.Controls.Window;
 
 namespace CertificateViewer.Services;
 
 public class OpenCertificateService(DialogManager dialogManager, PasswordDialogViewModel passwordViewModel)
 {
-    private Lazy<Window?> MainWindow { get; set; } = new(GetMainWindow);
-
-    private static Window? GetMainWindow()
-    {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return desktop.MainWindow;
-        }
-        throw new NotSupportedException();
-    }
-
     public async Task<DialogResult> OpenFile(string path)
     {
         var tcs = new TaskCompletionSource<DialogResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -43,7 +29,6 @@ public class OpenCertificateService(DialogManager dialogManager, PasswordDialogV
                 })
                 .WithCancelCallback(() => tcs.SetResult(DialogResult.OperationCanceled()))
                 .Show();
-
         }
         else
         {

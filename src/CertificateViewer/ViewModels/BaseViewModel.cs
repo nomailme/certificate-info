@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ReactiveUI;
 
 namespace CertificateViewer.ViewModels;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
 public class BaseViewModel : ReactiveObject, INotifyDataErrorInfo
 {
     private readonly Dictionary<string, List<string>> _errors = new();
@@ -82,6 +84,7 @@ public class BaseViewModel : ReactiveObject, INotifyDataErrorInfo
     }
 
     private void OnErrorsChanged(string propertyName) => ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+
 
     protected void ValidateAllProperties()
     {

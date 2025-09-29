@@ -12,7 +12,7 @@
     </Application.Resources>
     <Application.Styles>
         <shadUi:ShadTheme />
-        <!-- <StyleInclude Source="/GlobalStyles.axaml" /> -->
+        <StyleInclude Source="/GlobalStyles.axaml" />
     </Application.Styles>
 
 </Application>
