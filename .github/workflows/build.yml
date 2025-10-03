@@ -43,8 +43,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set Version
         env:
-          VERSION: ${{ steps.calver.outputs.version }}
-        run: echo "VERSION=${{ steps.calver.outputs.version }}" >> $GITHUB_ENV
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: echo "VERSION=${{ needs.prepare.outputs.version }}" >> $GITHUB_ENV
       # - run: echo "VERSION=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
       #   env:
       #     NOW: ${{needs.prepare.outputs.NOW}}  
@@ -78,8 +78,8 @@ jobs:
     steps:
       - name: Set Version
         env:
-          VERSION: ${{ steps.calver.outputs.version }}
-        run: echo "VERSION=${{ steps.calver.outputs.version }}" >> $GITHUB_ENV
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: echo "VERSION=${{ needs.prepare.outputs.version }}" >> $GITHUB_ENV
       # - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
       #   env:
       #     NOW: ${{needs.prepare.outputs.NOW}}  
