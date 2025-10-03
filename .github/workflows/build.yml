@@ -12,12 +12,20 @@ jobs:
     outputs:
       NOW: ${{ steps.step1.outputs.NOW }}
     steps:
-      - id: step1
-        run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> "$GITHUB_OUTPUT"
-      - name: Set current date as env variable
-        run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
-      - name: Print env
-        run: echo ${{ env.NOW }}
+      # - id: step1
+      #   run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> "$GITHUB_OUTPUT"
+      # - name: Set current date as env variable
+      #   run: echo "NOW=$(date +'%Y-%m-%dT%H%M')" >> $GITHUB_ENV
+      # - name: Print env
+      #   run: echo ${{ env.NOW }}
+      - name: Calver Release
+        uses: StephaneBour/actions-calver@master
+        id: calver
+        with:
+          date_format: "%Y.%V"
+          release: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build:
     needs: [prepare]
     strategy:
@@ -33,9 +41,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
-        env:
-          NOW: ${{needs.prepare.outputs.NOW}}  
+      # - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
+      #   env:
+      #     NOW: ${{needs.prepare.outputs.NOW}}  
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
@@ -45,9 +53,9 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Publish linux
-        env:
-          NOW: ${{needs.prepare.outputs.NOW}}  
-        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=${{ env.NOW }} --self-contained true
+        # env:
+        #   NOW: ${{needs.prepare.outputs.NOW}}  
+        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=${VERSION} --self-contained true
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
@@ -64,13 +72,13 @@ jobs:
     needs: [build, prepare] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
     steps:
-      - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
-        env:
-          NOW: ${{needs.prepare.outputs.NOW}}  
-      - name: Print env
-        run: echo ${{ env.NOW }}
-      - name: Print env
-        run: echo ${{ env.NOW }}
+      # - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
+      #   env:
+      #     NOW: ${{needs.prepare.outputs.NOW}}  
+      # - name: Print env
+      #   run: echo ${{ env.NOW }}
+      # - name: Print env
+      #   run: echo ${{ env.NOW }}
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       - name: Download Artifacts 
@@ -87,4 +95,4 @@ jobs:
         with:
          artifacts: "artifacts/*.zip"
          commit: ${{ github.ref }}
-         tag: ${{ env.NOW }}
+         tag: ${VERSION}
