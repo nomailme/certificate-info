@@ -13,12 +13,10 @@
                     BorderThickness="0,0,0,1"
                     Padding="16,0, 16,16">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <!-- <PathIcon Data="{StaticResource file_text_regular}" -->
-                    <!--          Foreground="#6B7280"/> -->
-                    <TextBlock
-                        Foreground="{ DynamicResource ForegroundLeadColor}"
-                        FontSize="24"
-                        FontFamily="{StaticResource Lucide}" Text="&#57552;" />
+                    <LucideIcon Kind="FileText"
+                                Size="24"
+                                Foreground="{ DynamicResource ForegroundLeadColor}" />
+
                     <TextBlock Classes="h4" Text="Certificate Chain" />
                     <shadUi:Badge IsVisible="{CompiledBinding #CertificateChainList.ItemsSource.Count}"
                                   VerticalAlignment="Center"
@@ -39,14 +37,10 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type x509Certificates:X509Certificate2}">
                         <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" Margin="0,8">
-                            <!-- <PathIcon Grid.Column="0" -->
-                            <!--           Data="{StaticResource shield_check_regular}" -->
-                            <!--           Foreground="#22C55E"/> -->
-                            <TextBlock
-                                Text="&#57855;"
-                                FontSize="24"
-                                Foreground="#22C55E"
-                                FontFamily="{StaticResource Lucide}" />
+
+                            <LucideIcon Kind="ShieldCheck"
+                                        Size="24"
+                                        Foreground="#22C55E" />
                             <StackPanel Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch">
                                 <TextBlock Text="{CompiledBinding Subject}" Classes="Caption" />
                                 <TextBlock
@@ -55,12 +49,11 @@
                                     Foreground="#6B7280"
                                     FontSize="12" />
                             </StackPanel>
+                            <LucideIcon Grid.Column="2"
+                                        Kind="ChevronRight"
+                                        Size="24"
+                                        Foreground="{DynamicResource SwitchBackgroundColor}" />
 
-                            <TextBlock Grid.Column="2"
-                                       Text="&#57459;"
-                                       FontSize="24"
-                                       Foreground="{DynamicResource SwitchBackgroundColor}"
-                                       FontFamily="{StaticResource Lucide}" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
