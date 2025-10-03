@@ -14,12 +14,10 @@
                     BorderThickness="0,0,0,1"
                     Padding="16,0, 16,16">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <!-- <PathIcon Data="{StaticResource shield_regular}" -->
-                    <!--           Foreground="#6B7280" /> -->
-                    <TextBlock Foreground="{ DynamicResource ForegroundLeadColor}"
-                               FontSize="24"
-                               FontFamily="{StaticResource Lucide}"
-                               Text="&#58344;" />
+                    <LucideIcon Kind="Store"
+                                Size="24"
+                                Foreground="{DynamicResource ForegroundLeadColor}" />
+
                     <TextBlock Classes="h4" Text="Trust Store" />
                 </StackPanel>
 
@@ -36,12 +34,17 @@
                         <!-- <PathIcon Grid.Column="0" -->
                         <!--           Data="{StaticResource shield_check_regular}" -->
                         <!--           Foreground="#22C55E" /> -->
-                        <TextBlock
-                            Grid.Column="0" Text="&#57855;"
-                            FontSize="24"
-                            Foreground="{DynamicResource SuccessColor}"
-                            VerticalAlignment="Center"
-                            FontFamily="{StaticResource Lucide}" />
+                        <LucideIcon Grid.Column="0"
+                                    Kind="ShieldCheck"
+                                    Size="24"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource SuccessColor}" />
+                        <!-- <TextBlock -->
+                        <!--     Grid.Column="0" Text="&#57855;" -->
+                        <!--     FontSize="24" -->
+                        <!--     Foreground="{DynamicResource SuccessColor}" -->
+                        <!--     VerticalAlignment="Center" -->
+                        <!--     FontFamily="{StaticResource Lucide}" /> -->
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="Certificate is trusted"
                                        Classes="Large"
@@ -64,15 +67,11 @@
                         </Flyout>
                     </FlyoutBase.AttachedFlyout>
                     <Grid ColumnDefinitions="Auto,*">
-                        <!-- <PathIcon Grid.Column="0" -->
-                        <!--           Data="{StaticResource shield_check_regular}" -->
-                        <!--           Foreground="#22C55E" /> -->
-                        <TextBlock
-                            Grid.Column="0" Text="&#57855;"
-                            FontSize="24"
-                            Foreground="{DynamicResource WarningColor}"
-                            VerticalAlignment="Center"
-                            FontFamily="{StaticResource Lucide}" />
+                        <LucideIcon Grid.Column="0"
+                                    Kind="ShieldCheck"
+                                    Size="24"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource WarningColor}" />
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="Certificate is not trusted"
                                        Classes="Large"
@@ -83,14 +82,13 @@
                                            Classes="Caption"
                                            Foreground="{DynamicResource WarningColor}"
                                            VerticalAlignment="Center" />
-                                <TextBlock
-                                    Text="&#57599;"
-                                    FontSize="14"
-                                    Foreground="{DynamicResource WarningColor}"
+                                <LucideIcon
+                                    Kind="Info"
+                                    Size="14"
                                     VerticalAlignment="Center"
+                                    Margin="8,0"
                                     PointerEntered="InputElement_OnPointerEntered"
-                                    FontFamily="{StaticResource Lucide}"
-                                    Margin="8,0" />
+                                    Foreground="{DynamicResource WarningColor}" />
 
                             </StackPanel>
 
@@ -128,13 +126,11 @@
                                 Command="{CompiledBinding $parent[UserControl].((vm:TrustStorePanel)DataContext).AddRootCertificateCommand}">
                             <!-- IsVisible="{Binding CanAddSelectedCertificate}"> -->
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
-                                <!-- <PathIcon Data="{StaticResource plus_regular}" -->
-                                <!--          Foreground="#2563EB"/> -->
-                                <TextBlock Text="&#57665;"
-                                           FontSize="20"
-                                           Foreground="#2563EB"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource Lucide}" />
+                                <LucideIcon
+                                    Kind="Plus"
+                                    Size="20"
+                                    VerticalAlignment="Center"
+                                    Foreground="#2563EB" />
                                 <TextBlock Text="Add Selected"
                                            VerticalAlignment="Center"
                                            Foreground="#2563EB" />
@@ -152,10 +148,15 @@
                                         <!-- <PathIcon Grid.Column="0" -->
                                         <!--           Data="{StaticResource shield_check_regular}" -->
                                         <!--           Foreground="#22C55E" /> -->
-                                        <TextBlock Grid.Column="0" Text="&#57855;"
-                                                   FontSize="24"
-                                                   Foreground="{DynamicResource SuccessColor}"
-                                                   FontFamily="{StaticResource Lucide}" />
+                                        <LucideIcon Grid.Column="0"
+                                                    Kind="Plus"
+                                                    Size="24"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{DynamicResource SuccessColor}" />
+                                        <!-- <TextBlock Grid.Column="0" Text="&#57855;" -->
+                                        <!--            FontSize="24" -->
+                                        <!--            Foreground="{DynamicResource SuccessColor}" -->
+                                        <!--            FontFamily="{StaticResource Lucide}" /> -->
                                         <StackPanel Grid.Column="1"
                                                     Margin="8,0,0,0">
                                             <TextBlock Text="{Binding Subject}"
@@ -168,11 +169,10 @@
                                         <Button Grid.Column="2"
                                                 Command="{Binding $parent[ItemsControl].((vm:TrustStorePanel)DataContext).RemoveFromTrustedStoreCommand}"
                                                 CommandParameter="{Binding}"
-                                                Foreground="{DynamicResource ErrorColor}">
-                                            <!-- <PathIcon Data="{StaticResource trash_2_regular}" /> -->
-                                            <TextBlock Text="&#57742;"
-                                                       FontSize="24"
-                                                       FontFamily="{StaticResource Lucide}" />
+                                                Foreground="{DynamicResource ErrorColor}"
+                                                FontSize="24"
+                                                Content="{LucideIconContent Trash2}">
+
                                         </Button>
                                     </Grid>
                                 </Border>

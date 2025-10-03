@@ -31,16 +31,14 @@
         <Grid RowDefinitions="Auto,*,Auto" Margin="16,8,16,0">
 
             <!-- Header -->
-            <shadUi:Card Padding="8,16">
+            <shadUi:Card Padding="24,16">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Margin="0,0,6,0"
-                            FontFamily="{StaticResource Lucide}"
-                            Foreground="{DynamicResource InfoColor}"
-                            FontSize="24"
-                            Text="&#57692;" />
+                        <LucideIcon Kind="Shield"
+                                    Size="24"
+                                    Margin="0,0,6,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource InfoColor}" />
                         <TextBlock FontSize="24"
                                    VerticalAlignment="Center"
                                    Foreground="{DynamicResource ForegroundColor}"
@@ -53,12 +51,11 @@
                                 Padding="0"
                                 Command="{Binding OpenCertificateFileCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="&#57540;"
-                                           FontSize="24"
-                                           FontWeight="Regular"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource InfoColor}"
-                                           FontFamily="{StaticResource Lucide}" />
+                                <LucideIcon Kind="File"
+                                            Size="24"
+                                            Margin="0,0,6,0"
+                                            VerticalAlignment="Center"
+                                            Foreground="{DynamicResource InfoColor}" />
                                 <TextBlock Text="Open Certificate File"
                                            VerticalAlignment="Center"
                                            Foreground="{DynamicResource InfoColor}" />
@@ -68,13 +65,11 @@
                                 Padding="0"
                                 Command="{Binding OpenUrlCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="4">
-
-                                <TextBlock Text="&#57580;"
-                                           FontSize="24"
-                                           FontWeight="Regular"
-                                           Foreground="{DynamicResource InfoColor}"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource Lucide}" />
+                                <LucideIcon Kind="Globe"
+                                            Size="24"
+                                            Margin="0,0,6,0"
+                                            VerticalAlignment="Center"
+                                            Foreground="{DynamicResource InfoColor}" />
                                 <TextBlock Text="Get from URL"
                                            VerticalAlignment="Center"
                                            Foreground="{DynamicResource InfoColor}" />
@@ -118,8 +113,8 @@
                     Command="{Binding SwitchThemeCommand}"
                     CornerRadius="{DynamicResource MdCornerRadius}"
                     ToolTip.Tip="Switch Theme">
-                    <TextBlock FontFamily="{StaticResource Lucide}"
-                               Text="{Binding CurrentTheme, Converter={x:Static converters:ThemeModeConverters.ToLucideIcon}}" />
+                    <LucideIcon Size="16"
+                                Kind="{Binding CurrentTheme, Converter={x:Static converters:ThemeModeConverters.ToLucideIcon}}" />
                 </Button>
             </DockPanel>
         </Grid>

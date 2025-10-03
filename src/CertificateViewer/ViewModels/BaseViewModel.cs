@@ -30,6 +30,7 @@ public class BaseViewModel : ReactiveObject, INotifyDataErrorInfo
             : Array.Empty<string>();
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
     protected void ValidateProperty<T>(T value, string propertyName)
     {
         ClearErrors(propertyName);
@@ -51,17 +52,20 @@ public class BaseViewModel : ReactiveObject, INotifyDataErrorInfo
 
     protected void AddError(string propertyName, string error)
     {
-        if (!_errors.ContainsKey(propertyName))
+
+
+        if (!_errors.TryGetValue(propertyName, out var value))
         {
-            _errors[propertyName] = new List<string>();
+            value = new List<string>();
+            _errors[propertyName] = value;
         }
 
-        if (_errors[propertyName].Contains(error))
+        if (value.Contains(error))
         {
             return;
         }
 
-        _errors[propertyName].Add(error);
+        value.Add(error);
         OnErrorsChanged(propertyName);
     }
 

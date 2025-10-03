@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using CertificateViewer.Components.Dialogs.OpenUrl;
 using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Components.MainWindow;
@@ -20,12 +21,24 @@ namespace CertificateViewer;
 /// </summary>
 public class App : Application
 {
-    public override void Initialize() => AvaloniaXamlLoader.Load(this);
+    public override void Initialize()
+    {
+        AvaloniaXamlLoader.Load(this);
+        Dispatcher.UIThread.UnhandledException += OnUnhandledException;
+    }
+    private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        GlobalErrorHandler.Instance.OnNext(e.Exception);
+        e.Handled = true;
+    }
 
+    [UnconditionalSuppressMessage("Trimming",
+        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+        Justification = "<Pending>")]
     public override void OnFrameworkInitializationCompleted()
     {
 
-
+        GlobalErrorHandler.BeginInit();
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
@@ -65,6 +78,7 @@ public class App : Application
             );
         }
 
+        GlobalErrorHandler.EndInit(vm.DialogManager, vm);
         base.OnFrameworkInitializationCompleted();
     }
 

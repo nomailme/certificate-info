@@ -16,12 +16,9 @@
                 Padding="16,0, 16,16">
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                    <!-- <PathIcon Data="{StaticResource shield_regular}" -->
-                    <!--           Foreground="#6B7280" /> -->
-                    <TextBlock Foreground="{ DynamicResource ForegroundLeadColor}"
-                               FontSize="24"
-                               FontFamily="{StaticResource Lucide}"
-                               Text="&#57692;" />
+                    <LucideIcon Kind="Shield"
+                                Size="24"
+                                Foreground="{DynamicResource ForegroundLeadColor}" />
                     <TextBlock Classes="h4"
                                Text="Certificate Details" />
                 </StackPanel>
