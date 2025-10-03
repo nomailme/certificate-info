@@ -41,7 +41,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      # - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
+      - name: Set Version
+        env:
+          VERSION: ${{ steps.calver.outputs.release }}
+        run: echo "VERSION=${{ steps.calver.outputs.release }}" >> $GITHUB_ENV
+      # - run: echo "VERSION=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
       #   env:
       #     NOW: ${{needs.prepare.outputs.NOW}}  
       - name: Setup .NET
@@ -72,6 +76,10 @@ jobs:
     needs: [build, prepare] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
     steps:
+      - name: Set Version
+        env:
+          VERSION: ${{ steps.calver.outputs.release }}
+        run: echo "VERSION=${{ steps.calver.outputs.release }}" >> $GITHUB_ENV
       # - run: echo "NOW=${{ needs.prepare.outputs.NOW }}" >> $GITHUB_ENV
       #   env:
       #     NOW: ${{needs.prepare.outputs.NOW}}  
