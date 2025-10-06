@@ -59,11 +59,11 @@ jobs:
       - name: Publish linux
         env:
           VERSION: ${{needs.prepare.outputs.version}}  
-        run: echo ${VERSION}
+        run: echo $VERSION
       - name: Publish linux
         env:
           VERSION: ${{needs.prepare.outputs.version}}  
-        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=${VERSION} --self-contained true
+        run: dotnet publish src/CertificateViewer/CertificateViewer.csproj -r ${{ matrix.target }} -c Release -o release/${{ matrix.target }} --nologo -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=$VERSION --self-contained true
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
