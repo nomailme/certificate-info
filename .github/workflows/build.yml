@@ -107,4 +107,4 @@ jobs:
         with:
          artifacts: "artifacts/*.zip"
          commit: ${{ github.ref }}
-         tag: ${VERSION}
+         tag: ${{ env.VERSION }}
