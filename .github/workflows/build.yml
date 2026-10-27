@@ -1,4 +1,6 @@
 name: Build main branch
+permissions:
+  contents: read
 
 on:
   push:
@@ -79,6 +81,8 @@ jobs:
     concurrency: ci-${{ github.ref }}
     needs: [build, prepare] # The second job must depend on the first one to complete before running and uses ubuntu-latest instead of windows.
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Set Version
         env:
