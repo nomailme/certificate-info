@@ -32,6 +32,7 @@
     <PackageReference Include="Lucide.Avalonia" Version="0.1.43" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="ShadUI" Version="0.1.5" />
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
   </ItemGroup>
 
   <ItemGroup>
