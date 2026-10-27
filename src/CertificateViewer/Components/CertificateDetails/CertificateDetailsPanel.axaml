@@ -3,11 +3,16 @@
              xmlns:certificateDetails="clr-namespace:CertificateViewer.Components.CertificateDetails"
              xmlns:converters="clr-namespace:CertificateViewer.Converters"
              xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography"
+             xmlns:converters1="clr-namespace:Avalonia.Controls.Converters;assembly=Avalonia.Controls"
+             xmlns:enums="using:CertificateViewer.Logic"
              x:Class="CertificateViewer.Components.CertificateDetails.CertificateDetailsPanel"
+
              x:DataType="x509Certificates:X509Certificate2">
     <UserControl.Resources>
         <converters:SubjectAlternativeNamesConverter x:Key="SubjectAlternativeNamesConverter" />
         <converters:CertificateRawConverter x:Key="CertificateRawConverter" />
+        <converters:CertificateBase64Converter x:Key="CertificateBase64Converter" />
+        <converters1:EnumToBoolConverter x:Key="EnumConverter"/>
     </UserControl.Resources>
     <DockPanel>
         <Border DockPanel.Dock="Top"
@@ -22,18 +27,21 @@
                     <TextBlock Classes="h4"
                                Text="Certificate Details" />
                 </StackPanel>
-                    <ToggleSwitch
-                        Grid.Column="1"
-                        VerticalAlignment="Center"
-                        Classes="h4"
-                        IsChecked="{Binding $parent[certificateDetails:CertificateDetailsPanel].ShowRaw}"
-                        OnContent="Raw"
-                        OffContent="Raw" />
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding $parent[certificateDetails:CertificateDetailsPanel].ViewModes}"
+                              SelectedItem="{Binding $parent[certificateDetails:CertificateDetailsPanel].ViewMode}"
+                              VerticalAlignment="Center"
+                              Classes="h4">
+                    </ComboBox>
             </Grid>
         </Border>
 
-        <ScrollViewer DockPanel.Dock="Top"
-                      IsVisible="{CompiledBinding !$parent[certificateDetails:CertificateDetailsPanel].ShowRaw}">
+        <ScrollViewer DockPanel.Dock="Top">
+            <ScrollViewer.IsVisible>
+                <CompiledBinding Path="$parent[certificateDetails:CertificateDetailsPanel].ViewMode"
+                                 Converter="{StaticResource EnumConverter}"
+                                 ConverterParameter="{x:Static enums:ViewMode.General}" />
+            </ScrollViewer.IsVisible>
             <StackPanel Margin="16" Spacing="16">
                 <StackPanel>
                     <TextBlock Text="Subject" Classes="Small" />
@@ -93,12 +101,29 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
-        <ScrollViewer DockPanel.Dock="Bottom"
-                      IsVisible="{CompiledBinding $parent[certificateDetails:CertificateDetailsPanel].ShowRaw}">
+        <ScrollViewer DockPanel.Dock="Bottom">
+            <ScrollViewer.IsVisible>
+                <CompiledBinding Path="$parent[certificateDetails:CertificateDetailsPanel].ViewMode"
+                                 Converter="{StaticResource EnumConverter}"
+                                 ConverterParameter="{x:Static enums:ViewMode.Raw}" />
+            </ScrollViewer.IsVisible>
             <SelectableTextBlock
                 Margin="16"
                 Classes="Caption"
                 Text="{CompiledBinding Path=., Converter={StaticResource CertificateRawConverter}}" />
+        </ScrollViewer>
+        <ScrollViewer DockPanel.Dock="Bottom">
+            <ScrollViewer.IsVisible>
+                <CompiledBinding Path="$parent[certificateDetails:CertificateDetailsPanel].ViewMode"
+                                 Converter="{StaticResource EnumConverter}"
+                                 ConverterParameter="{x:Static enums:ViewMode.Base64}" />
+            </ScrollViewer.IsVisible>
+            <SelectableTextBlock
+                Margin="16 "
+                FontFamily="Cascadia Code, Consolas, Ubuntu Mono, Menlo, Monaco, monospace"
+                Classes="Small"
+                FontSize="12"
+                Text="{CompiledBinding Path=., Converter={StaticResource CertificateBase64Converter}}" />
         </ScrollViewer>
     </DockPanel>
 </UserControl>

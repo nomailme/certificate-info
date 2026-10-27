@@ -70,9 +70,9 @@ public class App : Application
 
         if (args?.Length == 1)
         {
-            mainWindow.WhenActivated(async void (d) =>
+            mainWindow.WhenActivated(d =>
                 {
-                    await vm.LoadFileAsync(args.Single());
+                    _ = vm.LoadFileAsync(args.Single());
                     Disposable.Create(() => { }).DisposeWith(d);
                 }
             );
