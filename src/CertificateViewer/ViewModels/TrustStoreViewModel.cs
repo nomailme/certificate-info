@@ -20,7 +20,7 @@ namespace CertificateViewer.ViewModels;
 ///     validity state and the add/remove commands. The panel itself is a dumb view bound to
 ///     this model; its <see cref="Avalonia.Controls.UserControl.DataContext" /> is set by the host.
 /// </summary>
-public partial class TrustStoreViewModel : BaseViewModel, IActivatableViewModel, IDisposable
+public partial class TrustStoreViewModel : ReactiveObject, IActivatableViewModel, IDisposable
 {
     private readonly OpenCertificateService _openCertificateService;
     private readonly ICertificateChainValidator _chainValidator;

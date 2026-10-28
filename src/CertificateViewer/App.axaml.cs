@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Disposables;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using CertificateViewer.Components.Dialogs.OpenUrl;
@@ -46,17 +44,12 @@ public class App : Application
         e.Handled = true;
     }
 
-    [UnconditionalSuppressMessage("Trimming",
-        "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-        Justification = "<Pending>")]
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
         }
-
-        DisableAvaloniaDataAnnotationValidation();
 
         var collection = new ServiceCollection();
         collection.AddSingleton<ViewModelFactory>();
@@ -124,19 +117,5 @@ public class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    [RequiresUnreferencedCode("Calls Avalonia.Data.Core.Plugins.BindingPlugins.DataValidators")]
-    private static void DisableAvaloniaDataAnnotationValidation()
-    {
-        // Get an array of plugins to remove
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove)
-        {
-            BindingPlugins.DataValidators.Remove(plugin);
-        }
     }
 }

@@ -29,7 +29,7 @@ namespace CertificateViewer.Components.MainWindow;
 ///     (App) and passed in; services are used internally and are not exposed as bindable
 ///     properties.
 /// </summary>
-public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDisposable
+public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisposable
 {
     private readonly IErrorHandler _errorHandler;
     private readonly CompositeDisposable _disposables = new();

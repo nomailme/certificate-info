@@ -1,41 +1,33 @@
-using System.ComponentModel.DataAnnotations;
 using CertificateViewer.ViewModels;
-using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using ShadUI;
 
 namespace CertificateViewer.Components.Dialogs.PasswordBox;
 
-public partial class PasswordDialogViewModel(ShadUI.DialogManager dialogManager) : BaseViewModel
+/// <summary>
+///     View model of the "password" dialog. Validation is explicit (no DataAnnotations,
+///     trim-safe): a password must be present.
+/// </summary>
+public partial class PasswordDialogViewModel(ShadUI.DialogManager dialogManager) : DialogViewModelBase(dialogManager)
 {
+    private const string PasswordPropertyName = nameof(Password);
+
     private string _password = string.Empty;
 
-    [Required(ErrorMessage = "Provide a password")]
+    /// <summary>Gets or sets the password.</summary>
     public string Password
     {
         get => _password;
         set => this.RaiseAndSetIfChanged(ref _password, value);
     }
-    private bool CanSubmit() => !HasErrors;
 
-    [RelayCommand(CanExecute = nameof(CanSubmit))]
-    private void Submit()
+    /// <summary>Validates the password (explicit, per-property).</summary>
+    protected override void ValidateAll()
     {
-        ClearAllErrors();
-        ValidateAllProperties();
-
-        if (HasErrors)
+        ClearErrors(PasswordPropertyName);
+        if (string.IsNullOrWhiteSpace(Password))
         {
-            return;
+            AddError(PasswordPropertyName, "Provide a password");
         }
-
-        dialogManager.Close(this,
-            new CloseDialogOptions
-            {
-                Success = true
-            });
     }
-
-    [RelayCommand]
-    private void Cancel() => dialogManager.Close(this);
 }
