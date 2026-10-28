@@ -14,6 +14,7 @@ using CertificateViewer.Extensions;
 using CertificateViewer.Logic;
 using CertificateViewer.Logic.ImportServices.Implementation;
 using CertificateViewer.Services;
+using CertificateViewer.Services.ErrorHandling;
 using CertificateViewer.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
@@ -23,6 +24,7 @@ namespace CertificateViewer.Components.MainWindow;
 
 public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
 {
+    private readonly IErrorHandler _errorHandler;
     private readonly ThemeWatcher _themeWatcher;
     private readonly ViewModelFactory _viewModelFactory;
     private ObservableCollection<X509Certificate2> _certificateChain = new();
@@ -38,7 +40,8 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
         ShadUI.DialogManager dialogManager,
         PasswordDialogViewModel passwordViewModel,
         ViewModelFactory viewModelFactory,
-        ThemeWatcher themeWatcher)
+        ThemeWatcher themeWatcher,
+        IErrorHandler errorHandler)
     {
         Activator = new ViewModelActivator();
         ShowOpenFileDialog = new Interaction<string, string?>();
@@ -47,6 +50,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
         _dialogManager = dialogManager;
         _viewModelFactory = viewModelFactory;
         _themeWatcher = themeWatcher;
+        _errorHandler = errorHandler;
 
         SetTitle(string.Empty);
     }
@@ -75,6 +79,8 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
         get => _openCertificateService;
         set => this.RaiseAndSetIfChanged(ref _openCertificateService, value);
     }
+
+    public IErrorHandler ErrorHandler => _errorHandler;
 
     public X509Certificate2? SelectedCertificate
     {
@@ -136,9 +142,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
                 }
                 catch (Exception e)
                 {
-                    _dialogManager.CreateDialog("Error loading file", e.Message)
-                        .Dismissible()
-                        .Show();
+                    await _errorHandler.HandleAsync(e, context: "Loading URL");
                 }
             }
         }
@@ -193,9 +197,9 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
             case DialogResult.OperationResult.Canceled:
                 break;
             default:
-                _dialogManager.CreateDialog("Unable to open file", dialogResult.Error?.Message ?? "Unknown error")
-                    .Dismissible()
-                    .Show();
+                _ = _errorHandler.HandleAsync(
+                    dialogResult.Error ?? new InvalidOperationException("Unknown error"),
+                    context: "Unable to open file");
                 break;
         }
     }

@@ -22,11 +22,7 @@ public partial class MainWindow : Window, IViewFor<MainWindowVm>
         InitializeComponent();
         SetVersion();
         AddHandler(DragDrop.DropEvent, DragDropHandler);
-        // RxApp.DefaultExceptionHandler = Observer.Create<Exception>(ShowErrorDialog);
     }
-    private void ShowErrorDialog(Exception obj)
-        => ViewModel?.DialogManager.CreateDialog("Error", obj.Message).Show();
-
     object? IViewFor.ViewModel
     {
         get => ViewModel;
@@ -58,7 +54,7 @@ public partial class MainWindow : Window, IViewFor<MainWindowVm>
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                vm?.DialogManager.CreateDialog("Error opening file", ex.Message).Show();
+                _ = vm?.ErrorHandler.HandleAsync(ex, context: "Opening file");
             });
         }
     }
