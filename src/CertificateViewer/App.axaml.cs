@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Disposables;
 using Avalonia;
@@ -22,6 +23,8 @@ namespace CertificateViewer;
 /// </summary>
 public class App : Application
 {
+    private IErrorHandler? _errorHandler;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -29,7 +32,13 @@ public class App : Application
     }
     private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        GlobalErrorHandler.Instance.OnNext(e.Exception);
+        // The handler is resolved from DI in OnFrameworkInitializationCompleted; if an
+        // unhandled exception fires before that point, there is nothing to show yet.
+        if (_errorHandler is not null)
+        {
+            _ = _errorHandler.HandleAsync(e.Exception);
+        }
+
         e.Handled = true;
     }
 
@@ -38,8 +47,6 @@ public class App : Application
         Justification = "<Pending>")]
     public override void OnFrameworkInitializationCompleted()
     {
-
-        GlobalErrorHandler.BeginInit();
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
@@ -57,6 +64,8 @@ public class App : Application
         collection.AddSingleton<ThemeWatcher>(_ => new ThemeWatcher(Current!));
 
         var services = collection.BuildServiceProvider();
+
+        _errorHandler = services.GetRequiredService<IErrorHandler>();
 
         services.RegisterDialogs();
 
@@ -80,7 +89,6 @@ public class App : Application
             );
         }
 
-        GlobalErrorHandler.EndInit(vm.DialogManager, vm);
         base.OnFrameworkInitializationCompleted();
     }
 
