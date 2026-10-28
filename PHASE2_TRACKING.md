@@ -9,11 +9,11 @@ merged back per wave. Build: `dotnet build -c Release -p:UseSharedCompilation=fa
 | # | Task | Wave | Status | Evidence |
 |---|------|------|--------|----------|
 | 2.1 | Record build/size/flow baseline | 1 | done | PHASE2_BASELINE.md; build 0 err, tests 22/22, AOT binary 35,108,976 B; GUI flows not runnable (no X server/Xvfb) |
-| 2.2 | IErrorHandler + DI registration | 2 | todo | — |
-| 2.3 | Wire single error path, drop static singleton | 2 | todo | — |
-| 2.4 | Route ad-hoc dialogs through IErrorHandler | 2 | todo | — |
-| 2.5 | Extract TrustStoreViewModel | 3 | todo | — |
-| 2.6 | Validity subscription into VM, disposed | 3 | todo | — |
+| 2.2 | IErrorHandler + DI registration | 2 | done | p2-w2-error d2be840: Services/ErrorHandling/IErrorHandler.cs (async Task, no async void); GlobalErrorHandler rewritten to inject DialogManager; singleton registered in App.OnFrameworkInitializationCompleted. Verified: build 0 err; static Instance/BeginInit/EndInit gone (grep); tests 22/22 |
+| 2.3 | Wire single error path, drop static singleton | 2 | done | p2-w2-error f9d9d12: App resolves IErrorHandler from DI for Dispatcher UH exception; RxApp.DefaultExceptionHandler hookup removed; no async void on error path (grep clean). Verified: build 0 err, tests 22/22 |
+| 2.4 | Route ad-hoc dialogs through IErrorHandler | 2 | done | p2-w2-error cf5a76c (+integrator 85dcb7a context titles): URL-load Load catch, LoadCertificates default case, and drag-drop all call IErrorHandler.HandleAsync with context; dead RxApp line + ShowErrorDialog removed from MainWindow.axaml.cs. Verified: no CreateDialog("Error…") ad-hoc calls remain (grep); build 0 err, tests 22/22 |
+| 2.5 | Extract TrustStoreViewModel | 3 | done | phase-2-work (this commit): ViewModels/TrustStoreViewModel.cs (CommunityToolkit.Mvvm commands, TrustedCertificates/Errors/IsChainValid/UseSystemStore, IErrorHandler on file-load failure); TrustStorePanel.axaml/.axaml.cs reduced to dumb view (x:DataType=VM, no DirectProperties, no DataContext=this); MainWindow.axaml binds TrustStorePanel.DataContext=TrustStoreViewModel; MainWindowVm creates+forwards chain. Verified: build 0 err/0 warn, tests 22/22 |
+| 2.6 | Validity subscription into VM, disposed | 3 | done | same commit as 2.5 (subscription lives in the VM): WhenAnyValue(TrustedCertificates, CertificateChain, UseSystemStore) in VM constructor, stored in CompositeDisposable; disposed via Activator.Deactivated + IDisposable (MainWindowVm disposes the owned VM). No async void (grep clean). Re-validation fires on any of the 3 triggers. Verified: build 0 err/0 warn, tests 22/22 |
 | 2.7 | Inject ICertificateChainValidator | 3 | todo | — |
 | 2.8 | Rebind CertificateChainPanel to VM | 3 | todo | — |
 | 2.9 | CertificateDetails view-state to VM | 3 | todo | — |
@@ -25,11 +25,13 @@ merged back per wave. Build: `dotnet build -c Release -p:UseSharedCompilation=fa
 | 2.15 | Reduce MainWindowVm to orchestrator | 4 | todo | — |
 | 2.16 | Replace reflection validation with explicit | 4 | todo | — |
 | 2.17 | Extract DialogViewModelBase | 4 | todo | — |
-| 2.18 | Fix RegisterDialogs DI idiom | 2 | todo | — |
-| 2.19 | UI-kit audit (keep/replace decision) | 2 | todo | — |
+| 2.18 | Fix RegisterDialogs DI idiom | 2 | done | p2-w2-register 13905e0: RegisterDialogs(IServiceProvider) → RegisterDialogViews(IServiceCollection) extension, called before BuildServiceProvider; factory creates the DialogManager singleton (avoids MS.DI self-reference). Verified: build 0 err, tests 22/22; dialog views still resolve via the same registrations |
+| 2.19 | UI-kit audit (keep/replace decision) | 2 | done | p2-w2-audit 0efd5e4 → AUDIT_UIKIT.md: full control/icon inventory (8 ShadUI surface types, 13 Lucide icons, 17 files), decision = keep ShadUI 0.1.5 + Lucide 0.1.43 (decision-only, no replacement executed). Verified: read-only task, no code changed (git diff clean); inventory cross-checked by line-aware scan |
 | 2.20 | Remove preserve="All" from Roots.xml | 5 | todo | — |
 | 2.21 | Measure size, verify trimmed app | 5 | todo | — |
 | 2.22 | Final Phase 2 verification pass | 5 | todo | — |
 
 ## Wave execution log
 - **Wave 1** (2.1): executed directly by orchestrator, 2026-10-28 07:2x UTC.
+- **Wave 2** (2.2→2.3→2.4 serial chain on p2-w2-error; 2.18 on p2-w2-register; 2.19 on p2-w2-audit — 2.18/2.19 ran parallel to the chain, 2026-10-28 07:4x–08:1x UTC): all merged into phase-2-work (8f19b3a, 85dcb7a). Integrator fix 85dcb7a added context to dialog titles for 2.3/2.4. Verified: build 0 err (3 pre-existing SYSLIB0057), tests 22/22, async-void + inline-new scans clean for the in-scope items.
+- **Wave 3** (2.5→2.6→2.7 trust chain, 2.8 chain panel, 2.9 details panel, 2.10 importer registrations — 2.10 depends on 2.7): started 2026-10-28 ~14:0x UTC, parallel worktrees. Delegated workers stalled (provider flakiness) → consolidated: all wave 3+ work executed directly in certview-work (branch phase-2-work), one commit per task, build+test gate per commit. 2.5+2.6 landed in one commit (subscription lives in the VM).

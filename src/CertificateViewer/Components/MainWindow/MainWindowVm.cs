@@ -22,7 +22,7 @@ using ShadUI;
 
 namespace CertificateViewer.Components.MainWindow;
 
-public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
+public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDisposable
 {
     private readonly IErrorHandler _errorHandler;
     private readonly ThemeWatcher _themeWatcher;
@@ -35,6 +35,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
     private OpenCertificateService _openCertificateService;
     private X509Certificate2? _selectedCertificate;
     private string _title = string.Empty;
+    private TrustStoreViewModel _trustStoreViewModel;
 
     public MainWindowVm(
         ShadUI.DialogManager dialogManager,
@@ -51,9 +52,13 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
         _viewModelFactory = viewModelFactory;
         _themeWatcher = themeWatcher;
         _errorHandler = errorHandler;
+        _trustStoreViewModel = new TrustStoreViewModel(_openCertificateService, _errorHandler);
 
         SetTitle(string.Empty);
     }
+
+    /// <summary>Gets the view model of the trust-store panel; the panel's DataContext.</summary>
+    public TrustStoreViewModel TrustStoreViewModel => _trustStoreViewModel;
 
 
     public Interaction<string, string?> ShowOpenFileDialog { get; set; }
@@ -191,6 +196,8 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
             case DialogResult.OperationResult.Success:
 
                 CertificateChain = new ObservableCollection<X509Certificate2>(dialogResult.Certificates.ToList());
+                // Forward the chain to the trust-store view model so its validity subscription fires.
+                _trustStoreViewModel.CertificateChain = CertificateChain;
                 // No-certificate case: do not throw from First(); leave selection empty.
                 SelectedCertificate = dialogResult.Certificates.Count > 0 ? dialogResult.Certificates[0] : null;
                 break;
@@ -202,6 +209,13 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
                     context: "Unable to open file");
                 break;
         }
+    }
+
+    /// <summary>Disposes the owned trust-store view model.</summary>
+    public void Dispose()
+    {
+        _trustStoreViewModel.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     [RelayCommand]

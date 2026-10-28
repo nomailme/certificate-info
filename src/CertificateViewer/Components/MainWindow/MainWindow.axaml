@@ -94,10 +94,7 @@
                 </shadUi:Card>
                 <shadUi:Card Grid.Column="2">
                     <trustStore:TrustStorePanel
-                        OpenCertificateService="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).OpenCertificateService}"
-                        DialogManager="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).DialogManager}"
-                        CertificateChain="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).CertificateChain}"
-                        OpenFileDialog="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).ShowOpenFileDialog}" />
+                        DataContext="{CompiledBinding TrustStoreViewModel}" />
                 </shadUi:Card>
             </Grid>
             <DockPanel Grid.Row="2" HorizontalAlignment="Center">

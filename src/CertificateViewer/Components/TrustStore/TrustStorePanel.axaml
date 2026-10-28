@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:CertificateViewer.Components.TrustStore"
+             xmlns:vm="using:CertificateViewer.ViewModels"
              xmlns:dialogManager="clr-namespace:CertificateViewer.Components.DialogManager"
-             x:DataType="vm:TrustStorePanel"
+             x:DataType="vm:TrustStoreViewModel"
              x:Class="CertificateViewer.Components.TrustStore.TrustStorePanel"
              x:CompileBindings="True"
              Name="TrustStorePanelControl"
@@ -26,25 +26,16 @@
 
             <StackPanel Margin="16" Spacing="16">
                 <!-- Trust Status -->
-                <Border IsVisible="{Binding IsChainValid}"
+                <Border IsVisible="{CompiledBinding IsChainValid}"
                         Background="{DynamicResource SuccessColor20}"
                         CornerRadius="8"
                         Padding="12">
                     <Grid ColumnDefinitions="Auto,*">
-                        <!-- <PathIcon Grid.Column="0" -->
-                        <!--           Data="{StaticResource shield_check_regular}" -->
-                        <!--           Foreground="#22C55E" /> -->
                         <LucideIcon Grid.Column="0"
                                     Kind="ShieldCheck"
                                     Size="24"
                                     VerticalAlignment="Center"
                                     Foreground="{DynamicResource SuccessColor}" />
-                        <!-- <TextBlock -->
-                        <!--     Grid.Column="0" Text="&#57855;" -->
-                        <!--     FontSize="24" -->
-                        <!--     Foreground="{DynamicResource SuccessColor}" -->
-                        <!--     VerticalAlignment="Center" -->
-                        <!--     FontFamily="{StaticResource Lucide}" /> -->
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="Certificate is trusted"
                                        Classes="Large"
@@ -55,7 +46,7 @@
                         </StackPanel>
                     </Grid>
                 </Border>
-                <Border IsVisible="{CompiledBinding !#TrustStorePanelControl.IsChainValid}"
+                <Border IsVisible="{CompiledBinding !IsChainValid}"
                         Background="{DynamicResource WarningColor20}"
                         CornerRadius="8"
                         Padding="12"
@@ -63,7 +54,7 @@
 
                     <FlyoutBase.AttachedFlyout>
                         <Flyout>
-                            <ItemsControl ItemsSource="{CompiledBinding #TrustStorePanelControl.Errors}" />
+                            <ItemsControl ItemsSource="{CompiledBinding Errors}" />
                         </Flyout>
                     </FlyoutBase.AttachedFlyout>
                     <Grid ColumnDefinitions="Auto,*">
@@ -109,22 +100,21 @@
                                        FontSize="12" />
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1"
-                                      IsChecked="{Binding UseSystemStore}"
+                                      IsChecked="{Binding UseSystemStore, Mode=TwoWay}"
                                       OnContent=""
                                       OffContent="" />
                     </Grid>
                 </Border>
                 <!-- Trusted Certificates -->
                 <StackPanel
-                    IsVisible="{CompiledBinding !$parent[UserControl].((vm:TrustStorePanel)DataContext).UseSystemStore}">
+                    IsVisible="{CompiledBinding !UseSystemStore}">
                     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
                         <TextBlock Grid.Column="0"
                                    Classes="Large"
                                    VerticalAlignment="Center"
                                    Text="Custom Trusted Certificates" />
                         <Button Grid.Column="1"
-                                Command="{CompiledBinding $parent[UserControl].((vm:TrustStorePanel)DataContext).AddRootCertificateCommand}">
-                            <!-- IsVisible="{Binding CanAddSelectedCertificate}"> -->
+                                Command="{CompiledBinding AddRootCertificateCommand}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
                                 <LucideIcon
                                     Kind="Plus"
@@ -138,25 +128,18 @@
                         </Button>
                     </Grid>
 
-                    <ItemsControl ItemsSource="{Binding TrustedCertificates}">
+                    <ItemsControl ItemsSource="{CompiledBinding TrustedCertificates}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border CornerRadius="6"
                                         Padding="8"
                                         Margin="0,0,0,8">
                                     <Grid ColumnDefinitions="Auto,*,Auto">
-                                        <!-- <PathIcon Grid.Column="0" -->
-                                        <!--           Data="{StaticResource shield_check_regular}" -->
-                                        <!--           Foreground="#22C55E" /> -->
                                         <LucideIcon Grid.Column="0"
                                                     Kind="Plus"
                                                     Size="24"
                                                     VerticalAlignment="Center"
                                                     Foreground="{DynamicResource SuccessColor}" />
-                                        <!-- <TextBlock Grid.Column="0" Text="&#57855;" -->
-                                        <!--            FontSize="24" -->
-                                        <!--            Foreground="{DynamicResource SuccessColor}" -->
-                                        <!--            FontFamily="{StaticResource Lucide}" /> -->
                                         <StackPanel Grid.Column="1"
                                                     Margin="8,0,0,0">
                                             <TextBlock Text="{Binding Subject}"
@@ -167,7 +150,7 @@
                                                        TextTrimming="CharacterEllipsis" />
                                         </StackPanel>
                                         <Button Grid.Column="2"
-                                                Command="{Binding $parent[ItemsControl].((vm:TrustStorePanel)DataContext).RemoveFromTrustedStoreCommand}"
+                                                Command="{CompiledBinding $parent[ItemsControl].((vm:TrustStoreViewModel)DataContext).RemoveFromTrustedStoreCommand}"
                                                 CommandParameter="{Binding}"
                                                 Foreground="{DynamicResource ErrorColor}"
                                                 FontSize="24"
@@ -184,7 +167,7 @@
                                Classes="Muted"
                                HorizontalAlignment="Center"
                                Margin="0,16"
-                               IsVisible="{Binding !TrustedCertificates.Count}" />
+                               IsVisible="{CompiledBinding !TrustedCertificates.Count}" />
                 </StackPanel>
             </StackPanel>
         </DockPanel>
