@@ -8,14 +8,14 @@ public class CertificateTypeHelperTests
     [Fact]
     public async Task Check_DerFile_DerFileType()
     {
-        var result = await CertificateHelper.CheckAsync("DataStore\\der.crt");
+        var result = await CertificateHelper.CheckAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "der.crt"));
         Assert.Equal(CertificateType.Der, result);
     }
 
     [Fact]
     public async Task Check_PemFile_PemFileType()
     {
-        var result = await CertificateHelper.CheckAsync("DataStore\\pem.crt");
+        var result = await CertificateHelper.CheckAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "pem.crt"));
         Assert.Equal(CertificateType.Pem, result);
 
     }
@@ -23,7 +23,7 @@ public class CertificateTypeHelperTests
     [Fact]
     public async Task Check_PfxFile_PfxFileType()
     {
-        var result = await CertificateHelper.CheckAsync("DataStore\\certificate.pfx");
+        var result = await CertificateHelper.CheckAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "certificate.pfx"));
         Assert.Equal(CertificateType.Pfx, result);
     }
 }

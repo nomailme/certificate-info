@@ -22,9 +22,12 @@ public class RemoteServerImporter: ICertificateLoader<string>
     {
         X509Certificate2Collection serverCertificates = new();
         var targetUri = new Uri(address);
-        var handler = BuildHandler(targetUri, serverCertificates);
-        var httpClient = new HttpClient(handler);
-        await httpClient.GetAsync(targetUri);
+        using (var handler = BuildHandler(targetUri, serverCertificates))
+        using (var httpClient = new HttpClient(handler))
+        using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+        {
+            await httpClient.GetAsync(targetUri, cts.Token);
+        }
 
         return serverCertificates;
     }
@@ -42,12 +45,15 @@ public class RemoteServerImporter: ICertificateLoader<string>
             SslOptions = new SslClientAuthenticationOptions
             {
                 CertificateChainPolicy = policy,
+                // Deliberately permissive: this tool inspects invalid/self-signed certificates; trust is decided later by chain validation, not here.
                 RemoteCertificateValidationCallback = (_, _, chain, _) =>
                 {
-                    chain?.ChainElements
-                        .Select(x => x.Certificate)
-                        .ToList()
-                        .ForEach(x => collection.Add(new X509Certificate2(x.RawData)));
+                    var chainElements = chain?.ChainElements.Select(x => x.Certificate).ToList();
+                    if (chainElements != null)
+                    {
+                        foreach (var x in chainElements)
+                            collection.Add(new X509Certificate2(x.RawData));
+                    }
                     return true;
                 }
             }

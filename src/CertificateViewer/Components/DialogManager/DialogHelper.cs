@@ -38,8 +38,8 @@ public static class DialogHelper
             return new List<string>();
         }
 
-        // return the result
-        return storageFiles.Select(s => s.TryGetLocalPath()).Select(x=>x!).ToList();
+        // return the result (drop files without a local path instead of suppressing nulls)
+        return storageFiles.Select(s => s.TryGetLocalPath()).Where(x => x is not null).Select(x => x!).ToList();
 
     }
 }

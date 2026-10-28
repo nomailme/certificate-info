@@ -13,7 +13,7 @@ public class PfxImporterTests
         { 
             Password = "123123123"
         };
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\certificate.pfx"),  options);
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "certificate.pfx")),  options);
         Assert.True(result.Success);
         Assert.NotNull(result.Certificates);
         Assert.Single(result.Certificates);
@@ -23,7 +23,7 @@ public class PfxImporterTests
     public async Task Import_PfxFileWithWrongPassword_Fail()
     {
         var options = new PfxImporter.PfxLoaderOptions();
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\certificate.pfx"), options);
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "certificate.pfx")), options);
         Assert.False(result.Success);
     }
 
@@ -31,7 +31,7 @@ public class PfxImporterTests
     public async Task Import_PemFile_Failure()
     {
         var options = new PfxImporter.PfxLoaderOptions();
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\pem.crt"), options);
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "pem.crt")), options);
         Assert.False(result.Success);
     }
 
@@ -39,7 +39,7 @@ public class PfxImporterTests
     public async Task Import_DerFile_Failure()
     {
         var options = new PfxImporter.PfxLoaderOptions();
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\der.crt"), options);
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "der.crt")), options);
         Assert.False(result.Success);
     }
 }

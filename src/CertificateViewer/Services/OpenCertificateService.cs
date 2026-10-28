@@ -13,35 +13,52 @@ namespace CertificateViewer.Services;
 
 public class OpenCertificateService(DialogManager dialogManager, PasswordDialogViewModel passwordViewModel)
 {
+    private const string UnsupportedFileTypeMessage = "Unrecognized or unsupported file type.";
+
     public async Task<DialogResult> OpenFile(string path)
     {
-        var tcs = new TaskCompletionSource<DialogResult>(TaskCreationOptions.RunContinuationsAsynchronously);
         var filepath = Uri.UnescapeDataString(path);
-        var certificateType = await CertificateHelper.CheckAsync(filepath);
+        // Read the file exactly once and detect the type from the same bytes.
+        var rawData = await File.ReadAllBytesAsync(filepath);
+        var certificateType = await CertificateHelper.CheckAsync(rawData);
+
         if (certificateType == CertificateType.Pfx)
         {
+            // The password dialog is fire-and-forget: Show() returns void and the
+            // success callback fires later, so it cannot be awaited directly.
+            // The TCS bridges that callback into the awaited Task<DialogResult>.
+            var tcs = new TaskCompletionSource<DialogResult>(TaskCreationOptions.RunContinuationsAsynchronously);
             dialogManager.CreateDialog(passwordViewModel)
-
                 .WithSuccessCallback(async vm =>
                 {
-                    var result = await LoadCertificate(filepath, CertificateType.Pfx, vm.Password);
-                    tcs.SetResult(result);
+                    tcs.SetResult(await TryLoadCertificateAsync(rawData, CertificateType.Pfx, vm.Password));
                 })
                 .WithCancelCallback(() => tcs.SetResult(DialogResult.OperationCanceled()))
                 .Show();
-        }
-        else
-        {
-            var result = await LoadCertificate(filepath, certificateType, string.Empty);
-            tcs.SetResult(result);
+            return await tcs.Task;
         }
 
-        return await tcs.Task;
+        return await TryLoadCertificateAsync(rawData, certificateType, string.Empty);
     }
 
-    private static async Task<DialogResult> LoadCertificate(string filename, CertificateType certificateType, string password = "")
+    private static async Task<DialogResult> TryLoadCertificateAsync(byte[] rawData, CertificateType certificateType, string password)
     {
-        var rawData = await File.ReadAllBytesAsync(filename);
+        try
+        {
+            if (certificateType == CertificateType.Unknown)
+            {
+                return DialogResult.CreateFail(new InvalidOperationException(UnsupportedFileTypeMessage));
+            }
+            return await LoadCertificate(rawData, certificateType, password);
+        }
+        catch (ArgumentException)
+        {
+            return DialogResult.CreateFail(new InvalidOperationException(UnsupportedFileTypeMessage));
+        }
+    }
+
+    private static async Task<DialogResult> LoadCertificate(byte[] rawData, CertificateType certificateType, string password = "")
+    {
         var result = certificateType switch
         {
             CertificateType.Der => await new DerImporter().ImportAsync(rawData),

@@ -9,9 +9,6 @@ public static class ThemeModeConverters
 {
     private static readonly Dictionary<ThemeMode, LucideIconKind> Icons = new()
     {
-        // { ThemeMode.System, ""  },
-        // { ThemeMode.Light, "" },
-        // { ThemeMode.Dark, "" },
         {
             ThemeMode.System, LucideIconKind.SunMoon
         },
@@ -21,7 +18,6 @@ public static class ThemeModeConverters
         {
             ThemeMode.Dark, LucideIconKind.Moon
         }
-
     };
 
     public static IValueConverter ToLucideIcon
@@ -29,7 +25,7 @@ public static class ThemeModeConverters
         get
         {
             var converter = new FuncValueConverter<ThemeMode, LucideIconKind>(mode =>
-                Icons.TryGetValue(mode, out var icon) ? icon : Icons[0]);
+                Icons.TryGetValue(mode, out var icon) ? icon : Icons[ThemeMode.System]);
             return converter;
         }
     }

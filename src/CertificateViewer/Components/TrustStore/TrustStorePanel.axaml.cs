@@ -163,7 +163,6 @@ public partial class TrustStorePanel : UserControl
     [RelayCommand]
     public async Task AddRootCertificate()
     {
-        // try
         {
             var fileDialogResult = await this.OpenFileDialogAsync("Root certificates");
 
@@ -176,12 +175,6 @@ public partial class TrustStorePanel : UserControl
                 }
             }
         }
-        // catch (Exception e)
-        // {
-            // _dialogManager?.CreateDialog("Error loading file", e.Message)
-                // .Dismissible()
-                // .Show();
-        // }
     }
 
     private void InputElement_OnPointerEntered(object? sender, PointerEventArgs e) =>

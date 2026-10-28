@@ -17,21 +17,21 @@
     <TrimMode>full</TrimMode>
     <PublishTrimmed>true</PublishTrimmed>
     <AvaloniaXamlCompilation>true</AvaloniaXamlCompilation>
-    <UseSizeOptimizedLinq >true</UseSizeOptimizedLinq >
-    <UseNativeHttpHandler >true</UseNativeHttpHandler >
-    <StackTraceSupport>false</StackTraceSupport  >
-    <MetricsSupport>false</MetricsSupport  >
-    <MetadataUpdaterSupport>false</MetadataUpdaterSupport  >
-    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport  >
-    <DebuggerSupport>false</DebuggerSupport  >
+    <UseNativeHttpHandler>true</UseNativeHttpHandler>
+    <StackTraceSupport>false</StackTraceSupport>
+    <MetricsSupport>false</MetricsSupport>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <DebuggerSupport>false</DebuggerSupport>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.3.4" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.4" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Lucide.Avalonia" Version="0.1.43" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="ShadUI" Version="0.1.5" />
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
   </ItemGroup>
 
   <ItemGroup>

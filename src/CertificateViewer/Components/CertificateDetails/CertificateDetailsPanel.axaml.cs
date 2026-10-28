@@ -14,20 +14,13 @@ public partial class CertificateDetailsPanel : UserControl
             o => o.Certificate,
             (o, v) => o.Certificate = v);
 
-    public static readonly DirectProperty<CertificateDetailsPanel, bool?> ShowRawProperty =
-        AvaloniaProperty.RegisterDirect<CertificateDetailsPanel, bool?>(
-            nameof(ShowRaw),
-            o => o.ShowRaw,
-            (o, v) => o.ShowRaw = v);
-
     public static readonly DirectProperty<CertificateDetailsPanel, ViewMode> ViewModeProperty =
         AvaloniaProperty.RegisterDirect<CertificateDetailsPanel, ViewMode>(
-            nameof(ShowRaw),
+            nameof(ViewMode),
             o => o.ViewMode,
             (o, v) => o.ViewMode = v);
 
     private X509Certificate2? _certificate;
-    private bool? _showRaw = false;
     private ViewMode _viewMode = ViewMode.General;
 
     static CertificateDetailsPanel() => AffectsRender<CertificateDetailsPanel>(CertificateProperty);
@@ -40,12 +33,6 @@ public partial class CertificateDetailsPanel : UserControl
     {
         get => _viewMode;
         set => SetAndRaise(ViewModeProperty, ref _viewMode, value);
-    }
-
-    public bool? ShowRaw
-    {
-        get => _showRaw;
-        set => SetAndRaise(ShowRawProperty, ref _showRaw, value);
     }
 
     public X509Certificate2? Certificate

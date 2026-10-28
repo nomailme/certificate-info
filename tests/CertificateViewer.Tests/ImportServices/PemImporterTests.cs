@@ -12,7 +12,7 @@ public class PemImporterTests
     {
      
         
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\pem.crt"));
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "pem.crt")));
         Assert.True(result.Success);
         Assert.NotNull(result.Certificates);
         Assert.Single(result.Certificates);
@@ -23,7 +23,7 @@ public class PemImporterTests
     {
      
         
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\pem_chain.crt"));
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "pem_chain.crt")));
         Assert.True(result.Success);
         Assert.NotNull(result.Certificates);
         Assert.Equal(2,result.Certificates.Count);
@@ -32,14 +32,14 @@ public class PemImporterTests
     [Fact]
     public async Task Import_PfxFile_Failure()
     {
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\certificate.pfx"));
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "certificate.pfx")));
         Assert.False(result.Success);
     }
 
     [Fact]
     public async Task Import_DerFile_Failure()
     {
-        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(@"DataStore\der.crt"));
+        var result = await _importer.ImportAsync(await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "DataStore", "der.crt")));
         Assert.False(result.Success);
     }
 }

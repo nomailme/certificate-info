@@ -6,13 +6,14 @@ public class ChainValidator
 {
     public async Task<List<string>> Validate(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore)
     {
-        await ValidateCore(certificates, rootCertificates, useSystemStore, out var errors);
+        await Task.CompletedTask;
+        ValidateCore(certificates, rootCertificates, useSystemStore, out var errors);
         return errors;
     }
 
-    private Task<bool> ValidateCore(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore, out List<string> errors)
+    private bool ValidateCore(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore, out List<string> errors)
     {
-        var chain = X509Chain.Create();
+        using var chain = X509Chain.Create();
         var policy = new X509ChainPolicy
         {
             RevocationMode = X509RevocationMode.NoCheck,
@@ -24,12 +25,23 @@ public class ChainValidator
 
         if (useSystemStore==false)
         {
-            rootCertificates?.ForEach(root => policy.CustomTrustStore.Add(root));
+            if (rootCertificates != null)
+            {
+                foreach (var root in rootCertificates)
+                    policy.CustomTrustStore.Add(root);
+            }
         }
-        certificates.Skip(1).ForEach(x=>policy.ExtraStore.Add(x));
+        foreach (var x in certificates.Skip(1))
+            policy.ExtraStore.Add(x);
         
+        if (certificates.Count == 0)
+        {
+            errors = new List<string> { "No certificate to validate." };
+            return false;
+        }
+
         var result = chain.Build(certificates.First());
         errors = chain.ChainStatus.Select(x => x.StatusInformation).ToList();
-        return Task.FromResult(result);
+        return result;
     }
 }

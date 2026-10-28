@@ -187,12 +187,13 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel
             case DialogResult.OperationResult.Success:
 
                 CertificateChain = new ObservableCollection<X509Certificate2>(dialogResult.Certificates.ToList());
-                SelectedCertificate = dialogResult.Certificates.First();
+                // No-certificate case: do not throw from First(); leave selection empty.
+                SelectedCertificate = dialogResult.Certificates.Count > 0 ? dialogResult.Certificates[0] : null;
                 break;
             case DialogResult.OperationResult.Canceled:
                 break;
             default:
-                _dialogManager.CreateDialog("Unable to open file", dialogResult.Error!.Message)
+                _dialogManager.CreateDialog("Unable to open file", dialogResult.Error?.Message ?? "Unknown error")
                     .Dismissible()
                     .Show();
                 break;
