@@ -10,6 +10,7 @@ using CertificateViewer.Components.Dialogs.OpenUrl;
 using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Components.MainWindow;
 using CertificateViewer.Services;
+using CertificateViewer.Services.ErrorHandling;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using ShadUI;
@@ -51,6 +52,7 @@ public class App : Application
         collection.AddSingleton<DialogManager>();
         collection.AddTransient<OpenUrlVm>();
         collection.AddTransient<PasswordDialogViewModel>();
+        collection.AddSingleton<IErrorHandler, GlobalErrorHandler>();
         collection.AddSingleton<MainWindowVm>();
         collection.AddSingleton<ThemeWatcher>(_ => new ThemeWatcher(Current!));
 
