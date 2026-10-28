@@ -2,7 +2,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic;
 
-public class ChainValidator
+public class ChainValidator : ICertificateChainValidator
 {
     public async Task<List<string>> Validate(ICollection<X509Certificate2> certificates, ICollection<X509Certificate2>? rootCertificates, bool useSystemStore)
     {

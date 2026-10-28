@@ -23,6 +23,7 @@ namespace CertificateViewer.ViewModels;
 public partial class TrustStoreViewModel : BaseViewModel, IActivatableViewModel, IDisposable
 {
     private readonly OpenCertificateService _openCertificateService;
+    private readonly ICertificateChainValidator _chainValidator;
     private readonly IErrorHandler _errorHandler;
     private readonly CompositeDisposable _disposables = new();
     private ObservableCollection<X509Certificate2> _certificateChain = new();
@@ -35,11 +36,16 @@ public partial class TrustStoreViewModel : BaseViewModel, IActivatableViewModel,
     ///     Initializes a new instance of the <see cref="TrustStoreViewModel" /> class.
     /// </summary>
     /// <param name="openCertificateService">Service used to load certificates from files.</param>
+    /// <param name="chainValidator">Validator used to build and validate the chain against a trust store.</param>
     /// <param name="errorHandler">Handler used to surface file-loading errors to the user.</param>
-    public TrustStoreViewModel(OpenCertificateService openCertificateService, IErrorHandler errorHandler)
+    public TrustStoreViewModel(
+        OpenCertificateService openCertificateService,
+        ICertificateChainValidator chainValidator,
+        IErrorHandler errorHandler)
     {
         Activator = new ViewModelActivator();
         _openCertificateService = openCertificateService;
+        _chainValidator = chainValidator;
         _errorHandler = errorHandler;
 
         // The panel used to subscribe with an undisposed async-void subscription; the VM owns
@@ -146,7 +152,7 @@ public partial class TrustStoreViewModel : BaseViewModel, IActivatableViewModel,
             return;
         }
 
-        var result = await new ChainValidator().Validate(CertificateChain, TrustedCertificates, UseSystemStore);
+        var result = await _chainValidator.Validate(CertificateChain, TrustedCertificates, UseSystemStore);
         Errors.Clear();
         foreach (var error in result)
         {

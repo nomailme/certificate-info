@@ -12,6 +12,8 @@ using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Components.MainWindow;
 using CertificateViewer.Services;
 using CertificateViewer.Services.ErrorHandling;
+using CertificateViewer.Logic;
+using CertificateViewer.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using ShadUI;
@@ -59,6 +61,7 @@ public class App : Application
         collection.RegisterDialogViews();
         collection.AddTransient<OpenUrlVm>();
         collection.AddTransient<PasswordDialogViewModel>();
+        collection.AddSingleton<ICertificateChainValidator, ChainValidator>();
         collection.AddSingleton<IErrorHandler, GlobalErrorHandler>();
         collection.AddSingleton<MainWindowVm>();
         collection.AddSingleton<ThemeWatcher>(_ => new ThemeWatcher(Current!));

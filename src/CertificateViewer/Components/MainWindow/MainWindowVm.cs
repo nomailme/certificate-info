@@ -42,7 +42,8 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         PasswordDialogViewModel passwordViewModel,
         ViewModelFactory viewModelFactory,
         ThemeWatcher themeWatcher,
-        IErrorHandler errorHandler)
+        IErrorHandler errorHandler,
+        ICertificateChainValidator chainValidator)
     {
         Activator = new ViewModelActivator();
         ShowOpenFileDialog = new Interaction<string, string?>();
@@ -52,7 +53,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         _viewModelFactory = viewModelFactory;
         _themeWatcher = themeWatcher;
         _errorHandler = errorHandler;
-        _trustStoreViewModel = new TrustStoreViewModel(_openCertificateService, _errorHandler);
+        _trustStoreViewModel = new TrustStoreViewModel(_openCertificateService, chainValidator, _errorHandler);
 
         SetTitle(string.Empty);
     }
