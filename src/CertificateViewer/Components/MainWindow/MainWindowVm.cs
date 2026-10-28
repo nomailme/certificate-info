@@ -35,6 +35,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
     private ShadUI.DialogManager _dialogManager;
     private bool _isBusy;
     private OpenCertificateService _openCertificateService;
+    private RemoteServerImporter _remoteServerImporter;
     private X509Certificate2? _selectedCertificate;
     private string _title = string.Empty;
     private TrustStoreViewModel _trustStoreViewModel;
@@ -43,16 +44,18 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
 
     public MainWindowVm(
         ShadUI.DialogManager dialogManager,
-        PasswordDialogViewModel passwordViewModel,
         ViewModelFactory viewModelFactory,
         ThemeWatcher themeWatcher,
         IErrorHandler errorHandler,
-        ICertificateChainValidator chainValidator)
+        ICertificateChainValidator chainValidator,
+        OpenCertificateService openCertificateService,
+        RemoteServerImporter remoteServerImporter)
     {
         Activator = new ViewModelActivator();
         ShowOpenFileDialog = new Interaction<string, string?>();
         OpenFile = new Interaction<string, Unit>();
-        _openCertificateService = new OpenCertificateService(dialogManager, passwordViewModel);
+        _openCertificateService = openCertificateService;
+        _remoteServerImporter = remoteServerImporter;
         _dialogManager = dialogManager;
         _viewModelFactory = viewModelFactory;
         _themeWatcher = themeWatcher;
@@ -171,7 +174,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         {
             using (BusyObject.Create(() => IsBusy = true, () => IsBusy = false))
             {
-                var remoteServerCertificateImporter = new RemoteServerImporter();
+                var remoteServerCertificateImporter = _remoteServerImporter;
                 try
                 {
 

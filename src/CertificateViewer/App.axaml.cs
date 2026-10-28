@@ -13,6 +13,7 @@ using CertificateViewer.Components.MainWindow;
 using CertificateViewer.Services;
 using CertificateViewer.Services.ErrorHandling;
 using CertificateViewer.Logic;
+using CertificateViewer.Logic.ImportServices.Implementation;
 using CertificateViewer.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
@@ -63,6 +64,11 @@ public class App : Application
         collection.AddTransient<PasswordDialogViewModel>();
         collection.AddSingleton<ICertificateChainValidator, ChainValidator>();
         collection.AddSingleton<IErrorHandler, GlobalErrorHandler>();
+        collection.AddSingleton<DerImporter>();
+        collection.AddSingleton<PemImporter>();
+        collection.AddSingleton<PfxImporter>();
+        collection.AddSingleton<RemoteServerImporter>();
+        collection.AddSingleton<OpenCertificateService>();
         collection.AddSingleton<MainWindowVm>();
         collection.AddSingleton<ThemeWatcher>(_ => new ThemeWatcher(Current!));
 

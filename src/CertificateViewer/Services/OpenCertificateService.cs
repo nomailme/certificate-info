@@ -11,7 +11,16 @@ using ShadUI;
 
 namespace CertificateViewer.Services;
 
-public class OpenCertificateService(DialogManager dialogManager, PasswordDialogViewModel passwordViewModel)
+/// <summary>
+///     Loads certificates from files. The importers are provided via the constructor (DI), so
+///     no importer is constructed at call sites.
+/// </summary>
+public class OpenCertificateService(
+    DialogManager dialogManager,
+    PasswordDialogViewModel passwordViewModel,
+    DerImporter derImporter,
+    PemImporter pemImporter,
+    PfxImporter pfxImporter)
 {
     private const string UnsupportedFileTypeMessage = "Unrecognized or unsupported file type.";
 
@@ -41,7 +50,7 @@ public class OpenCertificateService(DialogManager dialogManager, PasswordDialogV
         return await TryLoadCertificateAsync(rawData, certificateType, string.Empty);
     }
 
-    private static async Task<DialogResult> TryLoadCertificateAsync(byte[] rawData, CertificateType certificateType, string password)
+    private async Task<DialogResult> TryLoadCertificateAsync(byte[] rawData, CertificateType certificateType, string password)
     {
         try
         {
@@ -57,13 +66,13 @@ public class OpenCertificateService(DialogManager dialogManager, PasswordDialogV
         }
     }
 
-    private static async Task<DialogResult> LoadCertificate(byte[] rawData, CertificateType certificateType, string password = "")
+    private async Task<DialogResult> LoadCertificate(byte[] rawData, CertificateType certificateType, string password = "")
     {
         var result = certificateType switch
         {
-            CertificateType.Der => await new DerImporter().ImportAsync(rawData),
-            CertificateType.Pem => await new PemImporter().ImportAsync(rawData),
-            CertificateType.Pfx => await new PfxImporter().ImportAsync(rawData, new PfxImporter.PfxLoaderOptions { Password = password }),
+            CertificateType.Der => await derImporter.ImportAsync(rawData),
+            CertificateType.Pem => await pemImporter.ImportAsync(rawData),
+            CertificateType.Pfx => await pfxImporter.ImportAsync(rawData, new PfxImporter.PfxLoaderOptions { Password = password }),
             _ => throw new ArgumentOutOfRangeException(nameof(certificateType), certificateType, null)
         };
         return result.ToDialogResult(certificateType);
