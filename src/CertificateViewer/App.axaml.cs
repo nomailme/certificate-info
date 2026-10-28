@@ -56,7 +56,7 @@ public class App : Application
 
         var collection = new ServiceCollection();
         collection.AddSingleton<ViewModelFactory>();
-        collection.AddSingleton<DialogManager>();
+        collection.RegisterDialogViews();
         collection.AddTransient<OpenUrlVm>();
         collection.AddTransient<PasswordDialogViewModel>();
         collection.AddSingleton<IErrorHandler, GlobalErrorHandler>();
@@ -66,8 +66,6 @@ public class App : Application
         var services = collection.BuildServiceProvider();
 
         _errorHandler = services.GetRequiredService<IErrorHandler>();
-
-        services.RegisterDialogs();
 
         var vm = services.GetRequiredService<MainWindowVm>();
         var mainWindow = new MainWindow
