@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace CertificateViewer.Components.MainWindow;
 public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDisposable
 {
     private readonly IErrorHandler _errorHandler;
+    private readonly CompositeDisposable _disposables = new();
     private readonly ThemeWatcher _themeWatcher;
     private readonly ViewModelFactory _viewModelFactory;
     private ObservableCollection<X509Certificate2> _certificateChain = new();
@@ -36,6 +38,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
     private X509Certificate2? _selectedCertificate;
     private string _title = string.Empty;
     private TrustStoreViewModel _trustStoreViewModel;
+    private CertificateChainViewModel _certificateChainViewModel;
 
     public MainWindowVm(
         ShadUI.DialogManager dialogManager,
@@ -54,12 +57,26 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         _themeWatcher = themeWatcher;
         _errorHandler = errorHandler;
         _trustStoreViewModel = new TrustStoreViewModel(_openCertificateService, chainValidator, _errorHandler);
+        _certificateChainViewModel = new CertificateChainViewModel
+        {
+            Items = _certificateChain,
+            CertificateSource = _certificateSource
+        };
+        // The panel's ListBox selection flows back into SelectedCertificate (consumed by the
+        // details panel); assigning an equal value is a no-op, so this cannot loop.
+        _certificateChainViewModel
+            .WhenAnyValue(x => x.SelectedCertificate)
+            .Subscribe(u => SelectedCertificate = u)
+            .DisposeWith(_disposables);
 
         SetTitle(string.Empty);
     }
 
     /// <summary>Gets the view model of the trust-store panel; the panel's DataContext.</summary>
     public TrustStoreViewModel TrustStoreViewModel => _trustStoreViewModel;
+
+    /// <summary>Gets the view model of the certificate-chain panel; the panel's DataContext.</summary>
+    public CertificateChainViewModel CertificateChainViewModel => _certificateChainViewModel;
 
 
     public Interaction<string, string?> ShowOpenFileDialog { get; set; }
@@ -91,10 +108,30 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
     public X509Certificate2? SelectedCertificate
     {
         get => _selectedCertificate;
-        set => this.RaiseAndSetIfChanged(ref _selectedCertificate, value);
+        set
+        {
+            if (_selectedCertificate != value)
+            {
+                this.RaiseAndSetIfChanged(ref _selectedCertificate, value);
+                // Keep the chain panel's ListBox selection in sync; assigning an equal value
+                // is a no-op on the chain VM, so the two-way sync cannot loop.
+                _certificateChainViewModel.SelectedCertificate = value;
+            }
+        }
     }
 
-    public string CertificateSource { get => _certificateSource; set => this.RaiseAndSetIfChanged(ref _certificateSource, value); }
+    public string CertificateSource
+    {
+        get => _certificateSource;
+        set
+        {
+            if (_certificateSource != value)
+            {
+                this.RaiseAndSetIfChanged(ref _certificateSource, value);
+                _certificateChainViewModel.CertificateSource = value;
+            }
+        }
+    }
 
     public bool IsBusy
     {
@@ -199,6 +236,8 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
                 CertificateChain = new ObservableCollection<X509Certificate2>(dialogResult.Certificates.ToList());
                 // Forward the chain to the trust-store view model so its validity subscription fires.
                 _trustStoreViewModel.CertificateChain = CertificateChain;
+                // Keep the chain panel's items in sync (same instance, so no notification needed).
+                _certificateChainViewModel.Items = CertificateChain;
                 // No-certificate case: do not throw from First(); leave selection empty.
                 SelectedCertificate = dialogResult.Certificates.Count > 0 ? dialogResult.Certificates[0] : null;
                 break;
@@ -212,9 +251,10 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         }
     }
 
-    /// <summary>Disposes the owned trust-store view model.</summary>
+    /// <summary>Disposes the owned view models and subscriptions.</summary>
     public void Dispose()
     {
+        _disposables.Dispose();
         _trustStoreViewModel.Dispose();
         GC.SuppressFinalize(this);
     }

@@ -1,12 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:CertificateViewer.Components.CertificateChain"
+             xmlns:vm="using:CertificateViewer.ViewModels"
              xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography"
              xmlns:shadUi="clr-namespace:ShadUI;assembly=ShadUI"
              x:Class="CertificateViewer.Components.CertificateChain.CertificateChainPanel"
-             x:DataType="vm:CertificateChainPanel"
-             Name="CertificateChainList">
-    <Border DataContext="{CompiledBinding #CertificateChainList}">
+             x:DataType="vm:CertificateChainViewModel"
+             x:CompileBindings="True">
+    <Border>
         <DockPanel>
             <Border DockPanel.Dock="Top"
                     BorderBrush="#E5E7EB"
@@ -18,11 +18,11 @@
                                 Foreground="{ DynamicResource ForegroundLeadColor}" />
 
                     <TextBlock Classes="h4" Text="Certificate Chain" />
-                    <shadUi:Badge IsVisible="{CompiledBinding #CertificateChainList.ItemsSource.Count}"
+                    <shadUi:Badge IsVisible="{CompiledBinding Items.Count}"
                                   VerticalAlignment="Center"
                                   Background="{DynamicResource InfoColor}" Foreground="White">
                         <TextBlock VerticalAlignment="Center"
-                                   Text="{CompiledBinding $parent[UserControl].((vm:CertificateChainPanel)DataContext).CertificateSource}" />
+                                   Text="{CompiledBinding CertificateSource}" />
                     </shadUi:Badge>
                 </StackPanel>
             </Border>
@@ -30,9 +30,9 @@
                      Margin="0,8"
                      DockPanel.Dock="Top"
                      VerticalAlignment="Stretch"
-                     ItemsSource="{CompiledBinding $parent[UserControl].((vm:CertificateChainPanel)DataContext).ItemsSource}"
+                     ItemsSource="{CompiledBinding Items}"
                      HorizontalAlignment="Stretch"
-                     SelectedItem="{CompiledBinding  #CertificateChainList.SelectedItem}">
+                     SelectedItem="{CompiledBinding SelectedCertificate, Mode=TwoWay}">
 
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type x509Certificates:X509Certificate2}">
@@ -64,7 +64,7 @@
                        Margin="0,16"
                        DockPanel.Dock="Bottom"
                        Text="No certificates loaded."
-                       IsVisible="{CompiledBinding !#CertificateChainList.ItemsSource.Count}" />
+                       IsVisible="{CompiledBinding !Items.Count}" />
         </DockPanel>
     </Border>
 </UserControl>
