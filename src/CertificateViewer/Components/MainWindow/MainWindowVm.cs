@@ -39,6 +39,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
     private string _title = string.Empty;
     private TrustStoreViewModel _trustStoreViewModel;
     private CertificateChainViewModel _certificateChainViewModel;
+    private CertificateDetailsViewModel _certificateDetailsViewModel;
 
     public MainWindowVm(
         ShadUI.DialogManager dialogManager,
@@ -68,6 +69,7 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
             .WhenAnyValue(x => x.SelectedCertificate)
             .Subscribe(u => SelectedCertificate = u)
             .DisposeWith(_disposables);
+        _certificateDetailsViewModel = new CertificateDetailsViewModel();
 
         SetTitle(string.Empty);
     }
@@ -77,6 +79,9 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
 
     /// <summary>Gets the view model of the certificate-chain panel; the panel's DataContext.</summary>
     public CertificateChainViewModel CertificateChainViewModel => _certificateChainViewModel;
+
+    /// <summary>Gets the view model of the certificate-details panel; the panel's DataContext.</summary>
+    public CertificateDetailsViewModel CertificateDetailsViewModel => _certificateDetailsViewModel;
 
 
     public Interaction<string, string?> ShowOpenFileDialog { get; set; }
@@ -116,6 +121,8 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
                 // Keep the chain panel's ListBox selection in sync; assigning an equal value
                 // is a no-op on the chain VM, so the two-way sync cannot loop.
                 _certificateChainViewModel.SelectedCertificate = value;
+                // The details panel shows the same certificate (its VM is the panel's DataContext).
+                _certificateDetailsViewModel.Certificate = value;
             }
         }
     }

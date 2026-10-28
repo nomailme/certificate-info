@@ -1,13 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:certificateDetails="clr-namespace:CertificateViewer.Components.CertificateDetails"
+             xmlns:vm="using:CertificateViewer.ViewModels"
              xmlns:converters="clr-namespace:CertificateViewer.Converters"
-             xmlns:x509Certificates="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System.Security.Cryptography"
              xmlns:converters1="clr-namespace:Avalonia.Controls.Converters;assembly=Avalonia.Controls"
              xmlns:enums="using:CertificateViewer.Logic"
              x:Class="CertificateViewer.Components.CertificateDetails.CertificateDetailsPanel"
-
-             x:DataType="x509Certificates:X509Certificate2">
+             x:DataType="vm:CertificateDetailsViewModel"
+             x:CompileBindings="True">
     <UserControl.Resources>
         <converters:SubjectAlternativeNamesConverter x:Key="SubjectAlternativeNamesConverter" />
         <converters:CertificateRawConverter x:Key="CertificateRawConverter" />
@@ -28,8 +27,8 @@
                                Text="Certificate Details" />
                 </StackPanel>
                     <ComboBox Grid.Column="1"
-                              ItemsSource="{Binding $parent[certificateDetails:CertificateDetailsPanel].ViewModes}"
-                              SelectedItem="{Binding $parent[certificateDetails:CertificateDetailsPanel].ViewMode}"
+                              ItemsSource="{CompiledBinding ViewModes}"
+                              SelectedItem="{CompiledBinding ViewMode, Mode=TwoWay}"
                               VerticalAlignment="Center"
                               Classes="h4">
                     </ComboBox>
@@ -38,7 +37,7 @@
 
         <ScrollViewer DockPanel.Dock="Top">
             <ScrollViewer.IsVisible>
-                <CompiledBinding Path="$parent[certificateDetails:CertificateDetailsPanel].ViewMode"
+                <CompiledBinding Path="ViewMode"
                                  Converter="{StaticResource EnumConverter}"
                                  ConverterParameter="{x:Static enums:ViewMode.General}" />
             </ScrollViewer.IsVisible>
@@ -46,35 +45,35 @@
                 <StackPanel>
                     <TextBlock Text="Subject" Classes="Small" />
                     <TextBlock Classes="Caption"
-                               Text="{CompiledBinding Subject}"
+                               Text="{CompiledBinding Certificate.Subject}"
                                Margin="0,4,0,0" />
                 </StackPanel>
 
                 <StackPanel>
                     <TextBlock Text="Issuer" Classes="Small" />
                     <TextBlock Classes="Caption"
-                               Text="{CompiledBinding Issuer}"
+                               Text="{CompiledBinding Certificate.Issuer}"
                                Margin="0,4,0,0" />
                 </StackPanel>
 
                 <StackPanel>
                     <TextBlock Text="Valid From" Classes="Small" />
                     <TextBlock Classes="Caption"
-                               Text="{CompiledBinding NotBefore}"
+                               Text="{CompiledBinding Certificate.NotBefore}"
                                Margin="0,4,0,0" />
                 </StackPanel>
 
                 <StackPanel>
                     <TextBlock Text="Valid To" Classes="Small" />
                     <TextBlock Classes="Caption"
-                               Text="{CompiledBinding NotAfter}"
+                               Text="{CompiledBinding Certificate.NotAfter}"
                                Margin="0,4,0,0" />
                 </StackPanel>
 
                 <StackPanel>
                     <TextBlock Text="Serial Number" Classes="Small" />
                     <TextBlock Classes="Caption"
-                               Text="{CompiledBinding SerialNumber}"
+                               Text="{CompiledBinding Certificate.SerialNumber}"
                                FontFamily="Cascadia Code"
                                Margin="0,4,0,0" />
                 </StackPanel>
@@ -82,14 +81,14 @@
                 <StackPanel>
                     <TextBlock Text="Thumbprint" Classes="Small" />
                     <TextBlock Classes="Caption"
-                               Text="{CompiledBinding Thumbprint}"
+                               Text="{CompiledBinding Certificate.Thumbprint}"
                                FontFamily="Cascadia Code"
                                Margin="0,4,0,0" />
                 </StackPanel>
                 <StackPanel>
                     <TextBlock Text="Subject Alternative Names" Classes="Small" />
                     <ListBox BorderBrush="{x:Null}"
-                             ItemsSource="{CompiledBinding Path=., Converter={StaticResource SubjectAlternativeNamesConverter}}"
+                             ItemsSource="{CompiledBinding Path=Certificate, Converter={StaticResource SubjectAlternativeNamesConverter}}"
                              FontFamily="Cascadia Code"
                              Margin="0,4,0,0">
                         <ListBox.Styles>
@@ -103,18 +102,18 @@
         </ScrollViewer>
         <ScrollViewer DockPanel.Dock="Bottom">
             <ScrollViewer.IsVisible>
-                <CompiledBinding Path="$parent[certificateDetails:CertificateDetailsPanel].ViewMode"
+                <CompiledBinding Path="ViewMode"
                                  Converter="{StaticResource EnumConverter}"
                                  ConverterParameter="{x:Static enums:ViewMode.Raw}" />
             </ScrollViewer.IsVisible>
             <SelectableTextBlock
                 Margin="16"
                 Classes="Caption"
-                Text="{CompiledBinding Path=., Converter={StaticResource CertificateRawConverter}}" />
+                Text="{CompiledBinding Path=Certificate, Converter={StaticResource CertificateRawConverter}}" />
         </ScrollViewer>
         <ScrollViewer DockPanel.Dock="Bottom">
             <ScrollViewer.IsVisible>
-                <CompiledBinding Path="$parent[certificateDetails:CertificateDetailsPanel].ViewMode"
+                <CompiledBinding Path="ViewMode"
                                  Converter="{StaticResource EnumConverter}"
                                  ConverterParameter="{x:Static enums:ViewMode.Base64}" />
             </ScrollViewer.IsVisible>
@@ -123,7 +122,7 @@
                 FontFamily="Cascadia Code, Consolas, Ubuntu Mono, Menlo, Monaco, monospace"
                 Classes="Small"
                 FontSize="12"
-                Text="{CompiledBinding Path=., Converter={StaticResource CertificateBase64Converter}}" />
+                Text="{CompiledBinding Path=Certificate, Converter={StaticResource CertificateBase64Converter}}" />
         </ScrollViewer>
     </DockPanel>
 </UserControl>

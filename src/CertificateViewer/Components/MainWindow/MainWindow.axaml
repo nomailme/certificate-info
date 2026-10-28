@@ -87,8 +87,7 @@
                 </shadUi:Card>
                 <shadUi:Card Grid.Column="1">
                     <certificateDetails:CertificateDetailsPanel
-                        DataContext="{CompiledBinding SelectedCertificate}"
-                        Certificate="{CompiledBinding .}" />
+                        DataContext="{CompiledBinding CertificateDetailsViewModel}" />
                 </shadUi:Card>
                 <shadUi:Card Grid.Column="2">
                     <trustStore:TrustStorePanel
