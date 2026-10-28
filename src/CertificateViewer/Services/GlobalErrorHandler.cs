@@ -27,7 +27,10 @@ public class GlobalErrorHandler : IErrorHandler
         ArgumentNullException.ThrowIfNull(exception);
         if (_dialogManager != null)
         {
-            _dialogManager.CreateDialog("Application Error", exception.ToString()).Show();
+            var title = string.IsNullOrWhiteSpace(context)
+                ? "Application Error"
+                : $"Application Error — {context}";
+            _dialogManager.CreateDialog(title, exception.ToString()).Show();
         }
 
         return Task.CompletedTask;
