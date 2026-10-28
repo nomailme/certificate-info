@@ -4,7 +4,7 @@ Status legend: `done` / `doing` / `todo`. Evidence = commit(s) on branch + build
 Original repo `/github/certificate-info` is a Windows 9p mount (no chmod → MSBuild fails);
 all work runs in worktree `/opt/data/cache/scratch/certview-work` (branch `phase-2-work`),
 merged back per wave. Build: `dotnet build -c Release -p:UseSharedCompilation=false` (0 errors;
-3 pre-existing SYSLIB0057 warnings). Tests: `dotnet test -c Release` (22 pass).
+3 pre-existing SYSLIB0057 warnings). Tests: `dotnet test -c Release` (26 pass).
 
 | # | Task | Wave | Status | Evidence |
 |---|------|------|--------|----------|
@@ -15,14 +15,14 @@ merged back per wave. Build: `dotnet build -c Release -p:UseSharedCompilation=fa
 | 2.5 | Extract TrustStoreViewModel | 3 | done | phase-2-work (this commit): ViewModels/TrustStoreViewModel.cs (CommunityToolkit.Mvvm commands, TrustedCertificates/Errors/IsChainValid/UseSystemStore, IErrorHandler on file-load failure); TrustStorePanel.axaml/.axaml.cs reduced to dumb view (x:DataType=VM, no DirectProperties, no DataContext=this); MainWindow.axaml binds TrustStorePanel.DataContext=TrustStoreViewModel; MainWindowVm creates+forwards chain. Verified: build 0 err/0 warn, tests 22/22 |
 | 2.6 | Validity subscription into VM, disposed | 3 | done | same commit as 2.5 (subscription lives in the VM): WhenAnyValue(TrustedCertificates, CertificateChain, UseSystemStore) in VM constructor, stored in CompositeDisposable; disposed via Activator.Deactivated + IDisposable (MainWindowVm disposes the owned VM). No async void (grep clean). Re-validation fires on any of the 3 triggers. Verified: build 0 err/0 warn, tests 22/22 |
 | 2.7 | Inject ICertificateChainValidator | 3 | done | this commit: Logic/ICertificateChainValidator.cs (interface); ChainValidator : ICertificateChainValidator; singleton registered in App.ServiceCollection; TrustStoreViewModel ctor-injects ICertificateChainValidator (no `new ChainValidator()` in UI). Verified: no inline `new` of Logic types on trust-store path (grep); TrustStorePanel has no Logic refs; build 0 err (3 pre-existing SYSLIB0057), tests 22/22 |
-| 2.8 | Rebind CertificateChainPanel to VM | 3 | todo | — |
-| 2.9 | CertificateDetails view-state to VM | 3 | todo | — |
-| 2.10 | Register four importers in DI | 3 | todo | — |
-| 2.11 | Constructor-inject importers into OpenCertificateService | 4 | todo | — |
-| 2.12 | Inject RemoteServerImporter into URL-load path | 4 | todo | — |
-| 2.13 | Construct child VMs in composition root | 4 | todo | — |
-| 2.14 | Extract URL-load into testable service | 4 | todo | — |
-| 2.15 | Reduce MainWindowVm to orchestrator | 4 | todo | — |
+| 2.8 | Rebind CertificateChainPanel to VM | 3 | done | efa8d08: MainWindow.axaml binds CertificateChainPanel.DataContext=CertificateChainViewModel (DirectProperty/$parent bindings removed); panel name attr dropped. Verified: build 0 err/0 warn, tests 22/22 |
+| 2.9 | CertificateDetails view-state to VM | 3 | done | 1f044f4: ViewModels/CertificateDetailsViewModel.cs (Certificate, ViewMode, ViewModes); panel re-bounded to VM via x:DataType, code-behind reduced to InitializeComponent; MainWindowVm syncs SelectedCertificate→VM. Verified: build 0 err/0 warn, tests 22/22 |
+| 2.10 | Register four importers in DI | 3 | done | ef17aef (with 2.11/2.12): DerImporter/PemImporter/PfxImporter/RemoteServerImporter + ICertificateLoader<string> registered as singletons in App.axaml.cs. Verified: no inline `new Importer()` in UI (grep); build 0 err, tests 22/22 |
+| 2.11 | Constructor-inject importers into OpenCertificateService | 4 | done | ef17aef: OpenCertificateService primary ctor takes the file importers; registered singleton; MainWindowVm uses the DI instance. Verified: build 0 err, tests 22/22 |
+| 2.12 | Inject RemoteServerImporter into URL-load path | 4 | done | ef17aef: URL path uses the DI importer (no inline `new` at call site). Verified: build 0 err, tests 22/22 |
+| 2.13 | Construct child VMs in composition root | 4 | done | this commit: App builds TrustStoreViewModel/CertificateChainViewModel/CertificateDetailsViewModel and passes them to MainWindowVm; DialogManager/OpenCertificateService/ErrorHandler no longer bindable VM properties — DialogHost.Manager wired in App (view concern), drag-drop uses vm.HandleFileOpenError. Verified: build 0 err, tests 22/22 |
+| 2.14 | Extract URL-load into testable service | 4 | done | this commit: Services/CertificateSourceLoader.cs (ICertificateLoader<string> + IErrorHandler) with LoadAsync(uri) → UrlLoadResult; MainWindowVm delegates; test project now references the UI project; 4 new unit tests (empty URI, importer failure w/ and w/o error, success). Verified: build 0 err, tests 26/26 |
+| 2.15 | Reduce MainWindowVm to orchestrator | 4 | done | this commit (state of MainWindowVm after 2.13/2.14): surface is chain/selection/title/busy/theme state + thin commands (OpenCertificateFile, SwitchTheme, OpenUrl→delegated) + HandleFileOpenError; dialog/import logic removed (grep: no `new` importer, no CreateDialog logic beyond trigger). Verified: build 0 err, tests 26/26 |
 | 2.16 | Replace reflection validation with explicit | 4 | todo | — |
 | 2.17 | Extract DialogViewModelBase | 4 | todo | — |
 | 2.18 | Fix RegisterDialogs DI idiom | 2 | done | p2-w2-register 13905e0: RegisterDialogs(IServiceProvider) → RegisterDialogViews(IServiceCollection) extension, called before BuildServiceProvider; factory creates the DialogManager singleton (avoids MS.DI self-reference). Verified: build 0 err, tests 22/22; dialog views still resolve via the same registrations |

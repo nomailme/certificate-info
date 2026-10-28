@@ -54,7 +54,7 @@ public partial class MainWindow : Window, IViewFor<MainWindowVm>
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                _ = vm?.ErrorHandler.HandleAsync(ex, context: "Opening file");
+                _ = vm?.HandleFileOpenError(ex);
             });
         }
     }

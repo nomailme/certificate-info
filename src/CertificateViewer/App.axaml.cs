@@ -13,6 +13,7 @@ using CertificateViewer.Components.MainWindow;
 using CertificateViewer.Services;
 using CertificateViewer.Services.ErrorHandling;
 using CertificateViewer.Logic;
+using CertificateViewer.Logic.ImportServices;
 using CertificateViewer.Logic.ImportServices.Implementation;
 using CertificateViewer.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,7 +69,9 @@ public class App : Application
         collection.AddSingleton<PemImporter>();
         collection.AddSingleton<PfxImporter>();
         collection.AddSingleton<RemoteServerImporter>();
+        collection.AddSingleton<ICertificateLoader<string>>(sp => sp.GetRequiredService<RemoteServerImporter>());
         collection.AddSingleton<OpenCertificateService>();
+        collection.AddSingleton<CertificateSourceLoader>();
         collection.AddSingleton<MainWindowVm>();
         collection.AddSingleton<ThemeWatcher>(_ => new ThemeWatcher(Current!));
 
@@ -76,11 +79,35 @@ public class App : Application
 
         _errorHandler = services.GetRequiredService<IErrorHandler>();
 
-        var vm = services.GetRequiredService<MainWindowVm>();
+        // Composition root: the child view models are constructed here with their dependencies
+        // injected, then handed to MainWindowVm (which wires their view-state to the panel state).
+        var openCertificateService = services.GetRequiredService<OpenCertificateService>();
+        var certificateSourceLoader = services.GetRequiredService<CertificateSourceLoader>();
+        var chainValidator = services.GetRequiredService<ICertificateChainValidator>();
+        var trustStoreViewModel = new TrustStoreViewModel(openCertificateService, chainValidator, _errorHandler);
+        var certificateChainViewModel = new CertificateChainViewModel();
+        var certificateDetailsViewModel = new CertificateDetailsViewModel();
+
+        var dialogManager = services.GetRequiredService<ShadUI.DialogManager>();
+        var viewModelFactory = services.GetRequiredService<ViewModelFactory>();
+        var themeWatcher = services.GetRequiredService<ThemeWatcher>();
+        var vm = new MainWindowVm(
+            dialogManager,
+            viewModelFactory,
+            themeWatcher,
+            _errorHandler,
+            openCertificateService,
+            certificateSourceLoader,
+            trustStoreViewModel,
+            certificateChainViewModel,
+            certificateDetailsViewModel);
         var mainWindow = new MainWindow
         {
             DataContext = vm
         };
+        // The dialog host is a view concern: the manager that CreateDialog renders into is wired
+        // here from the DI singleton (the view model stays service-free).
+        mainWindow.DialogHost.Manager = dialogManager;
         desktop.MainWindow = mainWindow;
 
         var args = desktop.Args;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using CertificateViewer.Components.DialogManager;
 using CertificateViewer.Components.Dialogs.OpenUrl;
-using CertificateViewer.Components.Dialogs.PasswordBox;
 using CertificateViewer.Controls.Dialogs;
 using CertificateViewer.Extensions;
 using CertificateViewer.Logic;
@@ -23,59 +23,67 @@ using ShadUI;
 
 namespace CertificateViewer.Components.MainWindow;
 
+/// <summary>
+///     Orchestrator view model for the main window: holds the chain/selection/title/busy/theme
+///     state and thin commands. Child-panel view models are constructed in the composition root
+///     (App) and passed in; services are used internally and are not exposed as bindable
+///     properties.
+/// </summary>
 public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDisposable
 {
     private readonly IErrorHandler _errorHandler;
     private readonly CompositeDisposable _disposables = new();
     private readonly ThemeWatcher _themeWatcher;
     private readonly ViewModelFactory _viewModelFactory;
+    private readonly ShadUI.DialogManager _dialogManager;
+    private readonly OpenCertificateService _openCertificateService;
+    private readonly CertificateSourceLoader _certificateSourceLoader;
+    private readonly TrustStoreViewModel _trustStoreViewModel;
+    private readonly CertificateChainViewModel _certificateChainViewModel;
+    private readonly CertificateDetailsViewModel _certificateDetailsViewModel;
     private ObservableCollection<X509Certificate2> _certificateChain = new();
     private string _certificateSource = string.Empty;
     private ThemeMode _currentTheme;
-    private ShadUI.DialogManager _dialogManager;
     private bool _isBusy;
-    private OpenCertificateService _openCertificateService;
-    private RemoteServerImporter _remoteServerImporter;
     private X509Certificate2? _selectedCertificate;
     private string _title = string.Empty;
-    private TrustStoreViewModel _trustStoreViewModel;
-    private CertificateChainViewModel _certificateChainViewModel;
-    private CertificateDetailsViewModel _certificateDetailsViewModel;
 
     public MainWindowVm(
         ShadUI.DialogManager dialogManager,
         ViewModelFactory viewModelFactory,
         ThemeWatcher themeWatcher,
         IErrorHandler errorHandler,
-        ICertificateChainValidator chainValidator,
         OpenCertificateService openCertificateService,
-        RemoteServerImporter remoteServerImporter)
+        CertificateSourceLoader certificateSourceLoader,
+        TrustStoreViewModel trustStoreViewModel,
+        CertificateChainViewModel certificateChainViewModel,
+        CertificateDetailsViewModel certificateDetailsViewModel)
     {
         Activator = new ViewModelActivator();
         ShowOpenFileDialog = new Interaction<string, string?>();
         OpenFile = new Interaction<string, Unit>();
-        _openCertificateService = openCertificateService;
-        _remoteServerImporter = remoteServerImporter;
         _dialogManager = dialogManager;
         _viewModelFactory = viewModelFactory;
         _themeWatcher = themeWatcher;
         _errorHandler = errorHandler;
-        _trustStoreViewModel = new TrustStoreViewModel(_openCertificateService, chainValidator, _errorHandler);
-        _certificateChainViewModel = new CertificateChainViewModel
-        {
-            Items = _certificateChain,
-            CertificateSource = _certificateSource
-        };
+        _openCertificateService = openCertificateService;
+        _certificateSourceLoader = certificateSourceLoader;
+        _trustStoreViewModel = trustStoreViewModel;
+        _certificateChainViewModel = certificateChainViewModel;
+        _certificateDetailsViewModel = certificateDetailsViewModel;
+
         // The panel's ListBox selection flows back into SelectedCertificate (consumed by the
         // details panel); assigning an equal value is a no-op, so this cannot loop.
         _certificateChainViewModel
             .WhenAnyValue(x => x.SelectedCertificate)
             .Subscribe(u => SelectedCertificate = u)
             .DisposeWith(_disposables);
-        _certificateDetailsViewModel = new CertificateDetailsViewModel();
 
         SetTitle(string.Empty);
     }
+
+    /// <summary>Gets the view-model activator.</summary>
+    public ViewModelActivator Activator { get; }
 
     /// <summary>Gets the view model of the trust-store panel; the panel's DataContext.</summary>
     public TrustStoreViewModel TrustStoreViewModel => _trustStoreViewModel;
@@ -86,10 +94,12 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
     /// <summary>Gets the view model of the certificate-details panel; the panel's DataContext.</summary>
     public CertificateDetailsViewModel CertificateDetailsViewModel => _certificateDetailsViewModel;
 
-
     public Interaction<string, string?> ShowOpenFileDialog { get; set; }
 
     public Interaction<string, Unit> OpenFile { get; set; }
+
+    /// <summary>Gets the error handler; consumed by the window's drag-drop code path.</summary>
+    public IErrorHandler ErrorHandler => _errorHandler;
 
     public string Title { get => _title; set => this.RaiseAndSetIfChanged(ref _title, value); }
 
@@ -98,20 +108,6 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         get => _certificateChain;
         set => this.RaiseAndSetIfChanged(ref _certificateChain, value);
     }
-
-    public ShadUI.DialogManager DialogManager
-    {
-        get => _dialogManager;
-        set => this.RaiseAndSetIfChanged(ref _dialogManager, value);
-    }
-
-    public OpenCertificateService OpenCertificateService
-    {
-        get => _openCertificateService;
-        set => this.RaiseAndSetIfChanged(ref _openCertificateService, value);
-    }
-
-    public IErrorHandler ErrorHandler => _errorHandler;
 
     public X509Certificate2? SelectedCertificate
     {
@@ -156,50 +152,35 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
     }
 
     [RelayCommand]
-    private void OpenUrl()
+    private async Task OpenUrl()
     {
         var openUrlViewModel = _viewModelFactory.Build<OpenUrlVm>();
-        DialogManager.CreateDialog(openUrlViewModel)
+        _dialogManager.CreateDialog(openUrlViewModel)
             .WithSuccessCallback(vm => Load(vm.Url))
             .WithCancelCallback(() => { })
             .Show();
 
-        string GetDomain(string uri)
-        {
-            var url = new Uri(uri);
-            return $"url:{url.Host}";
-        }
-
+        // The URL-load logic (import, error mapping, source/title) lives in the
+        // CertificateSourceLoader service; here we only apply the result to the UI state.
         async Task Load(string uri)
         {
             using (BusyObject.Create(() => IsBusy = true, () => IsBusy = false))
             {
-                var remoteServerCertificateImporter = _remoteServerImporter;
-                try
+                var loadResult = await _certificateSourceLoader.LoadAsync(uri);
+                if (!loadResult.Success || loadResult.Certificates is null)
                 {
-
-                    if (string.IsNullOrWhiteSpace(uri))
-                    {
-                        return;
-                    }
-
-                    var result = await remoteServerCertificateImporter.ImportAsync(uri);
-                    if (!result.Success)
-                    {
-                        throw result.Error ?? new InvalidOperationException("Error loading certificate");
-                    }
-
-                    CertificateSource = GetDomain(uri);
-                    LoadCertificates(result.ToDialogResult(CertificateType.Web));
-                    SetTitle(uri);
+                    return;
                 }
-                catch (Exception e)
+
+                CertificateSource = loadResult.Source;
+                LoadCertificates(new DialogResult
                 {
-                    await _errorHandler.HandleAsync(e, context: "Loading URL");
-                }
+                    Certificates = new List<X509Certificate2>(loadResult.Certificates),
+                    Success = DialogResult.OperationResult.Success
+                });
+                SetTitle(loadResult.Title);
             }
         }
-
     }
 
     private void SetTitle(string certficateSource)
@@ -236,6 +217,14 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         LoadCertificates(result);
         SetTitle(filepath);
     }
+
+    /// <summary>
+    ///     Surfaces a file-opening failure (e.g. from the window's drag-drop path) through the
+    ///     single error path.
+    /// </summary>
+    /// <param name="error">The exception that occurred while opening the file.</param>
+    public Task HandleFileOpenError(Exception error) =>
+        _errorHandler.HandleAsync(error, context: "Opening file");
 
     private void LoadCertificates(DialogResult dialogResult)
     {
@@ -282,8 +271,6 @@ public partial class MainWindowVm : BaseViewModel, IActivatableViewModel, IDispo
         _themeWatcher.SwitchTheme(CurrentTheme);
         return Task.CompletedTask;
     }
-    public ViewModelActivator Activator { get; }
-
 }
 
 public class BusyObject : IDisposable
@@ -295,7 +282,6 @@ public class BusyObject : IDisposable
     {
         OnStop();
         GC.SuppressFinalize(this);
-
     }
 
     public static BusyObject Create(Action onStart, Action onStop)

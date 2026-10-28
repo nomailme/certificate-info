@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\CertificateViewer.Logic\CertificateViewer.Logic.csproj" />
+      <ProjectReference Include="..\..\src\CertificateViewer\CertificateViewer.csproj" />
     </ItemGroup>
 
     <ItemGroup>
