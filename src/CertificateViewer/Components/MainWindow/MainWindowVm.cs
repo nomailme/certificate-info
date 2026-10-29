@@ -98,9 +98,6 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
 
     public Interaction<string, Unit> OpenFile { get; set; }
 
-    /// <summary>Gets the error handler; consumed by the window's drag-drop code path.</summary>
-    public IErrorHandler ErrorHandler => _errorHandler;
-
     public string Title { get => _title; set => this.RaiseAndSetIfChanged(ref _title, value); }
 
     public ObservableCollection<X509Certificate2> CertificateChain

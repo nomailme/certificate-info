@@ -1,5 +1,10 @@
 ﻿<linker>
-  <!-- Can be removed if CompiledBinding and no reflection are used -->
-  <assembly fullname="CertificateViewer" preserve="All" />
+  <!--
+    Minimal trim roots (task 2.20): the assembly-wide preserve="All" on CertificateViewer
+    has been removed. Only the roots AOT/trimming actually requires are listed; the
+    MVVM extraction (2.5–2.15) left no reflection surface in the app itself, so no
+    type-specific roots were needed — verified by the AOT publish and runtime
+    smoke test (task 2.21).
+  -->
   <assembly fullname="Avalonia.Themes.Fluent" preserve="All" />
 </linker>
