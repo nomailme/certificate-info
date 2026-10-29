@@ -32,8 +32,10 @@ public sealed partial class OpenUrlVm(ShadUI.DialogManager dialogManager) : Dial
             return;
         }
 
-        var hostType = Uri.CheckHostName(Url);
-        if (hostType == UriHostNameType.Unknown)
+        // CheckHostName takes a *host name* (e.g. "example.com"), not a full URL: passing the raw
+        // input rejects every "scheme://host" address, so the host must be parsed first. A failed
+        // TryCreate yields a null uri and an empty host, both of which mean "no valid address".
+        if (Uri.TryCreate(Url, UriKind.Absolute, out var uri) == false || uri.Host.Length == 0)
         {
             AddError(UrlPropertyName, "Provided address is not a valid address");
         }

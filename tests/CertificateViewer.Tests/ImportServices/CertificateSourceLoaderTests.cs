@@ -103,3 +103,45 @@ public class CertificateSourceLoaderTests
         Assert.Single(errorHandler.Contexts);
     }
 }
+
+/// <summary>
+///     Regression: an endpoint that serves no certificates (e.g. a plain http:// address) must be
+///     reported as a failure with an error surfaced, not as a success with an empty chain (which
+///     would leave the UI blank).
+/// </summary>
+public class CertificateSourceLoaderNoCertTests
+{
+    private sealed class NoCertImporter : ICertificateLoader<string>
+    {
+        public Task<ImportResult> ImportAsync(string input, EmptyOptions? options = default) =>
+            Task.FromResult(ImportResult.CreateSuccess(new List<X509Certificate2>()));
+    }
+
+    private sealed class RecordingErrorHandler : IErrorHandler
+    {
+        public readonly List<string> Contexts = new();
+        public Exception? Last;
+
+        public Task HandleAsync(Exception exception, string? context = null)
+        {
+            Last = exception;
+            Contexts.Add(context ?? string.Empty);
+            return Task.CompletedTask;
+        }
+    }
+
+    [Fact]
+    public async Task LoadAsync_WithNoCertificates_ReturnsFailureAndReportsToErrorHandler()
+    {
+        var importer = new NoCertImporter();
+        var errorHandler = new RecordingErrorHandler();
+        var loader = new CertificateSourceLoader(importer, errorHandler);
+
+        var result = await loader.LoadAsync("http://example.com");
+
+        Assert.False(result.Success);
+        Assert.Null(result.Certificates);
+        Assert.NotNull(errorHandler.Last);
+        Assert.Equal(new[] { "Loading URL" }, errorHandler.Contexts);
+    }
+}

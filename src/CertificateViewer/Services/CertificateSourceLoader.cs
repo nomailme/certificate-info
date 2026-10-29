@@ -26,9 +26,10 @@ public sealed record UrlLoadResult(bool Success, IReadOnlyList<X509Certificate2>
 public class CertificateSourceLoader(ICertificateLoader<string> remoteServerImporter, IErrorHandler errorHandler)
 {
     /// <summary>
-    ///     Loads the certificate chain for the given URI. Failures (including an empty URI)
-    ///     surface through the injected <see cref="IErrorHandler" />; the method never throws for
-    ///     them and returns a failed <see cref="UrlLoadResult" />.
+    ///     Loads the certificate chain for the given URI. Failures (including an empty URI or an
+    ///     endpoint that serves no certificates, such as a plain http:// address) surface through
+    ///     the injected <see cref="IErrorHandler" />; the method never throws for them and returns
+    ///     a failed <see cref="UrlLoadResult" />.
     /// </summary>
     /// <param name="uri">The URI to load.</param>
     /// <returns>The load result: success with certificates, or failure with no certificates.</returns>
@@ -47,9 +48,21 @@ public class CertificateSourceLoader(ICertificateLoader<string> remoteServerImpo
                 throw result.Error ?? new InvalidOperationException("Error loading certificate");
             }
 
+            var certificates = result.Certificates is null
+                ? new List<X509Certificate2>()
+                : new List<X509Certificate2>(result.Certificates);
+            if (certificates.Count == 0)
+            {
+                // A successful request that produced no certificates means the endpoint does not
+                // speak TLS (e.g. a plain http:// address); surface it as an error instead of
+                // leaving the UI in a blank state.
+                throw new InvalidOperationException(
+                    "No certificates were returned for the address (is it an https:// URL?)");
+            }
+
             return new UrlLoadResult(
                 true,
-                result.Certificates is null ? new List<X509Certificate2>() : new List<X509Certificate2>(result.Certificates),
+                certificates,
                 $"url:{new Uri(uri).Host}",
                 uri);
         }

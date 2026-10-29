@@ -16,7 +16,7 @@
             shadUi:ControlAssist.Label="Domain"
             shadUi:ElementAssist.FocusOnLoad="True"
             Classes="Clearable"
-            Text="{Binding Url, Mode=TwoWay}"
+            Text="{Binding Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Watermark="https://google.com" />
 
         <StackPanel Margin="0,24,0,0" Spacing="16">
