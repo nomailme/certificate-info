@@ -30,4 +30,13 @@ public partial class PasswordDialogViewModel(ShadUI.DialogManager dialogManager)
             AddError(PasswordPropertyName, "Provide a password");
         }
     }
+
+    // Closing must be keyed on the concrete type so ShadUI matches the callback the app
+    // registered via CreateDialog(vm); see DialogViewModelBase for the full rationale.
+    protected override void CloseWithSuccess()
+    {
+        DialogManager.Close(this, new CloseDialogOptions { Success = true });
+    }
+
+    protected override void CloseAsCancelled() => DialogManager.Close(this);
 }

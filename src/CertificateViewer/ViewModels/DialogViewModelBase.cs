@@ -85,12 +85,26 @@ public abstract partial class DialogViewModelBase : ReactiveObject, INotifyDataE
             return;
         }
 
-        DialogManager.Close(this, new CloseDialogOptions { Success = true });
+        CloseWithSuccess();
     }
 
     /// <summary>Closes the dialog without reporting success.</summary>
     [RelayCommand]
-    private void Cancel() => DialogManager.Close(this);
+    private void Cancel() => CloseAsCancelled();
+
+    /// <summary>
+    ///     Closes this dialog reporting success. Each concrete view model overrides this so the
+    ///     close is invoked with the <em>concrete</em> context type: ShadUI keys its success/cancel
+    ///     callbacks on the type <c>CreateDialog&lt;TContext&gt;</c> inferred at registration time (the
+    ///     concrete VM), while a close performed from this base class would pass the base type and
+    ///     silently drop the callback — the "enter a URL, nothing loads" bug. In the override,
+    ///     <c>this</c> is statically the concrete type, so <c>DialogManager.Close(this, ...)</c> infers
+    ///     it correctly. Plain virtual dispatch: trim-safe under Native AOT, no reflection.
+    /// </summary>
+    protected abstract void CloseWithSuccess();
+
+    /// <summary>Closes this dialog as cancelled (see <see cref="CloseWithSuccess" /> for why this is virtual).</summary>
+    protected abstract void CloseAsCancelled();
 
     /// <summary>Runs each derived class's explicit validation over its properties.</summary>
     protected abstract void ValidateAll();
