@@ -2,7 +2,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class PfxImporter: ICertificateLoader<byte[], PfxImporter.PfxLoaderOptions>, ICertificateTypeValidator<byte[]>
+public class PfxImporter: ICertificateLoader<byte[], PfxImporter.PfxLoaderOptions>, ICertificateTypeValidator<byte[]>, ICertificateFileImporter
 {
     public class PfxLoaderOptions: ICertificateLoaderOptions
     {
@@ -34,6 +34,13 @@ public class PfxImporter: ICertificateLoader<byte[], PfxImporter.PfxLoaderOption
         {
             return Task.FromResult(ImportResult.CreateFail(e));
         }
+    }
+
+    public Task<ImportResult> ImportAsync(byte[] data, string password)
+    {
+        // The file-importer contract passes the password directly; wrap it in the options
+        // the options-based overload expects.
+        return ImportAsync(data, new PfxLoaderOptions { Password = password });
     }
 
     public bool IsSupported(byte[] input)

@@ -35,12 +35,8 @@
             </Grid>
         </Border>
 
-        <ScrollViewer DockPanel.Dock="Top">
-            <ScrollViewer.IsVisible>
-                <CompiledBinding Path="ViewMode"
-                                 Converter="{StaticResource EnumConverter}"
-                                 ConverterParameter="{x:Static enums:ViewMode.General}" />
-            </ScrollViewer.IsVisible>
+        <ScrollViewer DockPanel.Dock="Top"
+                      IsVisible="{CompiledBinding ViewMode, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static enums:ViewMode.General}}">
             <StackPanel Margin="16" Spacing="16">
                 <StackPanel>
                     <TextBlock Text="Subject" Classes="Small" />
@@ -100,23 +96,15 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
-        <ScrollViewer DockPanel.Dock="Bottom">
-            <ScrollViewer.IsVisible>
-                <CompiledBinding Path="ViewMode"
-                                 Converter="{StaticResource EnumConverter}"
-                                 ConverterParameter="{x:Static enums:ViewMode.Raw}" />
-            </ScrollViewer.IsVisible>
+        <ScrollViewer DockPanel.Dock="Bottom"
+                      IsVisible="{CompiledBinding ViewMode, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static enums:ViewMode.Raw}}">
             <SelectableTextBlock
                 Margin="16"
                 Classes="Caption"
                 Text="{CompiledBinding Path=Certificate, Converter={StaticResource CertificateRawConverter}}" />
         </ScrollViewer>
-        <ScrollViewer DockPanel.Dock="Bottom">
-            <ScrollViewer.IsVisible>
-                <CompiledBinding Path="ViewMode"
-                                 Converter="{StaticResource EnumConverter}"
-                                 ConverterParameter="{x:Static enums:ViewMode.Base64}" />
-            </ScrollViewer.IsVisible>
+        <ScrollViewer DockPanel.Dock="Bottom"
+                      IsVisible="{CompiledBinding ViewMode, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static enums:ViewMode.Base64}}">
             <SelectableTextBlock
                 Margin="16 "
                 FontFamily="Cascadia Code, Consolas, Ubuntu Mono, Menlo, Monaco, monospace"

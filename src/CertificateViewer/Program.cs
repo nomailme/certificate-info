@@ -1,6 +1,6 @@
 ﻿using System;
 using Avalonia;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace CertificateViewer;
 
@@ -18,5 +18,5 @@ public sealed class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace()
-            .UseReactiveUI();
+            .UseReactiveUI(_ => { });
 }

@@ -154,7 +154,7 @@
                                                 CommandParameter="{Binding}"
                                                 Foreground="{DynamicResource ErrorColor}"
                                                 FontSize="24"
-                                                Content="{LucideIconContent Trash2}">
+                                                Content="{LucideIconContent Kind=Trash}">
 
                                         </Button>
                                     </Grid>

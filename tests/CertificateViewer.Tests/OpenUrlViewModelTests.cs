@@ -9,9 +9,9 @@ namespace CertificateViewer.Tests;
 ///     ("scheme://host") so that submitting one actually loads the certificate chain, and it
 ///     must reject host-less input instead of throwing.
 /// </summary>
-public class OpenUrlVmTests
+public class OpenUrlViewModelTests
 {
-    private readonly OpenUrlVm _vm = new(new DialogManager());
+    private readonly OpenUrlViewModel _vm = new(new DialogManager());
 
     [Theory]
     [InlineData("https://example.com")]

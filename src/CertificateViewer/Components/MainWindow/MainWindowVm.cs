@@ -10,8 +10,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using CertificateViewer.Components.DialogManager;
 using CertificateViewer.Components.Dialogs.OpenUrl;
-using CertificateViewer.Controls.Dialogs;
-using CertificateViewer.Extensions;
 using CertificateViewer.Logic;
 using CertificateViewer.Logic.ImportServices.Implementation;
 using CertificateViewer.Services;
@@ -36,7 +34,7 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     private readonly ThemeWatcher _themeWatcher;
     private readonly ViewModelFactory _viewModelFactory;
     private readonly ShadUI.DialogManager _dialogManager;
-    private readonly OpenCertificateService _openCertificateService;
+    private readonly IOpenCertificateService _openCertificateService;
     private readonly CertificateSourceLoader _certificateSourceLoader;
     private readonly TrustStoreViewModel _trustStoreViewModel;
     private readonly CertificateChainViewModel _certificateChainViewModel;
@@ -53,7 +51,7 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
         ViewModelFactory viewModelFactory,
         ThemeWatcher themeWatcher,
         IErrorHandler errorHandler,
-        OpenCertificateService openCertificateService,
+        IOpenCertificateService openCertificateService,
         CertificateSourceLoader certificateSourceLoader,
         TrustStoreViewModel trustStoreViewModel,
         CertificateChainViewModel certificateChainViewModel,
@@ -74,10 +72,10 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
 
         // The panel's ListBox selection flows back into SelectedCertificate (consumed by the
         // details panel); assigning an equal value is a no-op, so this cannot loop.
-        _certificateChainViewModel
-            .WhenAnyValue(x => x.SelectedCertificate)
-            .Subscribe(u => SelectedCertificate = u)
-            .DisposeWith(_disposables);
+        _disposables.Add(
+            _certificateChainViewModel
+                .WhenAnyValue(x => x.SelectedCertificate)
+                .Subscribe(u => SelectedCertificate = u));
 
         SetTitle(string.Empty);
     }
@@ -151,7 +149,7 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     [RelayCommand]
     private async Task OpenUrl()
     {
-        var openUrlViewModel = _viewModelFactory.Build<OpenUrlVm>();
+        var openUrlViewModel = _viewModelFactory.Build<OpenUrlViewModel>();
         _dialogManager.CreateDialog(openUrlViewModel)
             .WithSuccessCallback(vm => Load(vm.Url))
             .WithCancelCallback(() => { })

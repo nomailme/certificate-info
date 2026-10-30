@@ -18,9 +18,9 @@ public partial class CertificateDetailsViewModel : ObservableObject
 
     /// <summary>Gets or sets the certificate being displayed.</summary>
     [ObservableProperty]
-    private X509Certificate2? _certificate;
+    public partial X509Certificate2? Certificate { get; set; }
 
     /// <summary>Gets or sets the active view mode (General, Raw, or Base64).</summary>
     [ObservableProperty]
-    private ViewMode _viewMode = ViewMode.General;
+    public partial ViewMode ViewMode { get; set; } = ViewMode.General;
 }

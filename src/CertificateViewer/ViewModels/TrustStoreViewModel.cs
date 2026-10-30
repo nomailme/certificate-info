@@ -6,7 +6,6 @@ using System.Reactive.Disposables;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using CertificateViewer.Components.DialogManager;
-using CertificateViewer.Controls.Dialogs;
 using CertificateViewer.Logic;
 using CertificateViewer.Services;
 using CertificateViewer.Services.ErrorHandling;
@@ -22,7 +21,7 @@ namespace CertificateViewer.ViewModels;
 /// </summary>
 public partial class TrustStoreViewModel : ReactiveObject, IActivatableViewModel, IDisposable
 {
-    private readonly OpenCertificateService _openCertificateService;
+    private readonly IOpenCertificateService _openCertificateService;
     private readonly ICertificateChainValidator _chainValidator;
     private readonly IErrorHandler _errorHandler;
     private readonly CompositeDisposable _disposables = new();
@@ -39,7 +38,7 @@ public partial class TrustStoreViewModel : ReactiveObject, IActivatableViewModel
     /// <param name="chainValidator">Validator used to build and validate the chain against a trust store.</param>
     /// <param name="errorHandler">Handler used to surface file-loading errors to the user.</param>
     public TrustStoreViewModel(
-        OpenCertificateService openCertificateService,
+        IOpenCertificateService openCertificateService,
         ICertificateChainValidator chainValidator,
         IErrorHandler errorHandler)
     {
@@ -55,11 +54,9 @@ public partial class TrustStoreViewModel : ReactiveObject, IActivatableViewModel
             x => x.CertificateChain,
             x => x.UseSystemStore,
             (_, _, _) => true);
-        validityChanges.Subscribe(u => { _ = UpdateValidity(); }).DisposeWith(_disposables);
+        _disposables.Add(validityChanges.Subscribe(u => { _ = UpdateValidity(); }));
 
-        Activator.Deactivated
-            .Subscribe(_ => _disposables.Dispose())
-            .DisposeWith(_disposables);
+        _disposables.Add(Activator.Deactivated.Subscribe(_ => _disposables.Dispose()));
     }
 
     /// <summary>Gets the view-model activator.</summary>
@@ -109,22 +106,36 @@ public partial class TrustStoreViewModel : ReactiveObject, IActivatableViewModel
     public async Task AddRootCertificate()
     {
         var files = await this.OpenFileDialogAsync("Root certificates");
+        await AddTrustedFilesAsync(files);
+    }
 
+    /// <summary>
+    ///     Loads the given files and adds their certificates to the custom trusted store.
+    ///     Separated from the file-picker command so the load/surface-error logic is unit-testable
+    ///     without a live storage provider (the picker itself needs a TopLevel).
+    /// </summary>
+    /// <param name="files">The file paths to load.</param>
+    public async Task AddTrustedFilesAsync(IReadOnlyList<string> files)
+    {
         foreach (var file in files)
         {
             var result = await _openCertificateService.OpenFile(file);
-            if (result.Success == DialogResult.OperationResult.Success)
+            switch (result.Success)
             {
-                foreach (var certificate in result.Certificates)
-                {
-                    TrustedCertificates.Add(certificate);
-                }
-            }
-            else
-            {
-                _ = _errorHandler.HandleAsync(
-                    result.Error ?? new InvalidOperationException("Unable to load certificate"),
-                    context: "Adding root certificate");
+                case DialogResult.OperationResult.Success:
+                    foreach (var certificate in result.Certificates)
+                    {
+                        TrustedCertificates.Add(certificate);
+                    }
+                    break;
+                case DialogResult.OperationResult.Canceled:
+                    // The user dismissed a password prompt: a deliberate no-op, not an error.
+                    break;
+                default:
+                    _ = _errorHandler.HandleAsync(
+                        result.Error ?? new InvalidOperationException("Unable to load certificate"),
+                        context: "Adding root certificate");
+                    break;
             }
         }
     }

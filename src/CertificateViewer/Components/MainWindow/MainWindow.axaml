@@ -17,9 +17,7 @@
                DragDrop.AllowDrop="True">
 
     <shadUi:Window.Hosts>
-        <shadUi:DialogHost x:Name="DialogHost"
-                           Owner="{Binding
-        RelativeSource={RelativeSource AncestorType=shadUi:Window}}" />
+        <shadUi:DialogHost x:Name="DialogHost" />
     </shadUi:Window.Hosts>
     <Panel>
         <shadUi:BusyArea

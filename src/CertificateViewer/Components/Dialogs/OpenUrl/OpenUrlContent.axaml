@@ -5,7 +5,7 @@
              xmlns:shadUi="clr-namespace:ShadUI;assembly=ShadUI"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:openUrl="clr-namespace:CertificateViewer.Components.Dialogs.OpenUrl"
-             x:DataType="openUrl:OpenUrlVm"
+             x:DataType="openUrl:OpenUrlViewModel"
              x:Class="CertificateViewer.Components.Dialogs.OpenUrl.OpenUrlContent">
     <StackPanel
         Width="275"
@@ -17,7 +17,7 @@
             shadUi:ElementAssist.FocusOnLoad="True"
             Classes="Clearable"
             Text="{Binding Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            Watermark="https://google.com" />
+            PlaceholderText="https://google.com" />
 
         <StackPanel Margin="0,24,0,0" Spacing="16">
             <Button

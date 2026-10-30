@@ -1,10 +1,7 @@
-using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using CertificateViewer.Controls.Dialogs;
-using CertificateViewer.Logic;
 using CertificateViewer.Logic.ImportServices;
 
-namespace CertificateViewer.Extensions;
+namespace CertificateViewer.Logic;
 
 public static class ImportResultExtensions
 {

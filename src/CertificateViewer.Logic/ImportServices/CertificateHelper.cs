@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices;
@@ -56,7 +57,16 @@ public static class CertificateHelper
 
     public static async ValueTask<CertificateType> CheckAsync(byte[] rawData)
     {
-        var contentType = X509Certificate2.GetCertContentType(rawData);
+        X509ContentType contentType;
+        try
+        {
+            contentType = X509Certificate2.GetCertContentType(rawData);
+        }
+        catch (CryptographicException)
+        {
+            // Bytes that are not a recognized certificate encoding (garbage/truncated input).
+            return CertificateType.Unknown;
+        }
         if (contentType == X509ContentType.Pfx)
         {
             return CertificateType.Pfx;

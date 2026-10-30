@@ -54,16 +54,15 @@ public class App : Application
         var collection = new ServiceCollection();
         collection.AddSingleton<ViewModelFactory>();
         collection.RegisterDialogViews();
-        collection.AddTransient<OpenUrlVm>();
+        collection.AddTransient<OpenUrlViewModel>();
         collection.AddTransient<PasswordDialogViewModel>();
         collection.AddSingleton<ICertificateChainValidator, ChainValidator>();
         collection.AddSingleton<IErrorHandler, GlobalErrorHandler>();
-        collection.AddSingleton<DerImporter>();
-        collection.AddSingleton<PemImporter>();
-        collection.AddSingleton<PfxImporter>();
-        collection.AddSingleton<RemoteServerImporter>();
-        collection.AddSingleton<ICertificateLoader<string>>(sp => sp.GetRequiredService<RemoteServerImporter>());
-        collection.AddSingleton<OpenCertificateService>();
+        // Certificate pipeline (importers, password prompt, OpenCertificateService): the wiring
+        // lives in RegisterCertificateServices so the test project can build the same container
+        // and verify OpenCertificateService resolves (regression guard for the importer
+        // registration that crashed the app at startup).
+        collection.RegisterCertificateServices();
         collection.AddSingleton<CertificateSourceLoader>();
         collection.AddSingleton<MainWindowVm>();
         collection.AddSingleton<ThemeWatcher>(_ => new ThemeWatcher(Current!));
@@ -111,7 +110,6 @@ public class App : Application
             mainWindow.WhenActivated(d =>
                 {
                     _ = vm.LoadFileAsync(args.Single());
-                    Disposable.Create(() => { }).DisposeWith(d);
                 }
             );
         }

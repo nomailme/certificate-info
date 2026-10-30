@@ -34,13 +34,13 @@ public class OpenUrlContentUiTests
     ///     and hosts the real OpenUrlContent (sharing the same VM) in a headless window so its
     ///     visual tree and bindings resolve.
     /// </summary>
-    private static (OpenUrlVm Vm, TextBox Box, Button Submit) BuildDialog(Action<OpenUrlVm>? onSuccess)
+    private static (OpenUrlViewModel Vm, TextBox Box, Button Submit) BuildDialog(Action<OpenUrlViewModel>? onSuccess)
     {
         var manager = new DialogManager();
-        manager.Register<OpenUrlContent, OpenUrlVm>();
-        var vm = new OpenUrlVm(manager);
+        manager.Register<OpenUrlContent, OpenUrlViewModel>();
+        var vm = new OpenUrlViewModel(manager);
         manager.CreateDialog(vm)
-            .WithSuccessCallback((OpenUrlVm m) => onSuccess?.Invoke(m))
+            .WithSuccessCallback((OpenUrlViewModel m) => onSuccess?.Invoke(m))
             .WithCancelCallback(() => { })
             .Show();
 

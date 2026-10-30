@@ -13,13 +13,13 @@ public partial class CertificateChainViewModel : ObservableObject
 {
     /// <summary>Gets or sets the collection of certificates in the chain.</summary>
     [ObservableProperty]
-    private ObservableCollection<X509Certificate2> _items = new();
+    public partial ObservableCollection<X509Certificate2> Items { get; set; } = new();
 
     /// <summary>Gets or sets a description of the source the certificate chain was loaded from.</summary>
     [ObservableProperty]
-    private string _certificateSource = string.Empty;
+    public partial string CertificateSource { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the currently selected certificate in the chain.</summary>
     [ObservableProperty]
-    private X509Certificate2? _selectedCertificate;
+    public partial X509Certificate2? SelectedCertificate { get; set; }
 }

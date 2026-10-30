@@ -10,7 +10,7 @@ namespace CertificateViewer.Tests;
 ///
 ///     The symptom: the user types a valid address into the Open URL dialog and presses Submit,
 ///     but no certificate chain ever loads. The view model was already validating the URL correctly
-///     (the <see cref="OpenUrlVmTests" /> suite covered that), so the bug was one level down: the
+///     (the <see cref="OpenUrlViewModelTests" /> suite covered that), so the bug was one level down: the
 ///     dialog's success callback was being <em>silently dropped</em>.
 ///
 ///     Root cause: <c>DialogViewModelBase.Submit()</c> closed the dialog via
@@ -19,7 +19,7 @@ namespace CertificateViewer.Tests;
 ///     type of <c>this</c>). But the app registers its success callback via
 ///     <c>manager.CreateDialog(openUrlViewModel).WithSuccessCallback(vm => Load(vm.Url))</c>, and
 ///     ShadUI keys its callbacks on the context type that <c>CreateDialog&lt;TContext&gt;</c>
-///     infers — the <em>concrete</em> <c>OpenUrlVm</c>. ShadUI's <c>InvokeCallBacks</c> then looked
+///     infers — the <em>concrete</em> <c>OpenUrlViewModel</c>. ShadUI's <c>InvokeCallBacks</c> then looked
 ///     up the callback under the base type, found nothing, and dropped it. Validation passed, the
 ///     command ran, the dialog closed, and <c>Load(vm.Url)</c> never fired.
 ///
@@ -44,8 +44,8 @@ public class OpenUrlDialogSubmitCallbackTests
         TestPlatform.RunOnUi(() =>
         {
             var manager = new DialogManager();
-            manager.Register<OpenUrlContent, OpenUrlVm>();
-            var vm = new OpenUrlVm(manager);
+            manager.Register<OpenUrlContent, OpenUrlViewModel>();
+            var vm = new OpenUrlViewModel(manager);
 
             // Registered exactly like MainWindowVm.OpenUrl does.
             manager.CreateDialog(vm)
@@ -75,8 +75,8 @@ public class OpenUrlDialogSubmitCallbackTests
         TestPlatform.RunOnUi(() =>
         {
             var manager = new DialogManager();
-            manager.Register<OpenUrlContent, OpenUrlVm>();
-            var vm = new OpenUrlVm(manager);
+            manager.Register<OpenUrlContent, OpenUrlViewModel>();
+            var vm = new OpenUrlViewModel(manager);
             manager.CreateDialog(vm)
                 .WithSuccessCallback(m => { fired = true; urlSeen = m.Url; })
                 .WithCancelCallback(() => { })
@@ -98,8 +98,8 @@ public class OpenUrlDialogSubmitCallbackTests
         TestPlatform.RunOnUi(() =>
         {
             var manager = new DialogManager();
-            manager.Register<OpenUrlContent, OpenUrlVm>();
-            var vm = new OpenUrlVm(manager);
+            manager.Register<OpenUrlContent, OpenUrlViewModel>();
+            var vm = new OpenUrlViewModel(manager);
             manager.CreateDialog(vm)
                 .WithSuccessCallback(_ => success = true)
                 .WithCancelCallback(() => { })
@@ -121,8 +121,8 @@ public class OpenUrlDialogSubmitCallbackTests
         TestPlatform.RunOnUi(() =>
         {
             var manager = new DialogManager();
-            manager.Register<OpenUrlContent, OpenUrlVm>();
-            var vm = new OpenUrlVm(manager);
+            manager.Register<OpenUrlContent, OpenUrlViewModel>();
+            var vm = new OpenUrlViewModel(manager);
             manager.CreateDialog(vm)
                 .WithSuccessCallback(_ => { })
                 .WithCancelCallback(() => cancelled = true)

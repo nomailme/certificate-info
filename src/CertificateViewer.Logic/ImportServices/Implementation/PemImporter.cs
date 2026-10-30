@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class PemImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>
+public class PemImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>, ICertificateFileImporter
 {
     public Task<ImportResult> ImportAsync(byte[] input, EmptyOptions? options=default)
     {
@@ -27,7 +27,14 @@ public class PemImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<
             return Task.FromResult(ImportResult.CreateFail(e));
         }
     }
-    
+
+    public Task<ImportResult> ImportAsync(byte[] data, string password)
+    {
+        // A PEM certificate needs no password; the parameter is accepted for the
+        // file-importer contract and ignored here.
+        return ImportAsync(data, (EmptyOptions?)null);
+    }
+
     public bool IsSupported(byte[] rawData)
     {
         var magicBytes = "-----BEGIN CERTIFICATE-----"u8.ToArray();

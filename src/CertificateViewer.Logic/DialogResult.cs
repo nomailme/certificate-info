@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using CertificateViewer.Logic;
 
-namespace CertificateViewer.Controls.Dialogs;
+namespace CertificateViewer.Logic;
 
 public record DialogResult
 {

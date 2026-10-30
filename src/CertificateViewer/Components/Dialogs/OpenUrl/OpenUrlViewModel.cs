@@ -9,7 +9,7 @@ namespace CertificateViewer.Components.Dialogs.OpenUrl;
 ///     View model of the "open URL" dialog. Validation is explicit (no DataAnnotations, trim-safe):
 ///     the address must be present and have a valid host name (name or IP literal).
 /// </summary>
-public sealed partial class OpenUrlVm(ShadUI.DialogManager dialogManager) : DialogViewModelBase(dialogManager)
+public sealed partial class OpenUrlViewModel(ShadUI.DialogManager dialogManager) : DialogViewModelBase(dialogManager)
 {
     private const string UrlPropertyName = nameof(Url);
 
@@ -41,7 +41,7 @@ public sealed partial class OpenUrlVm(ShadUI.DialogManager dialogManager) : Dial
         }
     }
 
-    // Closing must be keyed on the concrete type (OpenUrlVm) so ShadUI matches the callback the
+    // Closing must be keyed on the concrete type (OpenUrlViewModel) so ShadUI matches the callback the
     // app registered via CreateDialog(vm); see DialogViewModelBase for the full rationale.
     protected override void CloseWithSuccess()
     {

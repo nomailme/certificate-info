@@ -38,7 +38,7 @@ public partial class MainWindow : Window, IViewFor<MainWindowVm>
         var vm = DataContext as MainWindowVm;
         try
         {
-            if (e.Data.GetFiles() is { } fileNames && vm is not null)
+            if (e.DataTransfer.TryGetFiles() is { } fileNames && vm is not null)
             {
                 foreach (var file in fileNames)
                 {
