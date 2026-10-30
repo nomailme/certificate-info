@@ -26,6 +26,7 @@ _UpgradeReport_Files/
 bin/
 obj/
 TestResults/
+.avalonia-build-tasks/
 .idea/
 ###################
 # Web publish log #

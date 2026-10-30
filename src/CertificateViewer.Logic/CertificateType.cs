@@ -5,6 +5,6 @@ public enum CertificateType
     Unknown,
     Der,
     Pem,
-    Web,
+    Remote,
     Pfx
 }

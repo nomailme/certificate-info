@@ -1,43 +1,17 @@
-using System;
-using System.Security.Cryptography.X509Certificates;
-using Avalonia;
 using Avalonia.Controls;
-using CertificateViewer.Logic;
 
 namespace CertificateViewer.Components.CertificateDetails;
 
+/// <summary>
+///     Dumb view for the certificate details: all state lives on
+///     <see cref="ViewModels.CertificateDetailsViewModel" />, whose instance is the panel's DataContext
+///     (set by the host). The code-behind only initializes the component.
+/// </summary>
 public partial class CertificateDetailsPanel : UserControl
 {
-    public static readonly DirectProperty<CertificateDetailsPanel, X509Certificate2?> CertificateProperty =
-        AvaloniaProperty.RegisterDirect<CertificateDetailsPanel, X509Certificate2?>(
-            nameof(Certificate),
-            o => o.Certificate,
-            (o, v) => o.Certificate = v);
-
-    public static readonly DirectProperty<CertificateDetailsPanel, ViewMode> ViewModeProperty =
-        AvaloniaProperty.RegisterDirect<CertificateDetailsPanel, ViewMode>(
-            nameof(ViewMode),
-            o => o.ViewMode,
-            (o, v) => o.ViewMode = v);
-
-    private X509Certificate2? _certificate;
-    private ViewMode _viewMode = ViewMode.General;
-
-    static CertificateDetailsPanel() => AffectsRender<CertificateDetailsPanel>(CertificateProperty);
-
-    public CertificateDetailsPanel() => InitializeComponent();
-
-    public ViewMode[] ViewModes { get; } = Enum.GetValues<ViewMode>();
-
-    public ViewMode ViewMode
+    /// <summary>Initializes a new instance of the <see cref="CertificateDetailsPanel" /> class.</summary>
+    public CertificateDetailsPanel()
     {
-        get => _viewMode;
-        set => SetAndRaise(ViewModeProperty, ref _viewMode, value);
-    }
-
-    public X509Certificate2? Certificate
-    {
-        get => _certificate;
-        set => SetAndRaise(CertificateProperty, ref _certificate, value);
+        InitializeComponent();
     }
 }

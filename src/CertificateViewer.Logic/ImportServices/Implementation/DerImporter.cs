@@ -2,7 +2,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
-public class DerImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>
+public class DerImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<byte[]>, ICertificateFileImporter
 {
     public async Task<ImportResult> ImportAsync(byte[] input, EmptyOptions? options=default)
     {
@@ -26,10 +26,18 @@ public class DerImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<
             return ImportResult.CreateFail(e);
         }
     }
-    
+
+    public Task<ImportResult> ImportAsync(byte[] data, string password)
+    {
+        // A DER certificate needs no password; the parameter is accepted for the
+        // file-importer contract and ignored here.
+        return ImportAsync(data, (EmptyOptions?)null);
+    }
+
+    // Uses the same robust DER-structure check as the rest of the pipeline instead of the
+    // legacy {0x30, 0x82} magic-byte prefix, so strategy selection agrees with detection.
     public bool IsSupported(byte[] rawData)
     {
-        var magicBytes = new byte[] { 0x30, 0x82 };
-        return MagicByteHelper.Match(rawData, magicBytes);
+        return rawData.Length >= 2 && rawData[0] == 0x30 && CertificateHelper.IsDerCertificate(rawData).Result;
     }
 }

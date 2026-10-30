@@ -6,7 +6,7 @@ namespace CertificateViewer.Services;
 
 public class ViewModelFactory(IServiceProvider serviceProvider)
 {
-    public T Build<T>() where T : BaseViewModel
+    public T Build<T>() where T : DialogViewModelBase
     {
         var viewModel = serviceProvider.GetRequiredService<T>();
         return viewModel;

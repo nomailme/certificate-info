@@ -17,9 +17,7 @@
                DragDrop.AllowDrop="True">
 
     <shadUi:Window.Hosts>
-        <shadUi:DialogHost Manager="{Binding DialogManager}"
-                           Owner="{Binding
-        RelativeSource={RelativeSource AncestorType=shadUi:Window}}" />
+        <shadUi:DialogHost x:Name="DialogHost" />
     </shadUi:Window.Hosts>
     <Panel>
         <shadUi:BusyArea
@@ -83,21 +81,15 @@
             <Grid Grid.Row="1" Margin="0,8,0,0" ColumnDefinitions="4*,5*,4*" ColumnSpacing="12">
                 <shadUi:Card>
                     <certificateChain:CertificateChainPanel
-                        CertificateSource="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).CertificateSource}"
-                        SelectedItem="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).SelectedCertificate, Mode=TwoWay}"
-                        ItemsSource="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).CertificateChain}" />
+                        DataContext="{CompiledBinding CertificateChainViewModel}" />
                 </shadUi:Card>
                 <shadUi:Card Grid.Column="1">
                     <certificateDetails:CertificateDetailsPanel
-                        DataContext="{CompiledBinding SelectedCertificate}"
-                        Certificate="{CompiledBinding .}" />
+                        DataContext="{CompiledBinding CertificateDetailsViewModel}" />
                 </shadUi:Card>
                 <shadUi:Card Grid.Column="2">
                     <trustStore:TrustStorePanel
-                        OpenCertificateService="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).OpenCertificateService}"
-                        DialogManager="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).DialogManager}"
-                        CertificateChain="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).CertificateChain}"
-                        OpenFileDialog="{CompiledBinding $parent.((mainWindow:MainWindowVm)DataContext).ShowOpenFileDialog}" />
+                        DataContext="{CompiledBinding TrustStoreViewModel}" />
                 </shadUi:Card>
             </Grid>
             <DockPanel Grid.Row="2" HorizontalAlignment="Center">
