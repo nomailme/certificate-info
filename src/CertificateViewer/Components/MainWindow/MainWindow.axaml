@@ -47,7 +47,7 @@
                                 Spacing="8">
                         <Button Classes="Ghost"
                                 Padding="0"
-                                Command="{Binding OpenCertificateFileCommand}">
+                                Command="{Binding openCertificateFileCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <LucideIcon Kind="File"
                                             Size="24"
@@ -61,7 +61,7 @@
                         </Button>
                         <Button Classes="Ghost"
                                 Padding="0"
-                                Command="{Binding OpenUrlCommand}">
+                                Command="{Binding openUrlCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <LucideIcon Kind="Globe"
                                             Size="24"
@@ -102,7 +102,7 @@
                     Width="30"
                     Height="30"
                     Background="{DynamicResource SidebarBackgroundColor}"
-                    Command="{Binding SwitchThemeCommand}"
+                    Command="{Binding switchThemeCommand}"
                     CornerRadius="{DynamicResource MdCornerRadius}"
                     ToolTip.Tip="Switch Theme">
                     <LucideIcon Size="16"

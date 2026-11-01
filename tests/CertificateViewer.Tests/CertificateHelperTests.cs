@@ -56,26 +56,26 @@ public class CertificateHelperTests
     }
 
     [Fact]
-    public async Task IsDer_DerBytes_True()
+    public void IsDer_DerBytes_True()
     {
-        Assert.True(await CertificateHelper.IsDerCertificate(TestCertificates.SelfSigned().RawData));
+        Assert.True(CertificateHelper.IsDerCertificate(TestCertificates.SelfSigned().RawData));
     }
 
     [Fact]
-    public async Task IsDer_PemBytes_False()
+    public void IsDer_PemBytes_False()
     {
-        Assert.False(await CertificateHelper.IsDerCertificate(TestCertificates.ToPem(TestCertificates.SelfSigned())));
+        Assert.False(CertificateHelper.IsDerCertificate(TestCertificates.ToPem(TestCertificates.SelfSigned())));
     }
 
     [Fact]
-    public async Task IsDer_EmptyBytes_False()
+    public void IsDer_EmptyBytes_False()
     {
-        Assert.False(await CertificateHelper.IsDerCertificate(Array.Empty<byte>()));
+        Assert.False(CertificateHelper.IsDerCertificate(Array.Empty<byte>()));
     }
 
     [Fact]
-    public async Task IsDer_SingleByte_False()
+    public void IsDer_SingleByte_False()
     {
-        Assert.False(await CertificateHelper.IsDerCertificate(new byte[] { 0x30 }));
+        Assert.False(CertificateHelper.IsDerCertificate(new byte[] { 0x30 }));
     }
 }

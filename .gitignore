@@ -273,3 +273,6 @@ FakesAssemblies/
 /src/CertificateViewer/Controls/IconButton.axaml
 /src/CertificateViewer/Controls/IconButton.axaml.cs
 /tests/CertificateViewer.Tests/DataStore/Generic Root CA 3.crt
+
+# Source generator outputs (Avalonia/CommunityToolkit .g.cs), build-time only
+generated/

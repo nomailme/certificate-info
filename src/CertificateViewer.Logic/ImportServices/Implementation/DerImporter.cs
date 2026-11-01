@@ -6,15 +6,17 @@ public class DerImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<
 {
     public async Task<ImportResult> ImportAsync(byte[] input, EmptyOptions? options=default)
     {
-        var certificateCollection = new X509Certificate2Collection();
         try
         {
-            if (await CertificateHelper.IsDerCertificate(input) == false)
+            if (CertificateHelper.IsDerCertificate(input) == false)
             {
                 throw new WrongContentTypeException();
             }
 
-            certificateCollection.Import(input);
+            var certificateCollection = new X509Certificate2Collection
+            {
+                X509CertificateLoader.LoadCertificate(input)
+            };
             if (certificateCollection.Any() == false)
             {
                 throw new ArgumentException("No certificates found in file");
@@ -38,6 +40,6 @@ public class DerImporter: ICertificateLoader<byte[]>, ICertificateTypeValidator<
     // legacy {0x30, 0x82} magic-byte prefix, so strategy selection agrees with detection.
     public bool IsSupported(byte[] rawData)
     {
-        return rawData.Length >= 2 && rawData[0] == 0x30 && CertificateHelper.IsDerCertificate(rawData).Result;
+        return rawData.Length >= 2 && rawData[0] == 0x30 && CertificateHelper.IsDerCertificate(rawData);
     }
 }

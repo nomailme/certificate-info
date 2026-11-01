@@ -1,6 +1,5 @@
 using System;
 using System.Reactive;
-using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Input;
@@ -11,28 +10,14 @@ using ShadUI;
 
 namespace CertificateViewer.Components.MainWindow;
 
-public partial class MainWindow : Window, IViewFor<MainWindowVm>
+public partial class MainWindow : Window
 {
-
-    public static readonly StyledProperty<MainWindowVm?> ViewModelProperty =
-        AvaloniaProperty.Register<MainWindow, MainWindowVm?>(nameof(ViewModel));
-
     public MainWindow()
     {
         InitializeComponent();
-        SetVersion();
         AddHandler(DragDrop.DropEvent, DragDropHandler);
     }
-    object? IViewFor.ViewModel
-    {
-        get => ViewModel;
-        set => ViewModel = (MainWindowVm?)value;
-    }
-    public MainWindowVm? ViewModel
-    {
-        get => GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
-    }
+
     private async Task DragDropHandler(object? sender, DragEventArgs e)
     {
         var vm = DataContext as MainWindowVm;
@@ -57,13 +42,5 @@ public partial class MainWindow : Window, IViewFor<MainWindowVm>
                 _ = vm?.HandleFileOpenError(ex);
             });
         }
-    }
-
-    private void SetVersion()
-    {
-        var version = Assembly.GetEntryAssembly()?
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-
-        Title = $"Certificate Viewer {version}";
     }
 }

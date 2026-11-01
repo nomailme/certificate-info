@@ -54,7 +54,7 @@ public partial class TrustStoreViewModel : ReactiveObject, IActivatableViewModel
             x => x.CertificateChain,
             x => x.UseSystemStore,
             (_, _, _) => true);
-        _disposables.Add(validityChanges.Subscribe(u => { _ = UpdateValidity(); }));
+        _disposables.Add(validityChanges.Subscribe(u => { _ = updateValidity(); }));
 
         _disposables.Add(Activator.Deactivated.Subscribe(_ => _disposables.Dispose()));
     }
@@ -156,7 +156,7 @@ public partial class TrustStoreViewModel : ReactiveObject, IActivatableViewModel
         GC.SuppressFinalize(this);
     }
 
-    private async Task UpdateValidity()
+    private async Task updateValidity()
     {
         if (CertificateChain.Count == 0)
         {

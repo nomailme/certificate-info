@@ -47,13 +47,10 @@ public static class CertificateHelper
             }
             read += count;
         }
-        return await IsDerCertificate(0 == read ? Array.Empty<byte>() : header.Take(read).ToArray());
+        return IsDerCertificate(0 == read ? Array.Empty<byte>() : header.Take(read).ToArray());
     }
 
-    public static ValueTask<bool> IsDerCertificate(byte[] rawData)
-    {
-        return ValueTask.FromResult(CheckDerStructure(rawData));
-    }
+    public static bool IsDerCertificate(byte[] rawData) => CheckDerStructure(rawData);
 
     public static async ValueTask<CertificateType> CheckAsync(byte[] rawData)
     {
@@ -77,7 +74,7 @@ public static class CertificateHelper
             {
                 return CertificateType.Pem;
             }
-            if (await IsDerCertificate(rawData))
+            if (IsDerCertificate(rawData))
             {
                 return CertificateType.Der;
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -107,11 +108,32 @@ public class App : Application
 
         if (args?.Length == 1)
         {
-            mainWindow.WhenActivated(d =>
+            // The window is no longer an IViewFor, so ReactiveUI's WhenActivated view mixin is
+            // unavailable; the window's Activated event provides the same "fire on activation"
+            // semantics for the CLI single-arg load (guarded to fire only once).
+            var cliLoadStarted = false;
+            mainWindow.Activated += (_, _) =>
+            {
+                if (cliLoadStarted)
                 {
-                    _ = vm.LoadFileAsync(args.Single());
+                    return;
                 }
-            );
+                cliLoadStarted = true;
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await vm.LoadFileAsync(args.Single());
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_errorHandler is not null)
+                        {
+                            await _errorHandler.HandleAsync(ex, context: "Opening file from arguments");
+                        }
+                    }
+                });
+            };
         }
 
         base.OnFrameworkInitializationCompleted();

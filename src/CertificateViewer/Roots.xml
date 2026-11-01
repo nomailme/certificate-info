@@ -1,10 +1,15 @@
 ﻿<linker>
   <!--
-    Minimal trim roots (task 2.20): the assembly-wide preserve="All" on CertificateViewer
-    has been removed. Only the roots AOT/trimming actually requires are listed; the
-    MVVM extraction (2.5–2.15) left no reflection surface in the app itself, so no
-    type-specific roots were needed — verified by the AOT publish and runtime
-    smoke test (task 2.21).
+    Trim roots: the assembly-wide preserve="All" on CertificateViewer was removed in the
+    MVVM extraction (no reflection surface remains in the app itself).
+
+    The OpenUrl dialog content must be kept with its public constructor. ShadUI's
+    DialogBuilder<T> resolves the content view from the view-model by naming convention
+    (OpenUrlViewModel -> OpenUrlContent) and instantiates it via
+    Activator.CreateInstance — a purely dynamic call the linker cannot see. Without this
+    root the ctor is trimmed and the dialog throws MissingMethodException at runtime
+    ("No parameterless constructor defined"). Verified against the trimmed publish
+    (task: AOT-trim verification).
   -->
-  <assembly fullname="Avalonia.Themes.Fluent" preserve="All" />
+  <assembly fullname="CertificateViewer" include="OpenUrlContent" preserve="All" />
 </linker>

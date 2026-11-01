@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -15,6 +15,7 @@ using CertificateViewer.Logic.ImportServices.Implementation;
 using CertificateViewer.Services;
 using CertificateViewer.Services.ErrorHandling;
 using CertificateViewer.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using ShadUI;
@@ -27,8 +28,15 @@ namespace CertificateViewer.Components.MainWindow;
 ///     (App) and passed in; services are used internally and are not exposed as bindable
 ///     properties.
 /// </summary>
+[INotifyPropertyChanged]
 public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisposable
 {
+    // The CommunityToolkit.Mvvm source generator emits OnPropertyChanging(...)/OnPropertyChanged(...)
+    // calls for observable properties on classes that do not derive from ObservableObject;
+    // bridge both to ReactiveObject's PropertyChanging/PropertyChanged notifications.
+    private void OnPropertyChanging(PropertyChangedEventArgs e) => this.RaisePropertyChanging(e.PropertyName);
+    private void OnPropertyChanged(PropertyChangedEventArgs e) => this.RaisePropertyChanged(e.PropertyName);
+
     private readonly IErrorHandler _errorHandler;
     private readonly CompositeDisposable _disposables = new();
     private readonly ThemeWatcher _themeWatcher;
@@ -39,12 +47,17 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     private readonly TrustStoreViewModel _trustStoreViewModel;
     private readonly CertificateChainViewModel _certificateChainViewModel;
     private readonly CertificateDetailsViewModel _certificateDetailsViewModel;
-    private ObservableCollection<X509Certificate2> _certificateChain = new();
-    private string _certificateSource = string.Empty;
     private ThemeMode _currentTheme;
+    [ObservableProperty]
     private bool _isBusy;
+    [ObservableProperty]
     private X509Certificate2? _selectedCertificate;
+    [ObservableProperty]
     private string _title = string.Empty;
+    [ObservableProperty]
+    private string _certificateSource = string.Empty;
+    [ObservableProperty]
+    private ObservableCollection<X509Certificate2> _certificateChain = new();
 
     public MainWindowVm(
         ShadUI.DialogManager dialogManager,
@@ -58,8 +71,6 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
         CertificateDetailsViewModel certificateDetailsViewModel)
     {
         Activator = new ViewModelActivator();
-        ShowOpenFileDialog = new Interaction<string, string?>();
-        OpenFile = new Interaction<string, Unit>();
         _dialogManager = dialogManager;
         _viewModelFactory = viewModelFactory;
         _themeWatcher = themeWatcher;
@@ -77,7 +88,7 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
                 .WhenAnyValue(x => x.SelectedCertificate)
                 .Subscribe(u => SelectedCertificate = u));
 
-        SetTitle(string.Empty);
+        setTitle(string.Empty);
     }
 
     /// <summary>Gets the view-model activator.</summary>
@@ -92,52 +103,20 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     /// <summary>Gets the view model of the certificate-details panel; the panel's DataContext.</summary>
     public CertificateDetailsViewModel CertificateDetailsViewModel => _certificateDetailsViewModel;
 
-    public Interaction<string, string?> ShowOpenFileDialog { get; set; }
-
-    public Interaction<string, Unit> OpenFile { get; set; }
-
-    public string Title { get => _title; set => this.RaiseAndSetIfChanged(ref _title, value); }
-
-    public ObservableCollection<X509Certificate2> CertificateChain
+    /// <summary>
+    ///     The details panel shows the same certificate as the chain panel's ListBox selection
+    ///     (the details VM is the panel's DataContext); assigning an equal value is a no-op on
+    ///     the chain VM, so the two-way sync cannot loop.
+    /// </summary>
+    partial void OnSelectedCertificateChanged(X509Certificate2? value)
     {
-        get => _certificateChain;
-        set => this.RaiseAndSetIfChanged(ref _certificateChain, value);
+        _certificateChainViewModel.SelectedCertificate = value;
+        _certificateDetailsViewModel.Certificate = value;
     }
 
-    public X509Certificate2? SelectedCertificate
+    partial void OnCertificateSourceChanged(string value)
     {
-        get => _selectedCertificate;
-        set
-        {
-            if (_selectedCertificate != value)
-            {
-                this.RaiseAndSetIfChanged(ref _selectedCertificate, value);
-                // Keep the chain panel's ListBox selection in sync; assigning an equal value
-                // is a no-op on the chain VM, so the two-way sync cannot loop.
-                _certificateChainViewModel.SelectedCertificate = value;
-                // The details panel shows the same certificate (its VM is the panel's DataContext).
-                _certificateDetailsViewModel.Certificate = value;
-            }
-        }
-    }
-
-    public string CertificateSource
-    {
-        get => _certificateSource;
-        set
-        {
-            if (_certificateSource != value)
-            {
-                this.RaiseAndSetIfChanged(ref _certificateSource, value);
-                _certificateChainViewModel.CertificateSource = value;
-            }
-        }
-    }
-
-    public bool IsBusy
-    {
-        get => _isBusy;
-        set => this.RaiseAndSetIfChanged(ref _isBusy, value);
+        _certificateChainViewModel.CertificateSource = value;
     }
 
     public ThemeMode CurrentTheme
@@ -147,7 +126,7 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     }
 
     [RelayCommand]
-    private async Task OpenUrl()
+    private async Task openUrl()
     {
         var openUrlViewModel = _viewModelFactory.Build<OpenUrlViewModel>();
         _dialogManager.CreateDialog(openUrlViewModel)
@@ -168,32 +147,28 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
                 }
 
                 CertificateSource = loadResult.Source;
-                LoadCertificates(new DialogResult
+                loadCertificates(new DialogResult
                 {
                     Certificates = new List<X509Certificate2>(loadResult.Certificates),
                     Success = DialogResult.OperationResult.Success
                 });
-                SetTitle(loadResult.Title);
+                setTitle(loadResult.Title);
             }
         }
     }
 
-    private void SetTitle(string certficateSource)
+    private void setTitle(string certificateSource)
     {
         var version = Assembly.GetEntryAssembly()?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
             .InformationalVersion;
-
-        if (string.IsNullOrWhiteSpace(certficateSource))
-        {
-            Title = $"Certificate Viewer {version}";
-        }
-
-        Title = $"Certificate Viewer {version}: {certficateSource}";
+        Title = string.IsNullOrWhiteSpace(certificateSource)
+            ? $"Certificate Viewer {version}"
+            : $"Certificate Viewer {version}: {certificateSource}";
     }
 
     [RelayCommand]
-    private async Task OpenCertificateFile()
+    private async Task openCertificateFile()
     {
         var fileDialogResult = await this.OpenFileDialogAsync("Open file", false);
         if (fileDialogResult.Count == 0)
@@ -209,8 +184,8 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     {
         CertificateSource = GetFileSource(filepath);
         var result = await _openCertificateService.OpenFile(filepath);
-        LoadCertificates(result);
-        SetTitle(filepath);
+        loadCertificates(result);
+        setTitle(filepath);
     }
 
     /// <summary>
@@ -221,7 +196,7 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     public Task HandleFileOpenError(Exception error) =>
         _errorHandler.HandleAsync(error, context: "Opening file");
 
-    private void LoadCertificates(DialogResult dialogResult)
+    private void loadCertificates(DialogResult dialogResult)
     {
         switch (dialogResult.Success)
         {
@@ -254,7 +229,7 @@ public partial class MainWindowVm : ReactiveObject, IActivatableViewModel, IDisp
     }
 
     [RelayCommand]
-    private Task SwitchTheme()
+    private Task switchTheme()
     {
         CurrentTheme = CurrentTheme switch
         {

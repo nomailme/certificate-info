@@ -4,6 +4,16 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CertificateViewer.Logic.ImportServices.Implementation;
 
+/// <summary>
+/// Imports the certificate chain served by a remote HTTPS endpoint.
+/// <para>
+/// The TLS validation callback is deliberately permissive: this tool inspects
+/// invalid/self-signed certificates, and trust is decided later by chain
+/// validation, not during the handshake. The handler is only ever built for the
+/// single target host passed to <see cref="ImportAsync"/>, which must use the
+/// https scheme.
+/// </para>
+/// </summary>
 public class RemoteServerImporter: ICertificateLoader<string>
 {
     public async Task<ImportResult> ImportAsync(string input, EmptyOptions? options = default)
@@ -22,6 +32,10 @@ public class RemoteServerImporter: ICertificateLoader<string>
     {
         X509Certificate2Collection serverCertificates = new();
         var targetUri = new Uri(address);
+        if (targetUri.Scheme != Uri.UriSchemeHttps)
+        {
+            throw new ArgumentException("Only https URLs are supported.", nameof(address));
+        }
         using (var handler = BuildHandler(targetUri, serverCertificates))
         using (var httpClient = new HttpClient(handler))
         using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
@@ -52,7 +66,7 @@ public class RemoteServerImporter: ICertificateLoader<string>
                     if (chainElements != null)
                     {
                         foreach (var x in chainElements)
-                            collection.Add(new X509Certificate2(x.RawData));
+                            collection.Add(X509CertificateLoader.LoadCertificate(x.RawData));
                     }
                     return true;
                 }

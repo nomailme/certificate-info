@@ -191,4 +191,10 @@ public class MainWindowVmTests : IDisposable
         Assert.StartsWith("Certificate Viewer", _vm.Title);
         Assert.DoesNotContain("somefile", _vm.Title);
     }
+
+    [Fact]
+    public void Title_InitialState_NoSourceSuffix()
+    {
+        Assert.DoesNotContain(": ", _vm.Title);
+    }
 }

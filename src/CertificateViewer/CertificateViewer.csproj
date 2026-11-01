@@ -10,7 +10,6 @@
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <PublishAot>true</PublishAot>
     <!--
       ReactiveUI 23 annotates its expression-based WhenAny*/WhenActivated API with
       [RequiresUnreferencedCode], which surfaces as IL2026 trim warnings under the AOT
@@ -19,12 +18,15 @@
       are preserved by the trimmer. Suppress only this warning; keep the rest of the AOT
       analysis intact.
     -->
-    <NoWarn>$(NoWarn);IL2026</NoWarn>
-    <!-- Recommended Avalonia trimming settings for Native AOT -->
+    <NoWarn>$(NoWarn);IL2026;MVVMTK0001;MVVMTK0002;MVVMTK0042</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- Recommended Avalonia trimming settings for Native AOT (Release publish only) -->
+    <PublishAot>true</PublishAot>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
     <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <TrimMode>full</TrimMode>
-    <PublishTrimmed>true</PublishTrimmed>
     <AvaloniaXamlCompilation>true</AvaloniaXamlCompilation>
     <UseNativeHttpHandler>true</UseNativeHttpHandler>
     <StackTraceSupport>false</StackTraceSupport>
@@ -40,7 +42,6 @@
     <PackageReference Include="Lucide.Avalonia" Version="0.2.28" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
     <PackageReference Include="ShadUI" Version="0.2.4" />
-    <PackageReference Include="Tmds.DBus.Protocol" Version="0.95.2" />
   </ItemGroup>
 
   <ItemGroup>
